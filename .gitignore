@@ -1,0 +1,13 @@
+/.vs
+
+/Release
+/Debug
+
+/dlls_x64
+/dlls_x86
+
+Tmpl2017-02.exe
+Tmpl2017-02.pdb
+
+Tmpl2017-02_debug.exe
+Tmpl2017-02_debug.pdb
