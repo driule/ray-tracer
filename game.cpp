@@ -1,10 +1,17 @@
 #include "precomp.h" // include (only) this in every .cpp file
 
+Scene* scene;
+
+// blue = (int)(c.x * 255)
+// color = blue + (green << 8) + (red << 16)
+
 // -----------------------------------------------------------
 // Initialize the application
 // -----------------------------------------------------------
 void Game::Init()
 {
+	scene = new Scene();
+	scene->camera = new Camera();
 }
 
 // -----------------------------------------------------------
@@ -28,11 +35,13 @@ void Game::Tick( float deltaTime )
 	// print something in the graphics window
 	screen->Print( "hello world", 2, 2, 0xffffff );
 
+	scene->render();
+
 	// print something to the text window
-	printf( "this goes to the console window.\n" );
+	//printf( "this goes to the console window.\n" );
 
 	// draw a sprite
-	rotatingGun.SetFrame( frame );
-	rotatingGun.Draw( screen, 100, 100 );
-	if (++frame == 36) frame = 0;
+	//rotatingGun.SetFrame( frame );
+	//rotatingGun.Draw( screen, 100, 100 );
+	//if (++frame == 36) frame = 0;
 }

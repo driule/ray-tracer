@@ -32,6 +32,10 @@ extern "C"
 #include "threads.h"
 #include <assert.h>
 
+#include "Camera.h"
+#include "Primitives.h"
+#include "Scene.h"
+
 using namespace std;
 using namespace Tmpl8;
 
