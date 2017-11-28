@@ -5,7 +5,8 @@ namespace Tmpl8 {
 	public:
 		Scene();
 
-		Primitive* primitives;
+		//Primitive** primitives;
+		Sphere** primitives;
 		Camera* camera;
 		vec3 lightSource;
 

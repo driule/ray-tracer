@@ -14,6 +14,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Primitives.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Ray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Primitives.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Ray.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">

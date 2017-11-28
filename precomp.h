@@ -35,6 +35,7 @@ extern "C"
 #include "threads.h"
 #include <assert.h>
 
+#include "Ray.h"
 #include "Camera.h"
 #include "Primitives.h"
 #include "Scene.h"

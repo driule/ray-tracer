@@ -10,9 +10,7 @@ namespace Tmpl8 {
 		int fieldOfView;
 		vec3 topLeft, topRight, bottomLeft;
 
-		vec3 generateRay(int x, int y);
-	private:
-
+		Ray* generateRay(int x, int y);
 	};
 }
 

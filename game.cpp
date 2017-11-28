@@ -29,12 +29,14 @@ static int frame = 0;
 void Game::Tick( float deltaTime )
 {
 	// clear the graphics window
-	screen->Clear( 0 );
+	//screen->Clear( 0 );
 
 	// print something in the graphics window
-	screen->Print( "hello world", 2, 2, 0xffffff );
+	//screen->Print( "hello world", 2, 2, 0xffffff );
 
 	scene->render(screen);
+	scene->primitives[3]->position = vec3(scene->primitives[3]->position.x, scene->primitives[3]->position.y + 0.2, scene->primitives[3]->position.z);
+	scene->primitives[4]->position = vec3(scene->primitives[4]->position.x + 0.2, scene->primitives[4]->position.y, scene->primitives[4]->position.z);
 
 	// print something to the text window
 	//printf( "this goes to the console window.\n" );

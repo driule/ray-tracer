@@ -3,6 +3,7 @@ namespace Tmpl8 {
 	class Material
 	{
 	public:
+		Material(vec4 color);
 		vec4 color;
 	};
 
@@ -11,13 +12,13 @@ namespace Tmpl8 {
 	public:
 		Primitive();
 		vec3 position;
-		Material material;
+		Material* material;
 	};
 
 	class Sphere: public Primitive
 	{
 	public:
-		Sphere(vec3 position, int radius);
+		Sphere(Material* material, vec3 position, int radius);
 		int radius;
 	};
 }
