@@ -3,14 +3,10 @@
 
 Scene::Scene()
 {
+	this->camera = new Camera();
 }
 
-
-Scene::~Scene()
-{
-}
-
-void Scene::render()
+void Scene::render(Surface* screen)
 {
 	for (int y = 0; y < SCRHEIGHT; y++)
 	{

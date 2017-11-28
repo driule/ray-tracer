@@ -13,16 +13,9 @@ Camera::Camera()
 	this->bottomLeft = screenCenter + vec3(-SCRWIDTH / 2, SCRHEIGHT / 2, 0);
 }
 
-
-Camera::~Camera()
-{
-}
-
 vec3 Camera::generateRay(int x, int y)
 {
-	// virtual screen 800:512
+	vec3 ray = this->topLeft + x * (this->topRight - this->topLeft) + y * (this->bottomLeft - this->topLeft);
 
-
-
-	return vec3(0, 0, 0);
+	return normalize(ray);
 }

@@ -4,7 +4,7 @@ namespace Tmpl8 {
 	{
 	public:
 		Camera();
-		~Camera();
+
 		vec3 position;
 		vec3 viewDirection;
 		int fieldOfView;

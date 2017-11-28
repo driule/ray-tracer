@@ -4,12 +4,11 @@ namespace Tmpl8 {
 	{
 	public:
 		Scene();
-		~Scene();
 
 		Primitive* primitives;
 		Camera* camera;
 		vec3 lightSource;
 
-		void render();
+		void render(Surface* screen);
 	};
 }

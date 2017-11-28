@@ -10,7 +10,6 @@ namespace Tmpl8 {
 	{
 	public:
 		Primitive();
-		~Primitive();
 		vec3 position;
 		Material material;
 	};

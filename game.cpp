@@ -11,7 +11,6 @@ Scene* scene;
 void Game::Init()
 {
 	scene = new Scene();
-	scene->camera = new Camera();
 }
 
 // -----------------------------------------------------------
@@ -35,7 +34,7 @@ void Game::Tick( float deltaTime )
 	// print something in the graphics window
 	screen->Print( "hello world", 2, 2, 0xffffff );
 
-	scene->render();
+	scene->render(screen);
 
 	// print something to the text window
 	//printf( "this goes to the console window.\n" );

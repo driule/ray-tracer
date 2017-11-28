@@ -5,10 +5,6 @@ Primitive::Primitive()
 {
 }
 
-Primitive::~Primitive()
-{
-}
-
 Sphere::Sphere(vec3 position, int radius)
 {
 	this->position = position;
