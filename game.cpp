@@ -38,9 +38,9 @@ void Game::Tick( float deltaTime )
 
 	// move camera around
 	if (frame < 25) scene->camera->position.x += 0.1;
-	else if (frame > 75) scene->camera->position.y -= 0.1;
+	else if (frame > 75) scene->camera->position.y += 0.1;
 	else if (frame > 50) scene->camera->position.x -= 0.1;
-	else if (frame > 25) scene->camera->position.y += 0.1;
+	else if (frame > 25) scene->camera->position.y -= 0.1;
 
 	//scene->camera->calculateScreen();
 	//scene->primitives[0]->position = vec3(scene->primitives[0]->position.x, scene->primitives[0]->position.y, scene->primitives[0]->position.z);

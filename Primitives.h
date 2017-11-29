@@ -10,8 +10,8 @@ namespace Tmpl8 {
 	class Primitive
 	{
 	public:
-		Primitive();
-		vec3 position;
+		Primitive(Material* material);
+		
 		Material* material;
 
 		virtual bool intersects(Ray* ray) = 0;
@@ -21,6 +21,8 @@ namespace Tmpl8 {
 	{
 	public:
 		Sphere(Material* material, vec3 position, int radius);
+
+		vec3 position;
 		int radius, radius2;
 
 		bool intersects(Ray* ray);
@@ -29,8 +31,9 @@ namespace Tmpl8 {
 	class Triangle : public Primitive
 	{
 	public:
-		Triangle(Material* material, vec3 v1, vec3 v2, vec3 v3);
-		vec3 v1, v2, v3;
+		Triangle(Material* material, vec3 a, vec3 b, vec3 c);
+
+		vec3 a, b, c;
 
 		bool intersects(Ray* ray);
 	};
