@@ -22,7 +22,7 @@ Ray* Camera::generateRay(int x, int y)
 	Ray* ray = new Ray();
 	ray->direction = normalize(this->topLeft + x * (this->topRight - this->topLeft) + y * (this->bottomLeft - this->topLeft));
 	ray->origin = this->position;
-	ray->t = 5;
+	ray->t = INFINITY;
 
 	return ray;
 }
