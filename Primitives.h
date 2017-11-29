@@ -21,7 +21,7 @@ namespace Tmpl8 {
 	{
 	public:
 		Sphere(Material* material, vec3 position, int radius);
-		int radius;
+		int radius, radius2;
 
 		bool intersects(Ray* ray);
 	};

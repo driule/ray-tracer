@@ -16,6 +16,7 @@ Sphere::Sphere(Material* material, vec3 position, int radius)
 	this->material = material;
 	this->position = position;
 	this->radius = radius;
+	this->radius2 = radius * radius;
 }
 
 bool Sphere::intersects(Ray* ray)
@@ -25,12 +26,12 @@ bool Sphere::intersects(Ray* ray)
 	vec3 q = c - t * ray->direction;
 	float p2 = dot(q, q);
 
-	if (p2 > this->radius * this->radius)
+	if (p2 > this->radius2)
 	{
 		return false;
 	}
 
-	t = sqrt(this->radius * this->radius - p2);
+	t = sqrt(this->radius2 - p2);
 	if ((t < ray->t) && (t > 0))
 	{
 		ray->t = t;

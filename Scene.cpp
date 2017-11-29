@@ -34,6 +34,9 @@ void Scene::render(Surface* screen)
 
 			// plot pixel with color
 			screen->Plot(x, y, color);
+
+			// clear garbages
+			delete ray;
 		}
 	}
 }

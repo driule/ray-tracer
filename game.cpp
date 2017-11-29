@@ -35,6 +35,14 @@ void Game::Tick( float deltaTime )
 	//screen->Print( "hello world", 2, 2, 0xffffff );
 
 	scene->render(screen);
+
+	// move camera around
+	if (frame < 25) scene->camera->position.x += 0.1;
+	else if (frame > 75) scene->camera->position.y -= 0.1;
+	else if (frame > 50) scene->camera->position.x -= 0.1;
+	else if (frame > 25) scene->camera->position.y += 0.1;
+
+	//scene->camera->calculateScreen();
 	//scene->primitives[0]->position = vec3(scene->primitives[0]->position.x, scene->primitives[0]->position.y, scene->primitives[0]->position.z);
 
 	// print something to the text window
@@ -43,5 +51,5 @@ void Game::Tick( float deltaTime )
 	// draw a sprite
 	//rotatingGun.SetFrame( frame );
 	//rotatingGun.Draw( screen, 100, 100 );
-	//if (++frame == 36) frame = 0;
+	if (++frame == 100) frame = 0;
 }
