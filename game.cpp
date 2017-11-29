@@ -73,12 +73,12 @@ void Game::moveCamera()
 	}
 	if (GetAsyncKeyState(VK_OEM_PLUS))
 	{
-		scene->camera->fieldOfView += 100;
+		scene->camera->fieldOfView += 0.1;
 		scene->camera->calculateScreen();
 	}
 	if (GetAsyncKeyState(VK_OEM_MINUS))
 	{
-		scene->camera->fieldOfView -= 100;
+		scene->camera->fieldOfView -= 0.1;
 		scene->camera->calculateScreen();
 	}
 }

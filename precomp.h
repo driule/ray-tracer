@@ -7,7 +7,7 @@
 #define SCRWIDTH		800
 #define SCRHEIGHT		512
 
-#define ASPECT_RATIO SCRWIDTH / SCRHEIGHT
+#define ASPECT_RATIO 0.64f
 
 // #define FULLSCREEN
 // #define ADVANCEDGL	// faster if your system supports it

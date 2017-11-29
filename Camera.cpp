@@ -4,7 +4,7 @@ Camera::Camera()
 {
 	this->position = vec3(0, 0, 0);
 	this->viewDirection = vec3(0, 0, 1);
-	this->fieldOfView = 500;
+	this->fieldOfView = 0.5;
 
 	this->calculateScreen();
 }
@@ -13,9 +13,9 @@ void Camera::calculateScreen()
 {
 	vec3 screenCenter = this->position + this->fieldOfView * this->viewDirection;
 
-	this->topLeft = screenCenter + vec3(-SCRWIDTH, -SCRHEIGHT, 0);
-	this->topRight = screenCenter + vec3(SCRWIDTH, -SCRHEIGHT, 0);
-	this->bottomLeft = screenCenter + vec3(-SCRWIDTH, SCRHEIGHT, 0);
+	this->topLeft = screenCenter + vec3(-1, -ASPECT_RATIO, 0);
+	this->topRight = screenCenter + vec3(1, -ASPECT_RATIO, 0);
+	this->bottomLeft = screenCenter + vec3(-1, ASPECT_RATIO, 0);
 }
 
 Ray* Camera::generateRay(int x, int y)

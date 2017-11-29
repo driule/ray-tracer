@@ -7,7 +7,7 @@ namespace Tmpl8 {
 
 		vec3 position;
 		vec3 viewDirection;
-		int fieldOfView;
+		float fieldOfView;
 		vec3 topLeft, topRight, bottomLeft;
 
 		void calculateScreen();
