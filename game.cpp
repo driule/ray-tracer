@@ -2,14 +2,12 @@
 
 Scene* scene;
 
-// blue = (int)(c.x * 255)
-// color = blue + (green << 8) + (red << 16)
-
 // -----------------------------------------------------------
 // Initialize the application
 // -----------------------------------------------------------
 void Game::Init()
 {
+	printf("Use arrows to move camera around....\n");
 	scene = new Scene();
 }
 
@@ -28,6 +26,7 @@ static int frame = 0;
 // -----------------------------------------------------------
 void Game::Tick( float deltaTime )
 {
+	this->moveCamera();
 	// clear the graphics window
 	//screen->Clear( 0 );
 
@@ -37,10 +36,10 @@ void Game::Tick( float deltaTime )
 	scene->render(screen);
 
 	// move camera around
-	if (frame < 25) scene->camera->position.x += 0.1;
-	else if (frame > 75) scene->camera->position.y += 0.1;
-	else if (frame > 50) scene->camera->position.x -= 0.1;
-	else if (frame > 25) scene->camera->position.y -= 0.1;
+	//if (frame < 25) scene->camera->position.x += 0.1;
+	//else if (frame > 75) scene->camera->position.y += 0.1;
+	//else if (frame > 50) scene->camera->position.x -= 0.1;
+	//else if (frame > 25) scene->camera->position.y -= 0.1;
 
 	//scene->camera->calculateScreen();
 	//scene->primitives[0]->position = vec3(scene->primitives[0]->position.x, scene->primitives[0]->position.y, scene->primitives[0]->position.z);
@@ -52,4 +51,34 @@ void Game::Tick( float deltaTime )
 	//rotatingGun.SetFrame( frame );
 	//rotatingGun.Draw( screen, 100, 100 );
 	if (++frame == 100) frame = 0;
+}
+
+void Game::moveCamera()
+{
+	if (GetAsyncKeyState(VK_DOWN))
+	{
+		scene->camera->position.y += 0.1;
+	}
+	if (GetAsyncKeyState(VK_RIGHT))
+	{
+		scene->camera->position.x += 0.1;
+	}
+	if (GetAsyncKeyState(VK_UP))
+	{
+		scene->camera->position.y -= 0.1;
+	}
+	if (GetAsyncKeyState(VK_LEFT))
+	{
+		scene->camera->position.x -= 0.1;
+	}
+	if (GetAsyncKeyState(VK_OEM_PLUS))
+	{
+		scene->camera->fieldOfView += 100;
+		scene->camera->calculateScreen();
+	}
+	if (GetAsyncKeyState(VK_OEM_MINUS))
+	{
+		scene->camera->fieldOfView -= 100;
+		scene->camera->calculateScreen();
+	}
 }
