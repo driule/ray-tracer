@@ -10,6 +10,7 @@ namespace Tmpl8 {
 		int fieldOfView;
 		vec3 topLeft, topRight, bottomLeft;
 
+		void calculateScreen();
 		Ray* generateRay(int x, int y);
 	};
 }

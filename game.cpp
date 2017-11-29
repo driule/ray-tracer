@@ -35,8 +35,7 @@ void Game::Tick( float deltaTime )
 	//screen->Print( "hello world", 2, 2, 0xffffff );
 
 	scene->render(screen);
-	scene->primitives[3]->position = vec3(scene->primitives[3]->position.x, scene->primitives[3]->position.y + 0.2, scene->primitives[3]->position.z);
-	scene->primitives[4]->position = vec3(scene->primitives[4]->position.x + 0.2, scene->primitives[4]->position.y, scene->primitives[4]->position.z);
+	//scene->primitives[0]->position = vec3(scene->primitives[0]->position.x, scene->primitives[0]->position.y, scene->primitives[0]->position.z);
 
 	// print something to the text window
 	//printf( "this goes to the console window.\n" );
