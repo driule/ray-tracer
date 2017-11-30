@@ -7,6 +7,9 @@
 #define SCRWIDTH		800
 #define SCRHEIGHT		512
 
+#define SCRWIDTHf		800.0f
+#define SCRHEIGHTf		512.0f
+
 #define ASPECT_RATIO 0.64f
 
 // #define FULLSCREEN

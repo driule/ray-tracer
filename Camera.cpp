@@ -22,7 +22,7 @@ Ray* Camera::generateRay(int x, int y)
 {
 	Ray* ray = new Ray();
 	ray->direction = normalize(
-		(this->topLeft + (x / (float)SCRWIDTH) * (this->topRight - this->topLeft) + (y / (float)SCRHEIGHT) * (this->bottomLeft - this->topLeft)) - this->position
+		(this->topLeft + (x / SCRWIDTHf) * (this->topRight - this->topLeft) + (y / SCRHEIGHTf) * (this->bottomLeft - this->topLeft)) - this->position
 	);
 	ray->origin = this->position;
 
