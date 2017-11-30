@@ -19,7 +19,7 @@ void Game::Init()
 		rayTracerThreads[i] = new RayTracer(i * 32, (i + 1) * 32);
 	}
 
-	JobManager::CreateJobManager(5);
+	JobManager::CreateJobManager(4);
 	manager = JobManager::GetJobManager();
 }
 
@@ -68,7 +68,6 @@ void Game::Tick( float deltaTime )
 	//rotatingGun.SetFrame( frame );
 	//rotatingGun.Draw( screen, 100, 100 );
 	if (++frame == 100) frame = 0;
-	Sleep(250);
 }
 
 void RayTracer::Main()
@@ -99,12 +98,12 @@ void Game::moveCamera()
 	}
 	if (GetAsyncKeyState(VK_OEM_PLUS))
 	{
-		scene->camera->fieldOfView += 0.1;
+		scene->camera->fieldOfView += 0.01;
 		scene->camera->calculateScreen();
 	}
 	if (GetAsyncKeyState(VK_OEM_MINUS))
 	{
-		scene->camera->fieldOfView -= 0.1;
+		scene->camera->fieldOfView -= 0.01;
 		scene->camera->calculateScreen();
 	}
 }
