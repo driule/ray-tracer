@@ -8,16 +8,17 @@ Scene::Scene(Surface* screen)
 
 	// create scene lights
 	this->lightSources = new LightSource*[1];
-	this->lightSources[0] = new LightSource(vec3(20, 20, 4));
+	this->lightSources[0] = new LightSource(vec3(10, 0, 1));
 
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f));
 	Material* greenMaterial = new Material(vec4(0.0f, 1.0f, 0.0f, 0.0f));
+	Material* blueMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f));
 
 	this->primitives = new Primitive*[5];
 
-	this->primitives[0] = new Sphere(redMaterial, vec3(0, 0, 5), 2);
-	this->primitives[1] = new Sphere(redMaterial, vec3(-3.5, -3.5, 5), 1);
+	this->primitives[0] = new Sphere(blueMaterial, vec3(0, 0, 5), 1);
+	this->primitives[1] = new Sphere(redMaterial, vec3(0, 0, 10), 6);
 	this->primitives[2] = new Triangle(greenMaterial, vec3(4, 4, 5), vec3(2, 2, 5), vec3(2, 5, 5));
 }
 
@@ -29,31 +30,42 @@ void Scene::render(int row)
 		{
 			Ray* ray = this->camera->generateRay(x, row);
 			Pixel color = 0x048880; // background color
-			bool intersected = false;
-			// check intersections with primitives
-			for (int i = 0; i < 3; i++) {
 
-				if (this->primitives[i]->intersects(ray)) {
-					color = (int)this->primitives[i]->material->color.z * 255 + ((int)(this->primitives[i]->material->color.y * 255) << 8) + ((int)(this->primitives[i]->material->color.x * 255) << 16);
+			// check intersections with primitives
+			bool intersected = false;
+			int intersectedIndex;
+			vec3 nearOrigin, nearDirection;
+			float nearT = INFINITY;
+
+			for (int i = 0; i < 3; i++) {
+				if (this->primitives[i]->intersects(ray) && nearT > ray->t) {
 					intersected = true;
+					intersectedIndex = i;
+
+					nearT = ray->t;
+					nearOrigin = ray->origin;
+					nearDirection = ray->direction;
 				}
 			}
 
 			if (intersected)
 			{
+				color = (int)this->primitives[intersectedIndex]->material->color.z * 255 + ((int)(this->primitives[intersectedIndex]->material->color.y * 255) << 8) + ((int)(this->primitives[intersectedIndex]->material->color.x * 255) << 16);
+
 				Ray* intersectionRay = new Ray();
-				intersectionRay->origin = ray->origin + ray->t * ray->direction;
+				//intersectionRay->origin = ray->origin + ray->t * ray->direction;
+				intersectionRay->origin = nearOrigin + nearT * nearDirection;
 				intersectionRay->direction = normalize(this->lightSources[0]->position - intersectionRay->origin);
-				bool obstructed = false;
 				for (int i = 0; i < 3; i++) {
+					if (intersectedIndex == i) {
+						continue;
+					}
 					if (this->primitives[i]->intersects(intersectionRay)) {
-						obstructed = true;
+						color = 0x000000; //cast shadow
+						break;
 					}
 				}
-				if (obstructed)
-				{
-					color = 0x000000;
-				}
+
 				delete intersectionRay;
 			}
 
