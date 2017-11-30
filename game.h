@@ -20,10 +20,10 @@ private:
 	Surface* screen;
 };
 
-class RayTracer : public Job
+class RayTracerJob : public Job
 {
 public:
-	RayTracer(int start, int end) : start(start), end(end) {};
+	RayTracerJob(int start, int end) : start(start), end(end) {};
 	void Main();
 private:
 	int start;

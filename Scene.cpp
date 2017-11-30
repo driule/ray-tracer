@@ -1,6 +1,5 @@
 #include "precomp.h"
 
-
 Scene::Scene(Surface* screen)
 {
 	this->screen = screen;
@@ -24,56 +23,53 @@ Scene::Scene(Surface* screen)
 
 void Scene::render(int row)
 {
-	//for (int y = 0; y < SCRHEIGHT; y++)
-	//{
-		for (int x = 0; x < SCRWIDTH; x++)
+	for (int x = 0; x < SCRWIDTH; x++)
+	{
+		Ray* ray = this->camera->generateRay(x, row);
+		Pixel color = 0x048880; // background color
+
+		// check intersections with primitives
+		bool intersected = false;
+		int intersectedIndex;
+		vec3 nearOrigin, nearDirection;
+		float nearT = INFINITY;
+
+		for (int i = 0; i < 3; i++) {
+			if (this->primitives[i]->intersects(ray) && nearT > ray->t) {
+				intersected = true;
+				intersectedIndex = i;
+
+				nearT = ray->t;
+				nearOrigin = ray->origin;
+				nearDirection = ray->direction;
+			}
+		}
+
+		if (intersected)
 		{
-			Ray* ray = this->camera->generateRay(x, row);
-			Pixel color = 0x048880; // background color
+			color = (int)this->primitives[intersectedIndex]->material->color.z * 255 + ((int)(this->primitives[intersectedIndex]->material->color.y * 255) << 8) + ((int)(this->primitives[intersectedIndex]->material->color.x * 255) << 16);
 
-			// check intersections with primitives
-			bool intersected = false;
-			int intersectedIndex;
-			vec3 nearOrigin, nearDirection;
-			float nearT = INFINITY;
-
+			Ray* intersectionRay = new Ray();
+			//intersectionRay->origin = ray->origin + ray->t * ray->direction;
+			intersectionRay->origin = nearOrigin + nearT * nearDirection;
+			intersectionRay->direction = normalize(this->lightSources[0]->position - intersectionRay->origin);
 			for (int i = 0; i < 3; i++) {
-				if (this->primitives[i]->intersects(ray) && nearT > ray->t) {
-					intersected = true;
-					intersectedIndex = i;
-
-					nearT = ray->t;
-					nearOrigin = ray->origin;
-					nearDirection = ray->direction;
+				if (intersectedIndex == i) {
+					continue;
+				}
+				if (this->primitives[i]->intersects(intersectionRay)) {
+					color = 0x000000; //cast shadow
+					break;
 				}
 			}
 
-			if (intersected)
-			{
-				color = (int)this->primitives[intersectedIndex]->material->color.z * 255 + ((int)(this->primitives[intersectedIndex]->material->color.y * 255) << 8) + ((int)(this->primitives[intersectedIndex]->material->color.x * 255) << 16);
+			delete intersectionRay;
+		}
 
-				Ray* intersectionRay = new Ray();
-				//intersectionRay->origin = ray->origin + ray->t * ray->direction;
-				intersectionRay->origin = nearOrigin + nearT * nearDirection;
-				intersectionRay->direction = normalize(this->lightSources[0]->position - intersectionRay->origin);
-				for (int i = 0; i < 3; i++) {
-					if (intersectedIndex == i) {
-						continue;
-					}
-					if (this->primitives[i]->intersects(intersectionRay)) {
-						color = 0x000000; //cast shadow
-						break;
-					}
-				}
+		// plot pixel with color
+		this->screen->Plot(x, row, color);
 
-				delete intersectionRay;
-			}
-
-			// plot pixel with color
-			this->screen->Plot(x, row, color);
-
-			// clear garbages
-			delete ray;
-		//}
+		// clear garbages
+		delete ray;
 	}
 }
