@@ -38,7 +38,9 @@ extern "C"
 #include "Ray.h"
 #include "Camera.h"
 #include "Primitives.h"
+#include "LightSources.h"
 #include "Scene.h"
+
 
 using namespace std;
 using namespace Tmpl8;

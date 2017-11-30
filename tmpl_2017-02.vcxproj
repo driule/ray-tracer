@@ -230,6 +230,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="LightSources.cpp" />
     <ClCompile Include="Primitives.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -242,6 +243,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="LightSources.h" />
     <ClInclude Include="precomp.h" />
     <ClInclude Include="Primitives.h" />
     <ClInclude Include="Ray.h" />
