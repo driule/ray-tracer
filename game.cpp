@@ -1,5 +1,8 @@
 #include "precomp.h" // include (only) this in every .cpp file
 
+RayTracer** rayTracerThreads;
+JobManager* manager;
+
 Scene* scene;
 
 // -----------------------------------------------------------
@@ -8,7 +11,16 @@ Scene* scene;
 void Game::Init()
 {
 	printf("Use arrows to move camera around....\n");
-	scene = new Scene();
+	scene = new Scene(screen);
+
+	rayTracerThreads = new RayTracer*[SCRHEIGHT / 32];
+	for (int i = 0; i < SCRHEIGHT / 32; i++)
+	{
+		rayTracerThreads[i] = new RayTracer(i * 32, (i + 1) * 32);
+	}
+
+	JobManager::CreateJobManager(5);
+	manager = JobManager::GetJobManager();
 }
 
 // -----------------------------------------------------------
@@ -33,7 +45,12 @@ void Game::Tick( float deltaTime )
 	// print something in the graphics window
 	//screen->Print( "hello world", 2, 2, 0xffffff );
 
-	scene->render(screen);
+	//scene->render(screen);
+	for (int i = 0; i < SCRHEIGHT / 32; i++)
+	{
+		manager->AddJob2(rayTracerThreads[i]);
+	}
+	manager->RunJobs();
 
 	// move camera around
 	//if (frame < 25) scene->camera->position.x += 0.1;
@@ -51,6 +68,15 @@ void Game::Tick( float deltaTime )
 	//rotatingGun.SetFrame( frame );
 	//rotatingGun.Draw( screen, 100, 100 );
 	if (++frame == 100) frame = 0;
+	Sleep(250);
+}
+
+void RayTracer::Main()
+{
+	for (uint i = start; i < end; i++)
+	{
+		scene->render(i);
+	}
 }
 
 void Game::moveCamera()

@@ -1,8 +1,9 @@
 #include "precomp.h"
 
 
-Scene::Scene()
+Scene::Scene(Surface* screen)
 {
+	this->screen = screen;
 	this->camera = new Camera();
 
 	// create scene objects
@@ -16,13 +17,13 @@ Scene::Scene()
 	this->primitives[2] = new Triangle(greenMaterial, vec3(4, 4, 5), vec3(2, 2, 5), vec3(2, 5, 5));
 }
 
-void Scene::render(Surface* screen)
+void Scene::render(int row)
 {
-	for (int y = 0; y < SCRHEIGHT; y++)
-	{
+	//for (int y = 0; y < SCRHEIGHT; y++)
+	//{
 		for (int x = 0; x < SCRWIDTH; x++)
 		{
-			Ray* ray = this->camera->generateRay(x, y);
+			Ray* ray = this->camera->generateRay(x, row);
 			Pixel color = 0x048880; // background color
 
 			// check intersections with primitives
@@ -34,10 +35,10 @@ void Scene::render(Surface* screen)
 			}
 
 			// plot pixel with color
-			screen->Plot(x, y, color);
+			this->screen->Plot(x, row, color);
 
 			// clear garbages
 			delete ray;
-		}
+		//}
 	}
 }

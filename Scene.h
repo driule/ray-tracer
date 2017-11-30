@@ -3,12 +3,13 @@ namespace Tmpl8 {
 	class Scene
 	{
 	public:
-		Scene();
+		Scene(Surface* screen);
 
 		Primitive** primitives;
 		Camera* camera;
 		vec3 lightSource;
+		Surface* screen;
 
-		void render(Surface* screen);
+		void render(int row);
 	};
 }

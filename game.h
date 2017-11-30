@@ -20,4 +20,14 @@ private:
 	Surface* screen;
 };
 
+class RayTracer : public Job
+{
+public:
+	RayTracer(int start, int end) : start(start), end(end) {};
+	void Main();
+private:
+	int start;
+	int end;
+};
+
 }; // namespace Tmpl8
