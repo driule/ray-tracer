@@ -82,32 +82,42 @@ void Game::moveCamera()
 {
 	if (GetAsyncKeyState(VK_DOWN))
 	{
-		scene->camera->position.y += 0.01;
+		scene->camera->position.y += 0.1;
 		scene->camera->calculateScreen();
 	}
 	if (GetAsyncKeyState(VK_RIGHT))
 	{
-		scene->camera->position.x += 0.01;
+		scene->camera->position.x += 0.1;
 		scene->camera->calculateScreen();
 	}
 	if (GetAsyncKeyState(VK_UP))
 	{
-		scene->camera->position.y -= 0.01;
+		scene->camera->position.y -= 0.1;
 		scene->camera->calculateScreen();
 	}
 	if (GetAsyncKeyState(VK_LEFT))
 	{
-		scene->camera->position.x -= 0.01;
+		scene->camera->position.x -= 0.1;
 		scene->camera->calculateScreen();
 	}
 	if (GetAsyncKeyState(VK_OEM_PLUS))
 	{
-		scene->camera->position.z += 0.01;
+		scene->camera->position.z += 0.1;
 		scene->camera->calculateScreen();
 	}
 	if (GetAsyncKeyState(VK_OEM_MINUS))
 	{
-		scene->camera->position.z -= 0.01;
+		scene->camera->position.z -= 0.1;
+		scene->camera->calculateScreen();
+	}
+	if (GetAsyncKeyState(VK_NUMPAD1))
+	{
+		scene->camera->fieldOfView += 0.01;
+		scene->camera->calculateScreen();
+	}
+	if (GetAsyncKeyState(VK_NUMPAD0))
+	{
+		scene->camera->fieldOfView -= 0.01;
 		scene->camera->calculateScreen();
 	}
 }
