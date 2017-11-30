@@ -54,6 +54,7 @@ void Scene::render(int row)
 				{
 					color = 0x000000;
 				}
+				delete intersectionRay;
 			}
 
 			// plot pixel with color
