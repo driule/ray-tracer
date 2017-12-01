@@ -29,8 +29,8 @@ bool Sphere::intersects(Ray* ray)
 
 	if (p2 > this->radius2) return false;
 
-	t = sqrt(this->radius2 - p2);
-	if ((t < ray->t))
+	t -= sqrt(this->radius2 - p2);
+	if ((t < ray->t) && t > 0)
 	{
 		ray->t = t;
 		return true;

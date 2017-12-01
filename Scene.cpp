@@ -17,7 +17,7 @@ Scene::Scene(Surface* screen)
 	this->primitives = new Primitive*[5];
 
 	this->primitives[0] = new Sphere(blueMaterial, vec3(0, 0, 5), 1);
-	this->primitives[1] = new Sphere(redMaterial, vec3(0, 0, 10), 6);
+	this->primitives[1] = new Sphere(redMaterial, vec3(0, 0, 10), 4);
 	this->primitives[2] = new Triangle(greenMaterial, vec3(4, 4, 5), vec3(2, 2, 5), vec3(2, 5, 5));
 }
 
@@ -48,9 +48,6 @@ void Scene::render(int row)
 			intersectionRay->direction = normalize(this->lightSources[0]->position - intersectionRay->origin);
 
 			for (int i = 0; i < 3; i++) {
-				if (intersectedIndex == i) {
-					continue;
-				}
 				if (this->primitives[i]->intersects(intersectionRay)) {
 					color = 0x000000; //cast shadow
 					break;
