@@ -31,17 +31,11 @@ void Scene::render(int row)
 		// check intersections with primitives
 		bool intersected = false;
 		int intersectedIndex;
-		vec3 nearOrigin, nearDirection;
-		float nearT = INFINITY;
 
 		for (int i = 0; i < 3; i++) {
-			if (this->primitives[i]->intersects(ray) && nearT > ray->t) {
+			if (this->primitives[i]->intersects(ray)) {
 				intersected = true;
 				intersectedIndex = i;
-
-				nearT = ray->t;
-				nearOrigin = ray->origin;
-				nearDirection = ray->direction;
 			}
 		}
 
@@ -50,9 +44,9 @@ void Scene::render(int row)
 			color = (int)this->primitives[intersectedIndex]->material->color.z * 255 + ((int)(this->primitives[intersectedIndex]->material->color.y * 255) << 8) + ((int)(this->primitives[intersectedIndex]->material->color.x * 255) << 16);
 
 			Ray* intersectionRay = new Ray();
-			//intersectionRay->origin = ray->origin + ray->t * ray->direction;
-			intersectionRay->origin = nearOrigin + nearT * nearDirection;
+			intersectionRay->origin = ray->origin + ray->t * ray->direction;
 			intersectionRay->direction = normalize(this->lightSources[0]->position - intersectionRay->origin);
+
 			for (int i = 0; i < 3; i++) {
 				if (intersectedIndex == i) {
 					continue;
