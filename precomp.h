@@ -12,6 +12,10 @@
 
 #define ASPECT_RATIO 0.64f
 
+#define BGCOLOR			vec4(0.5f,0.5f,0.5f,1)
+
+enum MaterialType { diffuse, mirror, glass };
+
 // #define FULLSCREEN
 // #define ADVANCEDGL	// faster if your system supports it
 

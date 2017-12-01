@@ -3,38 +3,40 @@ namespace Tmpl8 {
 	class Material
 	{
 	public:
-		Material(vec4 color);
+		Material(vec4 color, MaterialType type);
 		vec4 color;
+		MaterialType type;
 	};
 
 	class Primitive
 	{
 	public:
-		Primitive(Material* material);
+		Primitive(Material* material, int id);
 		
 		Material* material;
+		int id;
 
-		virtual bool intersects(Ray* ray) = 0;
+		virtual void intersect(Ray* ray) = 0;
 	};
 
 	class Sphere : public Primitive
 	{
 	public:
-		Sphere(Material* material, vec3 position, int radius);
+		Sphere(Material* material, int id, vec3 position, float radius);
 
 		vec3 position;
-		int radius, radius2;
+		float radius, radius2;
 
-		bool intersects(Ray* ray);
+		void intersect(Ray* ray);
 	};
 
 	class Triangle : public Primitive
 	{
 	public:
-		Triangle(Material* material, vec3 a, vec3 b, vec3 c);
+		Triangle(Material* material, int id, vec3 a, vec3 b, vec3 c);
 
 		vec3 a, b, c;
 
-		bool intersects(Ray* ray);
+		void intersect(Ray* ray);
 	};
 }

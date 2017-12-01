@@ -9,6 +9,7 @@ namespace Tmpl8 {
 		vec3 origin;
 		vec3 direction;
 		float t;
+		int intersectedPrimitiveId;
 	};
 }
 
