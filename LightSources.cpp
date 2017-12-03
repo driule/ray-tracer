@@ -16,6 +16,6 @@ void LightSource::intersect(Ray* ray)
 	if (q.x == 0 && q.y == 0 && q.z == 0)
 	{
 		ray->t = t;
-		ray->intersectedPrimitiveId = this->id;
+		ray->intersectedObjectId = this->id;
 	}
 }

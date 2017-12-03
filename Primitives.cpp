@@ -35,7 +35,7 @@ void Sphere::intersect(Ray* ray)
 	if ((t < ray->t) && t > 0)
 	{
 		ray->t = t;
-		ray->intersectedPrimitiveId = this->id;
+		ray->intersectedObjectId = this->id;
 	}
 }
 
@@ -72,7 +72,6 @@ void Triangle::intersect(Ray* ray)
 	if (t < ray->t && t > 0)
 	{
 		ray->t = t;
-		ray->intersectedPrimitiveId = this->id;
+		ray->intersectedObjectId = this->id;
 	}
-	//vec3 newRay = vec3(ray->origin + ray->direction * t);
 }

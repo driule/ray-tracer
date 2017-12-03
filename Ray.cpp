@@ -3,5 +3,5 @@
 Ray::Ray()
 {
 	this->t = INFINITY;
-	this->intersectedPrimitiveId = -1;
+	this->intersectedObjectId = -1;
 }

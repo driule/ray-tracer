@@ -4,19 +4,21 @@ namespace Tmpl8 {
 	{
 	public:
 		Scene(Surface* screen);
-
-		Primitive** primitives;
-		int primitivesCount;
-		LightSource** lightSources;
-		int lightSourcesCount;
 		Camera* camera;
-		vec3 lightSource;
-		Surface* screen;
 
 		void render(int row);
 	private:
+		Surface* screen;
+
+		int primitivesCount;
+		Primitive** primitives;
+
+		int lightSourcesCount;
+		LightSource** lightSources;
+
 		vec4 trace(Ray* ray, int depth);
-		void intersect(Ray* ray);
+		void intersectPrimitives(Ray* ray);
 		void intersectLightSources(Ray* ray);
+		Pixel convertColorToPixel(vec4 color);
 	};
 }
