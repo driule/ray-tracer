@@ -15,13 +15,16 @@ Scene::Scene(Surface* screen)
 	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
 	Material* greenMaterial = new Material(vec4(0.0f, 1.0f, 0.0f, 0.0f), diffuse);
 	Material* blueMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f), diffuse);
+	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
 
-	this->primitivesCount = 3;
+	this->primitivesCount = 4;
 	this->primitives = new Primitive*[this->primitivesCount];
 
 	this->primitives[0] = new Sphere(blueMaterial, 0, vec3(0, 0, 5), 1);
 	this->primitives[1] = new Sphere(redMaterial, 1, vec3(0, 0, 10), 4);
 	this->primitives[2] = new Triangle(greenMaterial, 2, vec3(4, 4, 5), vec3(2, 2, 5), vec3(2, 5, 5));
+
+	this->primitives[3] = new Plane(planeMaterial, 3, vec3(0, 0, 20), vec3(0, 0, 1));
 }
 
 void Scene::render(int row)

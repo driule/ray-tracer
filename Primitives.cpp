@@ -75,3 +75,24 @@ void Triangle::intersect(Ray* ray)
 		ray->intersectedObjectId = this->id;
 	}
 }
+
+// -------------------- PLANE ------------------------------------
+
+Plane::Plane(Material* material, int id, vec3 position, vec3 direction) : Primitive(material, id)
+{
+	this->position = position;
+	this->direction = direction;
+}
+
+void Plane::intersect(Ray* ray)
+{
+	float denom = dot(this->direction, ray->direction);
+	if (denom > 1e-6) {
+		float t = dot(this->position - ray->origin, this->direction) / denom;
+		if (t < ray->t && t > 0)
+		{
+			ray->t = t;
+			ray->intersectedObjectId = this->id;
+		}
+	}
+}

@@ -39,4 +39,14 @@ namespace Tmpl8 {
 
 		void intersect(Ray* ray);
 	};
+
+	class Plane : public Primitive
+	{
+	public:
+		Plane(Material* material, int id, vec3 position, vec3 direction);
+
+		vec3 position, direction;
+
+		void intersect(Ray* ray);
+	};
 }
