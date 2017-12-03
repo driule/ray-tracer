@@ -39,6 +39,11 @@ void Sphere::intersect(Ray* ray)
 	}
 }
 
+vec3 Sphere::getNormal(vec3 point)
+{
+	return normalize(point - this->position);
+}
+
 // -------------------- TRIANGLE ------------------------------------
 
 Triangle::Triangle(Material* material, int id, vec3 a, vec3 b, vec3 c) : Primitive(material, id)
@@ -76,6 +81,13 @@ void Triangle::intersect(Ray* ray)
 	}
 }
 
+vec3 Triangle::getNormal(vec3 point)
+{
+	return normalize(
+		cross(this->a - this->b, this->b - this->c)
+	);
+}
+
 // -------------------- PLANE ------------------------------------
 
 Plane::Plane(Material* material, int id, vec3 position, vec3 direction) : Primitive(material, id)
@@ -95,4 +107,9 @@ void Plane::intersect(Ray* ray)
 			ray->intersectedObjectId = this->id;
 		}
 	}
+}
+
+vec3 Plane::getNormal(vec3 point)
+{
+	return this->direction;
 }

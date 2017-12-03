@@ -4,6 +4,7 @@ namespace Tmpl8 {
 	{
 	public:
 		Material(vec4 color, MaterialType type);
+
 		vec4 color;
 		MaterialType type;
 	};
@@ -17,6 +18,7 @@ namespace Tmpl8 {
 		int id;
 
 		virtual void intersect(Ray* ray) = 0;
+		virtual vec3 getNormal(vec3 point) = 0;
 	};
 
 	class Sphere : public Primitive
@@ -24,10 +26,12 @@ namespace Tmpl8 {
 	public:
 		Sphere(Material* material, int id, vec3 position, float radius);
 
+		void intersect(Ray* ray);
+		vec3 getNormal(vec3 point);
+
+	private:
 		vec3 position;
 		float radius, radius2;
-
-		void intersect(Ray* ray);
 	};
 
 	class Triangle : public Primitive
@@ -35,9 +39,11 @@ namespace Tmpl8 {
 	public:
 		Triangle(Material* material, int id, vec3 a, vec3 b, vec3 c);
 
-		vec3 a, b, c;
-
 		void intersect(Ray* ray);
+		vec3 getNormal(vec3 point);
+
+	private:
+		vec3 a, b, c;
 	};
 
 	class Plane : public Primitive
@@ -45,8 +51,10 @@ namespace Tmpl8 {
 	public:
 		Plane(Material* material, int id, vec3 position, vec3 direction);
 
-		vec3 position, direction;
-
 		void intersect(Ray* ray);
+		vec3 getNormal(vec3 point);
+
+	private:
+		vec3 position, direction;
 	};
 }
