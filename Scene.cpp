@@ -24,7 +24,7 @@ Scene::Scene(Surface* screen)
 	this->primitives[1] = new Sphere(redMaterial, 1, vec3(0, 0, 10), 4);
 	this->primitives[2] = new Triangle(greenMaterial, 2, vec3(4, 4, 5), vec3(2, 2, 5), vec3(2, 5, 5));
 
-	this->primitives[3] = new Plane(planeMaterial, 3, vec3(0, 0, 20), vec3(0, 0, 1));
+	this->primitives[3] = new Plane(planeMaterial, 3, vec3(0, 0, 15), vec3(0, 0, 1));
 }
 
 void Scene::render(int row)

@@ -1,8 +1,10 @@
 #include "precomp.h"
 
+#define ORIGIN vec3(0, 0, 0)
+
 Camera::Camera()
 {
-	this->position = vec3(0, 0, 0);
+	this->position = ORIGIN;
 	this->viewDirection = vec3(0, 0, 1);
 	this->fieldOfView = 0.5;
 
@@ -11,7 +13,7 @@ Camera::Camera()
 
 void Camera::calculateScreen()
 {
-	vec3 screenCenter = this->position + this->fieldOfView * this->viewDirection;
+	vec3 screenCenter = ORIGIN + this->fieldOfView * this->viewDirection;
 
 	this->topLeft = screenCenter + vec3(-1, -ASPECT_RATIO, 0);
 	this->topRight = screenCenter + vec3(1, -ASPECT_RATIO, 0);
