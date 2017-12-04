@@ -97,9 +97,6 @@ vec4 Scene::DirectIllumination(Ray* ray)
 
 	vec3 normal = this->primitives[ray->intersectedObjectId]->getNormal(reflectionRay->origin);
 
-	vec3 hitEpsilon = reflectionRay->origin + reflectionRay->direction * 0.01;
-	reflectionRay->origin = hitEpsilon;
-
 	float dotDirectionNormal = dot(reflectionRay->direction, normal);
 	if (dotDirectionNormal < 0)
 	{
@@ -107,7 +104,10 @@ vec4 Scene::DirectIllumination(Ray* ray)
 		return vec4(0, 0, 0, 0);
 	}
 
+	vec3 hitEpsilon = reflectionRay->origin + reflectionRay->direction * 0.01;
+	reflectionRay->origin = hitEpsilon;
 	this->intersectPrimitives(reflectionRay);
+
 	if (reflectionRay->intersectedObjectId != -1)
 	{
 		delete reflectionRay;
