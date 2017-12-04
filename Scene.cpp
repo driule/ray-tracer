@@ -67,22 +67,9 @@ vec4 Scene::trace(Ray* ray, int depth)
 	Material* material = this->primitives[ray->intersectedObjectId]->material;
 	if (material->type == diffuse)
 	{
-		Ray* reflectionRay = new Ray();
-		reflectionRay->origin = ray->origin + ray->t * ray->direction;
-		reflectionRay->direction = normalize(this->lightSources[0]->position - reflectionRay->origin);
-
-		this->intersectPrimitives(reflectionRay);
-		if (reflectionRay->intersectedObjectId == -1)
-		{
-			delete reflectionRay;
-			return material->color;
-		}
-		else
-		{
-			// cast shadow
-			delete reflectionRay;
-			return vec4(material->color.x * 0.5, material->color.y * 0.5, material->color.z * 0.5, material->color.w * 0.5);
-		}
+		vec3 intersection = ray->origin + ray->t * ray->direction;
+		vec3 normal = this->primitives[ray->intersectedObjectId]->getNormal(intersection);
+		return DirectIllumination(intersection, normal) * material->color;
 	}
 	if (material->type == mirror)
 	{
@@ -100,6 +87,31 @@ vec4 Scene::trace(Ray* ray, int depth)
 	}
 
 	return BGCOLOR;
+}
+
+vec4 Scene::DirectIllumination(vec3 intersection, vec3 normal)
+{
+
+
+	// For one lightsource in the scene only
+	// Create the ray used for checking if their are obstacles between the object and the lightsource
+	Ray* reflectionRay = new Ray();
+	reflectionRay->origin = intersection + normal * 0.000005;
+	reflectionRay->direction = normalize(this->lightSources[0]->position - reflectionRay->origin);
+	//vec3 hitEpsilon = intersection + reflectionRay->direction * 0.01;
+	//reflectionRay->origin = hitEpsilon;
+
+	this->intersectPrimitives(reflectionRay);
+	if (reflectionRay->intersectedObjectId != -1)
+	{
+		delete reflectionRay;
+		return vec4(0, 0, 0, 0);
+	}
+
+	float attenuation = reflectionRay->direction.sqrLentgh();
+	vec4 color = dot(normal, reflectionRay->direction) * attenuation * vec4(1, 1, 1, 1); // fill in color of light
+	delete reflectionRay;
+	return color;
 }
 
 void Scene::intersectPrimitives(Ray* ray)
