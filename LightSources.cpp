@@ -1,13 +1,20 @@
 #include "precomp.h"
 
 
-LightSource::LightSource(vec3 position, int id)
+LightSource::LightSource(int id, vec3 position, vec4 color)
 {
-	this->position = position;
 	this->id = id;
+	this->position = position;
+	this->color = color;
 }
 
-void LightSource::intersect(Ray* ray)
+// -------------------- DIRECT LIGHT ------------------------------------
+
+DirectLight::DirectLight(int id, vec3 position, vec4 color) : LightSource(id, position, color)
+{
+}
+
+void DirectLight::intersect(Ray* ray)
 {
 	vec3 c = this->position - ray->origin;
 	float t = dot(c, ray->direction);

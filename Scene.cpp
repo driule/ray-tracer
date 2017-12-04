@@ -9,7 +9,7 @@ Scene::Scene(Surface* screen)
 	// create scene lights
 	this->lightSourcesCount = 1;
 	this->lightSources = new LightSource*[lightSourcesCount];
-	this->lightSources[0] = new LightSource(vec3(10, 0, 1), 0);
+	this->lightSources[0] = new DirectLight(0, vec3(10, 0, 1), vec4(1, 1, 1, 1));
 
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
@@ -115,7 +115,7 @@ vec4 Scene::DirectIllumination(Ray* ray)
 	}
 
 	float attenuation = reflectionRay->direction.sqrLentgh();
-	vec4 color = dotDirectionNormal * attenuation * vec4(1, 1, 1, 1); // fill in color of light
+	vec4 color = dotDirectionNormal * attenuation * this->lightSources[0]->color;
 	
 	delete reflectionRay;
 	return color;
