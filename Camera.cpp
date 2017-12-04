@@ -6,7 +6,7 @@ Camera::Camera()
 {
 	this->position = ORIGIN;
 	this->viewDirection = vec3(0, 0, 1);
-	this->fieldOfView = 2;
+	this->fieldOfView = 1;
 	this->up = vec3(0, -1, 0);
 	this->right = vec3(1, 0, 0);
 
