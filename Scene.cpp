@@ -12,7 +12,7 @@ Scene::Scene(Surface* screen)
 	this->lightSources[0] = new LightSource(vec3(10, 0, 1), 0);
 
 	// create scene objects
-	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), mirror);
+	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
 	Material* greenMaterial = new Material(vec4(0.0f, 1.0f, 0.0f, 0.0f), diffuse);
 	Material* blueMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f), diffuse);
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
