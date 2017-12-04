@@ -12,7 +12,7 @@ Scene::Scene(Surface* screen)
 	this->lightSources[0] = new LightSource(vec3(10, 0, 1), 0);
 
 	// create scene objects
-	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
+	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), mirror);
 	Material* greenMaterial = new Material(vec4(0.0f, 1.0f, 0.0f, 0.0f), diffuse);
 	Material* blueMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f), diffuse);
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
@@ -22,7 +22,7 @@ Scene::Scene(Surface* screen)
 
 	this->primitives[0] = new Sphere(blueMaterial, 0, vec3(0, 0, 5), 1);
 	this->primitives[1] = new Sphere(redMaterial, 1, vec3(0, 0, 10), 4);
-	this->primitives[2] = new Triangle(greenMaterial, 2, vec3(4, 4, 5), vec3(2, 2, 5), vec3(2, 5, 5));
+	this->primitives[2] = new Triangle(greenMaterial, 2, vec3(4, 4, 5), vec3(1, 1, 5), vec3(2, 5, 5));
 
 	this->primitives[3] = new Plane(planeMaterial, 3, vec3(0, 0, 15), vec3(0, 0, 1));
 }
@@ -83,6 +83,20 @@ vec4 Scene::trace(Ray* ray, int depth)
 			delete reflectionRay;
 			return vec4(material->color.x * 0.5, material->color.y * 0.5, material->color.z * 0.5, material->color.w * 0.5);
 		}
+	}
+	if (material->type == mirror)
+	{
+		vec3 hitPoint = ray->origin + ray->t * ray->direction;
+		vec3 N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
+
+		Ray* reflectionRay = new Ray();
+		reflectionRay->origin = hitPoint;
+		reflectionRay->direction = ray->direction - 2 * (ray->direction * N) * N;
+
+		vec4 reflectionColor = this->trace(reflectionRay, depth);
+		delete reflectionRay;
+
+		return reflectionColor;
 	}
 
 	return BGCOLOR;
