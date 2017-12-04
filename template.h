@@ -129,7 +129,8 @@ public:
 	vec4 operator - () const { return vec4( -x, -y, -z, -w ); }
 	vec4 operator + ( const vec4& addOperand ) const { return vec4( x + addOperand.x, y + addOperand.y, z + addOperand.z, w + addOperand.w ); }
 	vec4 operator - ( const vec4& operand ) const { return vec4( x - operand.x, y - operand.y, z - operand.z, w - operand.w ); }
-	vec4 operator * ( const vec4& operand ) const { return vec4( x * operand.x, y * operand.y, z * operand.z, w * operand.w ); }
+	vec4 operator * (const vec4& operand) const { return vec4(x * operand.x, y * operand.y, z * operand.z, w * operand.w); }
+	vec4 operator / (const vec4& operand) const { return vec4(operand.x / x, operand.y / y, operand.z / z, operand.w / w); }
 	void operator -= ( const vec4& a ) { x -= a.x; y -= a.y; z -= a.z; w -= a.w; }
 	void operator += ( const vec4& a ) { x += a.x; y += a.y; z += a.z; w += a.w; }
 	void operator *= ( const vec4& a ) { x *= a.x; y *= a.y; z *= a.z; w *= a.w; }
