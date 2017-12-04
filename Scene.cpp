@@ -96,10 +96,16 @@ vec4 Scene::DirectIllumination(vec3 intersection, vec3 normal)
 	// For one lightsource in the scene only
 	// Create the ray used for checking if their are obstacles between the object and the lightsource
 	Ray* reflectionRay = new Ray();
-	reflectionRay->origin = intersection + normal * 0.000005;
+	reflectionRay->origin = intersection;
 	reflectionRay->direction = normalize(this->lightSources[0]->position - reflectionRay->origin);
-	//vec3 hitEpsilon = intersection + reflectionRay->direction * 0.01;
-	//reflectionRay->origin = hitEpsilon;
+	vec3 hitEpsilon = intersection + reflectionRay->direction * 0.01;
+	reflectionRay->origin = hitEpsilon;
+
+	if (dot(reflectionRay->direction, normal) < 0)
+	{
+		delete reflectionRay;
+		return vec4(0, 0, 0, 0);
+	}
 
 	this->intersectPrimitives(reflectionRay);
 	if (reflectionRay->intersectedObjectId != -1)
