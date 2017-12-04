@@ -100,7 +100,8 @@ vec4 Scene::DirectIllumination(Ray* ray)
 	vec3 hitEpsilon = reflectionRay->origin + reflectionRay->direction * 0.01;
 	reflectionRay->origin = hitEpsilon;
 
-	if (dot(reflectionRay->direction, normal) < 0)
+	float dotDirectionNormal = dot(reflectionRay->direction, normal);
+	if (dotDirectionNormal < 0)
 	{
 		delete reflectionRay;
 		return vec4(0, 0, 0, 0);
@@ -114,7 +115,7 @@ vec4 Scene::DirectIllumination(Ray* ray)
 	}
 
 	float attenuation = reflectionRay->direction.sqrLentgh();
-	vec4 color = dot(normal, reflectionRay->direction) * attenuation * vec4(1, 1, 1, 1); // fill in color of light
+	vec4 color = dotDirectionNormal * attenuation * vec4(1, 1, 1, 1); // fill in color of light
 	
 	delete reflectionRay;
 	return color;
