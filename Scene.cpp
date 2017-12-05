@@ -8,6 +8,7 @@ Scene::Scene(Surface* screen)
 
 	// create scene lights
 	this->lightSources.push_back(new DirectLight(0, vec3(10, -10, -20), vec4(1, 1, 1, 1)));
+	this->lightSources.push_back(new DirectLight(0, vec3(7, -10, -20), vec4(1, 1, 1, 1)));
 
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
@@ -63,7 +64,7 @@ vec4 Scene::trace(Ray* ray, int depth)
 		else
 		{
 			// direct light
-			return vec4(1, 1, 1, 1);
+			return this->lightSources[ray->intersectedObjectId]->color;
 		}
 	}
 
@@ -109,33 +110,38 @@ vec4 Scene::trace(Ray* ray, int depth)
 
 vec4 Scene::illuminate(Ray* ray)
 {
-	Ray* reflectionRay = new Ray();
-	reflectionRay->origin = ray->origin + ray->t * ray->direction;
-	reflectionRay->direction = normalize(this->lightSources[0]->position - reflectionRay->origin);
-
-	vec3 normal = this->primitives[ray->intersectedObjectId]->getNormal(reflectionRay->origin);
-
-	float dotDirectionNormal = dot(reflectionRay->direction, normal);
-	if (dotDirectionNormal < 0)
-	{
-		delete reflectionRay;
-		return vec4(0, 0, 0, 0);
-	}
-
-	vec3 hitEpsilon = reflectionRay->origin + reflectionRay->direction * 0.01;
-	reflectionRay->origin = hitEpsilon;
-	this->intersectPrimitives(reflectionRay);
-
-	if (reflectionRay->intersectedObjectId != -1)
-	{
-		delete reflectionRay;
-		return vec4(0, 0, 0, 0);
-	}
-
-	float attenuation = reflectionRay->direction.sqrLentgh();
-	vec4 color = dotDirectionNormal * attenuation * this->lightSources[0]->color;
+	vec4 color = vec4(0, 0, 0, 0);
 	
-	delete reflectionRay;
+	for (int i = 0; i < this->lightSources.size(); i++)
+	{
+		Ray* reflectionRay = new Ray();
+		reflectionRay->origin = ray->origin + ray->t * ray->direction;
+		reflectionRay->direction = normalize(this->lightSources[i]->position - reflectionRay->origin);
+
+		vec3 normal = this->primitives[ray->intersectedObjectId]->getNormal(reflectionRay->origin);
+
+		float dotDirectionNormal = dot(reflectionRay->direction, normal);
+		if (dotDirectionNormal < 0)
+		{
+			delete reflectionRay;
+			return vec4(0, 0, 0, 0);
+		}
+
+		vec3 hitEpsilon = reflectionRay->origin + reflectionRay->direction * 0.01;
+		reflectionRay->origin = hitEpsilon;
+		this->intersectPrimitives(reflectionRay);
+
+		if (reflectionRay->intersectedObjectId != -1)
+		{
+			delete reflectionRay;
+			return vec4(0, 0, 0, 0);
+		}
+
+		float attenuation = reflectionRay->direction.sqrLentgh();
+		color += dotDirectionNormal * attenuation * this->lightSources[i]->color;
+		delete reflectionRay;
+	}
+
 	return color;
 }
 
