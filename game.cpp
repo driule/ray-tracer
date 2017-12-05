@@ -1,5 +1,7 @@
 #include "precomp.h" // include (only) this in every .cpp file
 
+timer _timer;
+
 RayTracerJob** rayTracerJobs;
 JobManager* jobManager;
 
@@ -55,6 +57,9 @@ void Game::Shutdown()
 // -----------------------------------------------------------
 void Game::Tick( float deltaTime )
 {
+	_timer.reset();
+	screen->Clear(0);
+
 	this->moveCamera();
 
 	for (int i = 0; i < SCRHEIGHT / 32; i++)
@@ -62,6 +67,11 @@ void Game::Tick( float deltaTime )
 		jobManager->AddJob2(rayTracerJobs[i]);
 	}
 	jobManager->RunJobs();
+
+	// measure FPS
+	char buffer[15];
+	sprintf(buffer, "FPS: %f", 1000 / _timer.elapsed());
+	screen->Print(buffer, 2, 2, 0x000000);
 }
 
 void Game::moveCamera()
