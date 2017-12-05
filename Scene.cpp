@@ -118,7 +118,21 @@ vec4 Scene::trace(Ray* ray, int depth)
 			delete refractionRay;
 		}
 
-		return color;
+		vec4 refractionColor = color;
+
+		// TODO: move to different method, dublicate code!!!
+		hitPoint = ray->origin + ray->t * ray->direction;
+		N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
+
+		Ray* reflectionRay = new Ray();
+		reflectionRay->origin = hitPoint;
+		reflectionRay->direction = ray->direction - 2 * (ray->direction * N) * N;
+
+		vec4 reflectionColor = this->trace(reflectionRay, depth);
+		delete reflectionRay;
+		//
+
+		return 0.2 * reflectionColor + 0.8 * refractionColor;
 	}
 	if (material->type == dielectric)
 	{
