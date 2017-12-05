@@ -86,6 +86,55 @@ vec4 Scene::trace(Ray* ray, int depth)
 
 		return color + reflectionColor;
 	}
+	if (material->type == glass)
+	{
+		vec3 hitPoint = ray->origin + ray->t * ray->direction;
+		vec3 N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
+		float incommingAngle = dot(N, -ray->direction);
+
+		if (incommingAngle < 0)
+		{
+			incommingAngle = -incommingAngle;
+		}
+
+		float n1, n2;
+
+		Ray* refractionRay = new Ray();
+		refractionRay->origin = hitPoint;
+		if (ray->isInAir)
+		{
+			n1 = 1;
+			n2 = material->refraction;
+			refractionRay->isInAir = false;
+		}
+		else
+		{
+			n1 = material->refraction;
+			n2 = 1;
+			refractionRay->isInAir = true;
+		}
+		float k = 1 - pow(n1 / n2, 2) * (1 - pow(incommingAngle, 2));
+		if (k >= 0)
+		{
+			refractionRay->direction = (n1 / n2)*ray->direction + N*(n1 / n2*incommingAngle - sqrt(k));
+			vec3 hitEpsilon = refractionRay->origin + refractionRay->direction * 0.01;
+			refractionRay->origin = hitEpsilon;
+		}
+		else {
+			// todo TIR ???
+			return color;
+		}
+
+		color += this->trace(refractionRay, depth);
+		delete refractionRay;
+
+		return color;
+
+	}
+	if (material->type == dielectric)
+	{
+		// todo
+	}
 
 	return BGCOLOR;
 }

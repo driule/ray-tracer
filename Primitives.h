@@ -6,6 +6,7 @@ namespace Tmpl8 {
 		Material(vec4 color, MaterialType type);
 
 		vec4 color;
+		float reflection, refraction;
 		MaterialType type;
 	};
 

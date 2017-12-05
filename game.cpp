@@ -31,7 +31,8 @@ void Game::Init()
 	jobManager = JobManager::GetJobManager();
 
 	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
-	Material* greyMaterial = new Material(vec4(1, 0.8f, 0.5f, 1.0f), diffuse);
+	Material* greyMaterial = new Material(vec4(1, 0.8f, 0.5f, 1.0f), glass);
+	greyMaterial->refraction = 1.5;
 	scene->loadObjModel("assets/cube.obj", greyMaterial);
 }
 
