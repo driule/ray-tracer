@@ -33,6 +33,14 @@ void Game::Init()
 	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
 	Material* greyMaterial = new Material(vec4(1, 0.8f, 0.5f, 1.0f), diffuse);
 	scene->loadObjModel("assets/cube.obj", greyMaterial);
+
+	// load teddy to the scene
+	/*
+	scene->camera->position = vec3(0, 0, -100);
+	scene->camera->up = vec3(0, 1, 0);
+	scene->camera->calculateScreen();
+	scene->loadObjModel("assets/teddy.obj", greyMaterial);
+	*/
 }
 
 // -----------------------------------------------------------
