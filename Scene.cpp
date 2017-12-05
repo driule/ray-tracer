@@ -17,7 +17,7 @@ Scene::Scene(Surface* screen)
 	Material* blueMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f), diffuse);
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
 
-	this->primitivesCount = 4;
+	this->primitivesCount = 5;
 	this->primitives = new Primitive*[this->primitivesCount];
 
 	this->primitives[0] = new Sphere(blueMaterial, 0, vec3(0, 0, 5), 1);
@@ -25,6 +25,7 @@ Scene::Scene(Surface* screen)
 	this->primitives[2] = new Triangle(greenMaterial, 2, vec3(4, 4, 5), vec3(1, 1, 5), vec3(2, 5, 5));
 
 	this->primitives[3] = new Plane(planeMaterial, 3, vec3(0, 0, 15), vec3(0, 0, -1));
+	this->primitives[4] = new Plane(planeMaterial, 4, vec3(-20, 0, 0), vec3(-1, 0, 0));
 }
 
 void Scene::render(int row)
@@ -65,9 +66,10 @@ vec4 Scene::trace(Ray* ray, int depth)
 
 	// primitive intersected
 	Material* material = this->primitives[ray->intersectedObjectId]->material;
+	vec4 color = (material->color * 0.2);
 	if (material->type == diffuse)
 	{
-		return material->color * DirectIllumination(ray);
+		return color + material->color * DirectIllumination(ray);
 	}
 	if (material->type == mirror)
 	{
@@ -81,7 +83,7 @@ vec4 Scene::trace(Ray* ray, int depth)
 		vec4 reflectionColor = this->trace(reflectionRay, depth);
 		delete reflectionRay;
 
-		return reflectionColor;
+		return color + reflectionColor;
 	}
 
 	return BGCOLOR;
