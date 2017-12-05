@@ -103,7 +103,8 @@ public:
 	void operator -= ( const vec3& a ) { x -= a.x; y -= a.y; z -= a.z; }
 	void operator += ( const vec3& a ) { x += a.x; y += a.y; z += a.z; }
 	void operator *= ( const vec3& a ) { x *= a.x; y *= a.y; z *= a.z; }
-	void operator *= ( const float a ) { x *= a; y *= a; z *= a; }
+	void operator *= (const float a) { x *= a; y *= a; z *= a; }
+	bool operator == (const vec3& a) { return x == a.x && y == a.y && z == a.z; }
 	float operator [] ( const uint& idx ) const { return cell[idx]; }
 	float& operator [] ( const uint& idx ) { return cell[idx]; }
 	float length() const { return sqrtf( x * x + y * y + z * z ); }

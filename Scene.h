@@ -17,6 +17,7 @@ namespace Tmpl8 {
 		vec4 trace(Ray* ray, int depth);
 		vec4 illuminate(Ray* ray);
 		Ray* computeReflectionRay(Ray* ray);
+		Ray* computeRefractionRay(Ray* ray);
 		void intersectPrimitives(Ray* ray);
 		void intersectLightSources(Ray* ray);
 		Pixel convertColorToPixel(vec4 color);

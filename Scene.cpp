@@ -84,37 +84,21 @@ vec4 Scene::trace(Ray* ray, int depth)
 	}
 	if (material->type == dielectric)
 	{
-		// source: https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
-		vec3 hitPoint = ray->origin + ray->t * ray->direction;
-		vec3 N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
-		float incommingAngle = dot(N, ray->direction);
-
-		float cosi = CLAMP(-1, 1, incommingAngle);
-		float etai = 1, etat = material->refraction;
-		vec3 n = N;
-		if (cosi < 0) { cosi = -cosi; }
-		else { swap(etai, etat); n = -N; }
-		float eta = etai / etat;
-		float k = 1 - eta * eta * (1 - cosi * cosi);
-	
-		if (k < 0)
+		Ray* refractionRay = this->computeRefractionRay(ray);
+		if (refractionRay->intersectedObjectId == -2)
 		{
+			delete refractionRay;
 			return color;
 		}
 		else
 		{
-			Ray* refractionRay = new Ray();
-			refractionRay->origin = hitPoint;
-
-			refractionRay->direction = eta * ray->direction + (eta * cosi - sqrtf(k)) * n;
-			vec3 hitEpsilon = refractionRay->origin + refractionRay->direction * 0.01;
-			refractionRay->origin = hitEpsilon;
 			color += this->trace(refractionRay, depth);
-			delete refractionRay;
 		}
 
 		Ray* reflectionRay = this->computeReflectionRay(ray);
 		vec4 reflectionColor = this->trace(reflectionRay, depth);
+
+		delete refractionRay;
 		delete reflectionRay;
 
 		return material->reflection * reflectionColor + 0.8 * color;
@@ -165,6 +149,37 @@ Ray* Scene::computeReflectionRay(Ray* ray)
 	reflectionRay->direction = ray->direction - 2 * (ray->direction * N) * N;
 
 	return reflectionRay;
+}
+
+Ray* Scene::computeRefractionRay(Ray* ray)
+{
+	// source: https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
+
+	vec3 hitPoint = ray->origin + ray->t * ray->direction;
+	vec3 N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
+	float incommingAngle = dot(N, ray->direction);
+
+	float cosi = CLAMP(-1, 1, incommingAngle);
+	float etai = 1, etat = this->primitives[ray->intersectedObjectId]->material->refraction;
+	vec3 n = N;
+	if (cosi < 0) { cosi = -cosi; }
+	else { swap(etai, etat); n = -N; }
+	float eta = etai / etat;
+	float k = 1 - eta * eta * (1 - cosi * cosi);
+
+	Ray* refractionRay = new Ray();
+	if (k < 0)
+	{
+		refractionRay->intersectedObjectId = -2;
+		return refractionRay;
+	}
+	else
+	{
+		refractionRay->direction = eta * ray->direction + (eta * cosi - sqrtf(k)) * n;
+		refractionRay->origin = hitPoint + refractionRay->direction * 0.01;
+		
+		return refractionRay;
+	}
 }
 
 void Scene::intersectPrimitives(Ray* ray)
