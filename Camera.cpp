@@ -1,6 +1,6 @@
 #include "precomp.h"
 
-#define ORIGIN vec3(0, 0, 0)
+#define ORIGIN vec3(0, 0, -3)
 
 Camera::Camera()
 {

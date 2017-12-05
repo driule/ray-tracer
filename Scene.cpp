@@ -7,7 +7,7 @@ Scene::Scene(Surface* screen)
 	this->camera = new Camera();
 
 	// create scene lights
-	this->lightSources.push_back(new DirectLight(0, vec3(10, -10, -10), vec4(1, 1, 1, 1)));
+	this->lightSources.push_back(new DirectLight(0, vec3(10, -10, -20), vec4(1, 1, 1, 1)));
 
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
@@ -152,11 +152,11 @@ void Scene::loadObjModel(const char *filename, Material* material)
 {
 	// obj file content
 	std::vector<vec3> vertices;
-	std::vector<vec2> textures;
+	//std::vector<vec2> textures;
 	std::vector<int> faceIndexes;
-	std::vector<int> textureIndexes;
+	//std::vector<int> textureIndexes;
 	std::vector<vec3> meshVertices;
-	std::vector<vec2> textureCoordinates;
+	//std::vector<vec2> textureCoordinates;
 
 	std::ifstream in(filename, std::ios::in);
 	if (!in)
@@ -178,28 +178,28 @@ void Scene::loadObjModel(const char *filename, Material* material)
 		}
 		//check for texture co-ordinate
 		else if (line.substr(0, 2) == "vt") {
-			std::istringstream v(line.substr(3));
+			/*std::istringstream v(line.substr(3));
 			vec2 tex;
 			int U, V;
 			v >> U; v >> V;
 			tex = vec2(U, V);
-			textures.push_back(tex);
+			textures.push_back(tex);*/
 		}
 		//check for faces
 		else if (line.substr(0, 2) == "f ") {
 			int a, b, c; //to store mesh index
-			int A, B, C; //to store texture index
-			std::istringstream v;
-			v.str(line.substr(2));
+			//int A, B, C; //to store texture index
+			//std::istringstream v;
+			//v.str(line.substr(2));
 			const char* chh = line.c_str();
-			sscanf(chh, "f %i/%i %i/%i %i/%i", &a, &A, &b, &B, &c, &C); //here it read the line start with f and store the corresponding values in the variables
+			sscanf(chh, "f %i %i %i", &a, &b, &c); //here it read the line start with f and store the corresponding values in the variables
 
 			a--; b--; c--;
-			A--; B--; C--;
+			//A--; B--; C--;
 
-			faceIndexes.push_back(a); textureIndexes.push_back(A);
-			faceIndexes.push_back(b); textureIndexes.push_back(B);
-			faceIndexes.push_back(c); textureIndexes.push_back(C);
+			faceIndexes.push_back(a); //textureIndexes.push_back(A);
+			faceIndexes.push_back(b); //textureIndexes.push_back(B);
+			faceIndexes.push_back(c); //textureIndexes.push_back(C);
 		}
 
 	}
