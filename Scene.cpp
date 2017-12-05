@@ -122,6 +122,7 @@ vec4 Scene::trace(Ray* ray, int depth)
 		}
 		else {
 			// todo TIR ???
+			delete refractionRay;
 			return color;
 		}
 
