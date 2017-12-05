@@ -7,13 +7,13 @@ Scene::Scene(Surface* screen)
 	this->camera = new Camera();
 
 	// create scene lights
-	this->lightSources.push_back(new DirectLight(0, vec3(10, -10, -20), vec4(1, 1, 1, 1)));
-	this->lightSources.push_back(new DirectLight(0, vec3(7, -10, -20), vec4(1, 1, 1, 1)));
+	this->lightSources.push_back(new DirectLight(0, vec3(10, -10, -20), vec4(1, 1, 1, 0)));
+	this->lightSources.push_back(new DirectLight(0, vec3(7, -10, -20), vec4(1, 1, 1, 0)));
 
 	// create scene objects
-	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
-	Material* greenMaterial = new Material(vec4(0.0f, 1.0f, 0.0f, 0.0f), diffuse);
-	Material* blueGlassMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f), dielectric);
+	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
+	Material* greenMaterial = new Material(vec4(0, 1, 0, 0), diffuse);
+	Material* blueGlassMaterial = new Material(vec4(0, 0, 1, 0.8), dielectric);
 	blueGlassMaterial->refraction = 1.33;
 	blueGlassMaterial->reflection = 0.5;
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
@@ -102,7 +102,7 @@ vec4 Scene::trace(Ray* ray, int depth)
 		delete refractionRay;
 		delete reflectionRay;
 
-		return material->reflection * reflectionColor + 0.8 * color;
+		return material->reflection * reflectionColor + material->color.w * color;
 	}
 
 	return BGCOLOR;
