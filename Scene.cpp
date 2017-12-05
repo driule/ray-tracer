@@ -12,11 +12,12 @@ Scene::Scene(Surface* screen)
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
 	Material* greenMaterial = new Material(vec4(0.0f, 1.0f, 0.0f, 0.0f), diffuse);
-	Material* blueMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f), diffuse);
+	Material* blueGlassMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f), glass);
+	blueGlassMaterial->refraction = 1.33;
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
 
 	this->primitives.push_back(
-		new Sphere(blueMaterial, 0, vec3(0, 0, 5), 1)
+		new Sphere(blueGlassMaterial, 0, vec3(0, 0, 5), 1)
 	);
 	this->primitives.push_back(
 		new Sphere(redMaterial, 1, vec3(0, 0, 10), 4)
@@ -88,49 +89,36 @@ vec4 Scene::trace(Ray* ray, int depth)
 	}
 	if (material->type == glass)
 	{
+		// https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
 		vec3 hitPoint = ray->origin + ray->t * ray->direction;
 		vec3 N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
-		float incommingAngle = dot(N, -ray->direction);
+		float incommingAngle = dot(N, ray->direction);
 
-		if (incommingAngle < 0)
+		float cosi = CLAMP(-1, 1, incommingAngle);
+		float etai = 1, etat = material->refraction;
+		vec3 n = N;
+		if (cosi < 0) { cosi = -cosi; }
+		else { std::swap(etai, etat); n = -N; }
+		float eta = etai / etat;
+		float k = 1 - eta * eta * (1 - cosi * cosi);
+	
+		if (k < 0)
 		{
-			incommingAngle = -incommingAngle;
-		}
-
-		float n1, n2;
-
-		Ray* refractionRay = new Ray();
-		refractionRay->origin = hitPoint;
-		if (ray->isInAir)
-		{
-			n1 = 1;
-			n2 = material->refraction;
-			refractionRay->isInAir = false;
+			return color;
 		}
 		else
 		{
-			n1 = material->refraction;
-			n2 = 1;
-			refractionRay->isInAir = true;
-		}
-		float k = 1 - pow(n1 / n2, 2) * (1 - pow(incommingAngle, 2));
-		if (k >= 0)
-		{
-			refractionRay->direction = (n1 / n2)*ray->direction + N*(n1 / n2*incommingAngle - sqrt(k));
+			Ray* refractionRay = new Ray();
+			refractionRay->origin = hitPoint;
+
+			refractionRay->direction = eta * ray->direction + (eta * cosi - sqrtf(k)) * n;
 			vec3 hitEpsilon = refractionRay->origin + refractionRay->direction * 0.01;
 			refractionRay->origin = hitEpsilon;
-		}
-		else {
-			// todo TIR ???
+			color += this->trace(refractionRay, depth);
 			delete refractionRay;
-			return color;
 		}
-
-		color += this->trace(refractionRay, depth);
-		delete refractionRay;
 
 		return color;
-
 	}
 	if (material->type == dielectric)
 	{

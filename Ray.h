@@ -10,7 +10,6 @@ namespace Tmpl8 {
 		vec3 direction;
 		float t;
 		int intersectedObjectId;
-		bool isInAir;
 	};
 }
 
