@@ -7,9 +7,7 @@ Scene::Scene(Surface* screen)
 	this->camera = new Camera();
 
 	// create scene lights
-	this->lightSourcesCount = 1;
-	this->lightSources = new LightSource*[lightSourcesCount];
-	this->lightSources[0] = new DirectLight(0, vec3(5, 0, 1), vec4(1, 1, 1, 1));
+	this->lightSources.push_back(new DirectLight(0, vec3(10, -10, -10), vec4(1, 1, 1, 1)));
 
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
@@ -17,15 +15,18 @@ Scene::Scene(Surface* screen)
 	Material* blueMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f), diffuse);
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
 
-	this->primitivesCount = 5;
-	this->primitives = new Primitive*[this->primitivesCount];
-
-	this->primitives[0] = new Sphere(blueMaterial, 0, vec3(0, 0, 5), 1);
-	this->primitives[1] = new Sphere(redMaterial, 1, vec3(0, 0, 10), 4);
-	this->primitives[2] = new Triangle(greenMaterial, 2, vec3(4, 4, 5), vec3(1, 1, 5), vec3(2, 5, 5));
-
-	this->primitives[3] = new Plane(planeMaterial, 3, vec3(0, 0, 15), vec3(0, 0, -1));
-	this->primitives[4] = new Plane(planeMaterial, 4, vec3(-20, 0, 0), vec3(-1, 0, 0));
+	this->primitives.push_back(
+		new Sphere(blueMaterial, 0, vec3(0, 0, 5), 1)
+	);
+	this->primitives.push_back(
+		new Sphere(redMaterial, 1, vec3(0, 0, 10), 4)
+	);
+	this->primitives.push_back(
+		new Triangle(greenMaterial, 2, vec3(4, 4, 5), vec3(1, 1, 5), vec3(2, 5, 5))
+	);
+	this->primitives.push_back(
+		new Plane(planeMaterial, 3, vec3(0, 0, 20), vec3(0, 0, -1))
+	);
 }
 
 void Scene::render(int row)
@@ -91,8 +92,6 @@ vec4 Scene::trace(Ray* ray, int depth)
 
 vec4 Scene::DirectIllumination(Ray* ray)
 {
-	// For one lightsource in the scene only
-	// Create the ray used for checking if their are obstacles between the object and the lightsource
 	Ray* reflectionRay = new Ray();
 	reflectionRay->origin = ray->origin + ray->t * ray->direction;
 	reflectionRay->direction = normalize(this->lightSources[0]->position - reflectionRay->origin);
@@ -125,7 +124,7 @@ vec4 Scene::DirectIllumination(Ray* ray)
 
 void Scene::intersectPrimitives(Ray* ray)
 {
-	for (int i = 0; i < this->primitivesCount; i++)
+	for (int i = 0; i < this->primitives.size(); i++)
 	{
 		this->primitives[i]->intersect(ray);
 	}
@@ -133,7 +132,7 @@ void Scene::intersectPrimitives(Ray* ray)
 
 void Scene::intersectLightSources(Ray* ray)
 {
-	for (int i = 0; i < this->lightSourcesCount; i++)
+	for (int i = 0; i < this->lightSources.size(); i++)
 	{
 		this->lightSources[i]->intersect(ray);
 	}
@@ -147,4 +146,82 @@ Pixel Scene::convertColorToPixel(vec4 color)
 	int b = min((int)color.z, 255);
 
 	return (r << 16) + (g << 8) + b;
+}
+
+void Scene::loadObjModel(const char *filename, Material* material)
+{
+	std::ifstream in(filename, std::ios::in);
+	if (!in)
+	{
+		printf("Cannot load %s file!", filename);
+	}
+
+	std::string line;
+	while (std::getline(in, line))
+	{
+		//check v for vertices
+		if (line.substr(0, 2) == "v ") {
+			std::istringstream v(line.substr(2));
+			vec3 vert;
+			float x, y, z;
+			v >> x; v >> y; v >> z;
+			vert = vec3(x, y, z);
+			vertices.push_back(vert);
+		}
+		//check for texture co-ordinate
+		else if (line.substr(0, 2) == "vt") {
+
+			std::istringstream v(line.substr(3));
+			vec2 tex;
+			int U, V;
+			v >> U; v >> V;
+			tex = vec2(U, V);
+			texture.push_back(tex);
+
+		}
+		//check for faces
+		else if (line.substr(0, 2) == "f ") {
+			int a, b, c; //to store mesh index
+			int A, B, C; //to store texture index
+			std::istringstream v;
+			v.str(line.substr(2));
+			const char* chh = line.c_str();
+			sscanf(chh, "f %i/%i %i/%i %i/%i", &a, &A, &b, &B, &c, &C); //here it read the line start with f and store the corresponding values in the variables
+
+			//printf("Read f1: %i, %i, %i \n", a, b, c);
+			v>>a;v>>b;v>>c;
+			//printf("Read f2: %i, %i, %i \n", a, b, c);
+			a--; b--; c--;
+			//A--; B--; C--;
+			//printf("Read f: %i, %i, %i \n", a, b, c);
+			//std::cout<<a<<b<<c<<A<<B<<C;
+			faceIndex.push_back(a); textureIndex.push_back(A);
+			faceIndex.push_back(b); textureIndex.push_back(B);
+			faceIndex.push_back(c); textureIndex.push_back(C);
+		}
+
+	}
+	//the mesh data is finally calculated here
+	/*for (unsigned int i = 0; i<faceIndex.size(); i++)
+	{
+		vec3 meshData;
+		vec2 texData;
+		meshData = vec3(vertices[faceIndex[i]].x, vertices[faceIndex[i]].y, vertices[faceIndex[i]].z);
+		texData = vec2(texture[textureIndex[i]].x, texture[textureIndex[i]].y);
+		meshVertices.push_back(meshData);
+		texCoord.push_back(texData);
+	}*/
+
+	int previousPrimitiveCount = this->primitives.size();
+	int primitivesCount = this->faceIndex.size() / 3;
+	printf("primitives count in %s file: %i\n", filename, primitivesCount);
+	for (int i = 0; i < primitivesCount; i++)
+	{
+		vec3 a = vec3(this->vertices[this->faceIndex[i * 3]]);
+		vec3 b = vec3(this->vertices[this->faceIndex[i * 3 + 1]]);
+		vec3 c = vec3(this->vertices[this->faceIndex[i * 3 + 2]]);
+
+		Triangle* triangle = new Triangle(material, previousPrimitiveCount + i, a, b, c);
+		this->primitives.push_back(triangle);
+	}
 }

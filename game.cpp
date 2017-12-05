@@ -29,6 +29,9 @@ void Game::Init()
 
 	JobManager::CreateJobManager(4);
 	jobManager = JobManager::GetJobManager();
+
+	Material* greyMaterial = new Material(vec4(0.5f, 0.5f, 0.5f, 1.0f), diffuse);
+	scene->loadObjModel("assets/cube.obj", greyMaterial);
 }
 
 // -----------------------------------------------------------

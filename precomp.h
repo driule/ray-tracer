@@ -41,6 +41,8 @@ extern "C"
 #include "surface.h"
 #include "threads.h"
 #include <assert.h>
+#include <sstream>
+#include <vector>
 
 #include "Ray.h"
 #include "Camera.h"
