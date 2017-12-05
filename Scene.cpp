@@ -12,8 +12,9 @@ Scene::Scene(Surface* screen)
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
 	Material* greenMaterial = new Material(vec4(0.0f, 1.0f, 0.0f, 0.0f), diffuse);
-	Material* blueGlassMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f), glass);
+	Material* blueGlassMaterial = new Material(vec4(0.0f, 0.0f, 1.0f, 0.0f), dielectric);
 	blueGlassMaterial->refraction = 1.33;
+	blueGlassMaterial->reflection = 0.5;
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
 
 	this->primitives.push_back(
@@ -71,25 +72,19 @@ vec4 Scene::trace(Ray* ray, int depth)
 	vec4 color = (material->color * 0.2);
 	if (material->type == diffuse)
 	{
-		return color + material->color * DirectIllumination(ray);
+		return color + material->color * illuminate(ray);
 	}
 	if (material->type == mirror)
 	{
-		vec3 hitPoint = ray->origin + ray->t * ray->direction;
-		vec3 N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
-
-		Ray* reflectionRay = new Ray();
-		reflectionRay->origin = hitPoint;
-		reflectionRay->direction = ray->direction - 2 * (ray->direction * N) * N;
-
+		Ray* reflectionRay = computeReflectionRay(ray);
 		vec4 reflectionColor = this->trace(reflectionRay, depth);
 		delete reflectionRay;
 
 		return color + reflectionColor;
 	}
-	if (material->type == glass)
+	if (material->type == dielectric)
 	{
-		// https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
+		// source: https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
 		vec3 hitPoint = ray->origin + ray->t * ray->direction;
 		vec3 N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
 		float incommingAngle = dot(N, ray->direction);
@@ -98,7 +93,7 @@ vec4 Scene::trace(Ray* ray, int depth)
 		float etai = 1, etat = material->refraction;
 		vec3 n = N;
 		if (cosi < 0) { cosi = -cosi; }
-		else { std::swap(etai, etat); n = -N; }
+		else { swap(etai, etat); n = -N; }
 		float eta = etai / etat;
 		float k = 1 - eta * eta * (1 - cosi * cosi);
 	
@@ -118,31 +113,17 @@ vec4 Scene::trace(Ray* ray, int depth)
 			delete refractionRay;
 		}
 
-		vec4 refractionColor = color;
-
-		// TODO: move to different method, dublicate code!!!
-		hitPoint = ray->origin + ray->t * ray->direction;
-		N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
-
-		Ray* reflectionRay = new Ray();
-		reflectionRay->origin = hitPoint;
-		reflectionRay->direction = ray->direction - 2 * (ray->direction * N) * N;
-
+		Ray* reflectionRay = this->computeReflectionRay(ray);
 		vec4 reflectionColor = this->trace(reflectionRay, depth);
 		delete reflectionRay;
-		//
 
-		return 0.2 * reflectionColor + 0.8 * refractionColor;
-	}
-	if (material->type == dielectric)
-	{
-		// todo
+		return material->reflection * reflectionColor + 0.8 * color;
 	}
 
 	return BGCOLOR;
 }
 
-vec4 Scene::DirectIllumination(Ray* ray)
+vec4 Scene::illuminate(Ray* ray)
 {
 	Ray* reflectionRay = new Ray();
 	reflectionRay->origin = ray->origin + ray->t * ray->direction;
@@ -172,6 +153,18 @@ vec4 Scene::DirectIllumination(Ray* ray)
 	
 	delete reflectionRay;
 	return color;
+}
+
+Ray* Scene::computeReflectionRay(Ray* ray)
+{
+	vec3 hitPoint = ray->origin + ray->t * ray->direction;
+	vec3 N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
+
+	Ray* reflectionRay = new Ray();
+	reflectionRay->origin = hitPoint;
+	reflectionRay->direction = ray->direction - 2 * (ray->direction * N) * N;
+
+	return reflectionRay;
 }
 
 void Scene::intersectPrimitives(Ray* ray)

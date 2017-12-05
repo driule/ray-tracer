@@ -14,7 +14,7 @@
 
 #define BGCOLOR			vec4(0.5f, 0.5f, 0.5f, 1)
 
-enum MaterialType { diffuse, mirror, glass, dielectric };
+enum MaterialType { diffuse, mirror, dielectric };
 
 // #define FULLSCREEN
 // #define ADVANCEDGL	// faster if your system supports it
