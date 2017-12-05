@@ -9,7 +9,7 @@ Scene::Scene(Surface* screen)
 	// create scene lights
 	this->lightSourcesCount = 1;
 	this->lightSources = new LightSource*[lightSourcesCount];
-	this->lightSources[0] = new DirectLight(0, vec3(10, 0, 1), vec4(1, 1, 1, 1));
+	this->lightSources[0] = new DirectLight(0, vec3(5, 0, 1), vec4(1, 1, 1, 1));
 
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1.0f, 0.0f, 0.0f, 0.0f), diffuse);
@@ -139,5 +139,10 @@ void Scene::intersectLightSources(Ray* ray)
 
 Pixel Scene::convertColorToPixel(vec4 color)
 {
-	return (int)(color.z * 255) + ((int)(color.y * 255) << 8) + ((int)(color.x * 255) << 16);
+	color *= 255.0f;
+	int r = min((int)color.x, 255);
+	int g = min((int)color.y, 255);
+	int b = min((int)color.z, 255);
+
+	return (r << 16) + (g << 8) + b;
 }
