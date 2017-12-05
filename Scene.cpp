@@ -150,6 +150,14 @@ Pixel Scene::convertColorToPixel(vec4 color)
 
 void Scene::loadObjModel(const char *filename, Material* material)
 {
+	// obj file content
+	std::vector<vec3> vertices;
+	std::vector<vec2> textures;
+	std::vector<int> faceIndexes;
+	std::vector<int> textureIndexes;
+	std::vector<vec3> meshVertices;
+	std::vector<vec2> textureCoordinates;
+
 	std::ifstream in(filename, std::ios::in);
 	if (!in)
 	{
@@ -170,14 +178,12 @@ void Scene::loadObjModel(const char *filename, Material* material)
 		}
 		//check for texture co-ordinate
 		else if (line.substr(0, 2) == "vt") {
-
 			std::istringstream v(line.substr(3));
 			vec2 tex;
 			int U, V;
 			v >> U; v >> V;
 			tex = vec2(U, V);
-			texture.push_back(tex);
-
+			textures.push_back(tex);
 		}
 		//check for faces
 		else if (line.substr(0, 2) == "f ") {
@@ -188,40 +194,35 @@ void Scene::loadObjModel(const char *filename, Material* material)
 			const char* chh = line.c_str();
 			sscanf(chh, "f %i/%i %i/%i %i/%i", &a, &A, &b, &B, &c, &C); //here it read the line start with f and store the corresponding values in the variables
 
-			//printf("Read f1: %i, %i, %i \n", a, b, c);
-			v>>a;v>>b;v>>c;
-			//printf("Read f2: %i, %i, %i \n", a, b, c);
 			a--; b--; c--;
-			//A--; B--; C--;
-			//printf("Read f: %i, %i, %i \n", a, b, c);
-			//std::cout<<a<<b<<c<<A<<B<<C;
-			faceIndex.push_back(a); textureIndex.push_back(A);
-			faceIndex.push_back(b); textureIndex.push_back(B);
-			faceIndex.push_back(c); textureIndex.push_back(C);
+			A--; B--; C--;
+
+			faceIndexes.push_back(a); textureIndexes.push_back(A);
+			faceIndexes.push_back(b); textureIndexes.push_back(B);
+			faceIndexes.push_back(c); textureIndexes.push_back(C);
 		}
 
 	}
 	//the mesh data is finally calculated here
-	/*for (unsigned int i = 0; i<faceIndex.size(); i++)
+	for (unsigned int i = 0; i < faceIndexes.size(); i++)
 	{
-		vec3 meshData;
-		vec2 texData;
-		meshData = vec3(vertices[faceIndex[i]].x, vertices[faceIndex[i]].y, vertices[faceIndex[i]].z);
-		texData = vec2(texture[textureIndex[i]].x, texture[textureIndex[i]].y);
-		meshVertices.push_back(meshData);
-		texCoord.push_back(texData);
-	}*/
+		meshVertices.push_back(
+			vec3(vertices[faceIndexes[i]].x, vertices[faceIndexes[i]].y, vertices[faceIndexes[i]].z)
+		);
+		//vec2 texData = vec2(textures[textureIndexes[i]].x, textures[textureIndexes[i]].y);
+		//texCoord.push_back(texData);
+	}
 
-	int previousPrimitiveCount = this->primitives.size();
-	int primitivesCount = this->faceIndex.size() / 3;
+	// add triangles to the scene
+	int primitivesCount = meshVertices.size() / 3;
 	printf("primitives count in %s file: %i\n", filename, primitivesCount);
 	for (int i = 0; i < primitivesCount; i++)
 	{
-		vec3 a = vec3(this->vertices[this->faceIndex[i * 3]]);
-		vec3 b = vec3(this->vertices[this->faceIndex[i * 3 + 1]]);
-		vec3 c = vec3(this->vertices[this->faceIndex[i * 3 + 2]]);
+		vec3 a = meshVertices[i * 3];
+		vec3 b = meshVertices[i * 3 + 1];
+		vec3 c = meshVertices[i * 3 + 2];
 
-		Triangle* triangle = new Triangle(material, previousPrimitiveCount + i, a, b, c);
+		Triangle* triangle = new Triangle(material, this->primitives.size(), a, b, c);
 		this->primitives.push_back(triangle);
 	}
 }

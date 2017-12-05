@@ -14,15 +14,6 @@ namespace Tmpl8 {
 		std::vector<Primitive*> primitives;
 		std::vector<LightSource*> lightSources;
 
-		// obj file content
-		std::vector<vec3> vertices;
-		std::vector<vec2> texture;
-		std::vector<int> faceIndex;
-		std::vector<int> textureIndex;
-		std::vector<vec3> meshVertices;
-		std::vector<vec2> texCoord;
-		//
-
 		vec4 trace(Ray* ray, int depth);
 		vec4 DirectIllumination(Ray* ray);
 		void intersectPrimitives(Ray* ray);
