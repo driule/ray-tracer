@@ -270,9 +270,17 @@ void Torus::intersect(Ray* ray)
 
 vec3 Torus::getNormal(vec3 point)
 {
-	vec3 centerToPoint = point - position;
-	float centerToPointDotAxis = dot(axis, centerToPoint);
-	vec3 direction = normalize(centerToPoint - axis * centerToPointDotAxis);
+	vec3 P = (point - this->position);
+	float A = (this->R - this->r) / 2 + this->r;
+	float alpha = A / (sqrtf(P.x * P.x + P.y * P.y));
+	vec3 Q = vec3(alpha * P.x, alpha * P.y, 0);
+	vec3 N = normalize(P - Q);
+	
+	return N;
 
-	return normalize(point - position + direction * R);
+	//vec3 centerToPoint = point - position;
+	//float centerToPointDotAxis = dot(axis, centerToPoint);
+	//vec3 direction = normalize(centerToPoint - axis * centerToPointDotAxis);
+
+	//return normalize(point - position + direction * R);
 }

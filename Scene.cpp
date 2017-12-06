@@ -50,7 +50,7 @@ Scene::Scene(Surface* screen)
 		new Plane(mirrorMaterial, this->primitives.size(), vec3(0, 5, 5), vec3(0, -1, 0)) //bottom
 	);
 	this->primitives.push_back(
-		new Plane(greenMaterial, this->primitives.size(), vec3(-5, 0, 5), vec3(-1, 0, 0)) //right
+		new Plane(greenMaterial, this->primitives.size(), vec3(-5, 0, 5), vec3(1, 0, 0)) //right
 	);
 	this->primitives.push_back(
 		new Plane(greenMaterial, this->primitives.size(), vec3(5, 0, 5), vec3(-1, 0, 0)) // left
