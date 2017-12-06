@@ -13,6 +13,7 @@ Scene::Scene(Surface* screen)
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
 	Material* greenMaterial = new Material(vec4(0, 1, 0, 0), diffuse);
+	Material* brownMaterial = new Material(vec4(0.756, 0.556, 0.094, 0), diffuse);
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
 	Material* mirrorMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), mirror);
 
@@ -35,7 +36,7 @@ Scene::Scene(Surface* screen)
 	);
 
 	this->primitives.push_back(
-		new Torus(redMaterial, this->primitives.size(), 0.4f, 0.2f, vec3(-1, -0.5, 0.2), vec3(0.5, 0.5, -1))
+		new Torus(brownMaterial, this->primitives.size(), 0.4f, 0.2f, vec3(-0.5, -0.5, 0.2), vec3(0.5, 0.5, -1))
 	);
 
 	// create box from planes
