@@ -18,6 +18,8 @@ public:
 	void moveCamera();
 private:
 	Surface* screen;
+
+	void loadTeddy();
 };
 
 class RayTracerJob : public Job

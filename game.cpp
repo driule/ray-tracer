@@ -35,14 +35,6 @@ void Game::Init()
 	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
 	scene->loadObjModel("assets/cube.obj", brownMaterial);
-
-	// load teddy to the scene
-	/*
-	scene->camera->position = vec3(0, 0, -100);
-	scene->camera->up = vec3(0, 1, 0);
-	scene->camera->calculateScreen();
-	scene->loadObjModel("assets/teddy.obj", brownMaterial);
-	*/
 }
 
 // -----------------------------------------------------------
@@ -155,4 +147,35 @@ void Game::moveCamera()
 		printf("FOV: %f \n", scene->camera->fieldOfView);
 		printf("UP: %f, %f, %f \n", scene->camera->up.x, scene->camera->up.y, scene->camera->up.z);
 	}
+
+	// load teddy
+	if (GetAsyncKeyState('T'))
+	{
+		this->loadTeddy();
+	}
+}
+
+void Game::loadTeddy()
+{
+	scene->primitives.clear();
+	scene->lightSources.clear();
+
+	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(-10.0f, 0.0f, -50.0), vec4(1, 1, 1, 0)));
+
+	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
+	scene->primitives.push_back(
+		new Plane(planeMaterial, scene->primitives.size(), vec3(0, 0, 50), vec3(0, 0, -1)) // back
+	);
+
+	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
+	scene->primitives.push_back(
+		new Sphere(redMaterial, scene->primitives.size(), vec3(-25, 10, 0), 5) // back
+	);
+
+	scene->camera->position = vec3(0, 0, -50);
+	scene->camera->up = vec3(0, 1, 0);
+	scene->camera->calculateScreen();
+
+	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
+	scene->loadObjModel("assets/teddy.obj", brownMaterial);
 }
