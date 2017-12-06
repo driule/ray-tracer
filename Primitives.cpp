@@ -32,7 +32,7 @@ void Sphere::intersect(Ray* ray)
 	if (p2 > this->radius2) return;
 
 	t -= sqrt(this->radius2 - p2);
-	if ((t < ray->t) && t > 0)
+	if (t < ray->t && t >= EPSILON)
 	{
 		ray->t = t;
 		ray->intersectedObjectId = this->id;
@@ -74,7 +74,7 @@ void Triangle::intersect(Ray* ray)
 	if (v < 0 || u + v > 1) return;
 
 	t = ac.dot(qvec) * invDet;
-	if (t < ray->t && t > 0)
+	if (t < ray->t && t >= EPSILON)
 	{
 		ray->t = t;
 		ray->intersectedObjectId = this->id;
@@ -226,25 +226,21 @@ Torus::Torus(Material* material, int id, float R, float r, vec3 position, vec3 a
 
 void Torus::intersect(Ray* ray)
 {
-	vec3 rayOriginPosition = ray->origin;
-	vec3 rayDirection = ray->direction;
-
-	vec3 centerToRayOrigin = rayOriginPosition - position;
-	const float centerToRayOriginDotDirection = dot(rayDirection, centerToRayOrigin);
-	float	centerToRayOriginDotDirectionSquared = dot(centerToRayOrigin, centerToRayOrigin);
+	vec3 centerToRayOrigin = ray->origin - position;
+	float centerToRayOriginDotDirectionSquared = dot(centerToRayOrigin, centerToRayOrigin);
 	float r2 = r * r;
 	float R2 = R * R;
 
-	float	axisDotCenterToRayOrigin = dot(axis, centerToRayOrigin);
-	float	axisDotRayDirection = dot(axis, rayDirection);
-	float	a = 1 - axisDotRayDirection * axisDotRayDirection;
-	float	b = 2 * (dot(centerToRayOrigin, rayDirection) - axisDotCenterToRayOrigin * axisDotRayDirection);
+	float axisDotCenterToRayOrigin = dot(axis, centerToRayOrigin);
+	float axisDotRayDirection = dot(axis, ray->direction);
+	float a = 1 - axisDotRayDirection * axisDotRayDirection;
+	float b = 2 * (dot(centerToRayOrigin, ray->direction) - axisDotCenterToRayOrigin * axisDotRayDirection);
 	float c = centerToRayOriginDotDirectionSquared - axisDotCenterToRayOrigin * axisDotCenterToRayOrigin;
-	float	d = centerToRayOriginDotDirectionSquared + R2 - r2;
+	float d = centerToRayOriginDotDirectionSquared + R2 - r2;
 
 	// Solve quartic equation with coefficients A, B, C, D and E
 	float A = 1;
-	float B = 4 * centerToRayOriginDotDirection;
+	float B = 4 * dot(ray->direction, centerToRayOrigin);
 	float C = 2 * d + B * B * 0.25f - 4 * R2 * a;
 	float D = B * d - 4 * R2 * b;
 	float E = d * d - 4 * R2 * c;
@@ -255,15 +251,15 @@ void Torus::intersect(Ray* ray)
 	double roots[maxRootsCount] = { -1.0, -1.0, -1.0, -1.0 };
 	int rootsCount = equation.Solve(roots);
 
-	if (rootsCount == 0) {
-		return;
-	}
+	if (rootsCount == 0) { return; }
 
 	// Find closest to zero positive solution
 	float closestRoot = INFINITY;
-	for (int idx = 0; idx < maxRootsCount; ++idx) {
-		float root = roots[idx];
-		if (root > 0.00 && root < closestRoot) {
+	for (int i = 0; i < maxRootsCount; ++i)
+	{
+		float root = roots[i];
+		if (root >= EPSILON && root < closestRoot)
+		{
 			closestRoot = root;
 		}
 	}
