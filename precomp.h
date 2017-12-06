@@ -14,6 +14,8 @@
 
 #define BGCOLOR			vec4(0.5f, 0.5f, 0.5f, 1)
 
+#define EPSILON 1e-6
+
 enum MaterialType { diffuse, mirror, dielectric };
 
 // #define FULLSCREEN

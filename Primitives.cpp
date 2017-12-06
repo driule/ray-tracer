@@ -99,9 +99,9 @@ Plane::Plane(Material* material, int id, vec3 position, vec3 direction) : Primit
 void Plane::intersect(Ray* ray)
 {
 	float denominator = dot(this->direction, ray->direction);
-	if (abs(denominator) > 1e-6) {
+	if (abs(denominator) > EPSILON) {
 		float t = dot(this->position - ray->origin, this->direction) / denominator;
-		if (t < ray->t && t >= 1e-6)
+		if (t < ray->t && t >= EPSILON)
 		{
 			ray->t = t;
 			ray->intersectedObjectId = this->id;
@@ -160,7 +160,7 @@ void Cylinder::intersect(Ray* ray)
 	}
 
 	float denominator = ray->direction.dot(upVector);
-	if (denominator > 1e-6)
+	if (denominator > EPSILON)
 	{
 		vec3 co = this->position - ray->origin;
 		double t3 = co.dot(upVector) / denominator;
@@ -169,7 +169,7 @@ void Cylinder::intersect(Ray* ray)
 			points.push_back(t3);
 		}
 	}
-	else if (denominator < 1e-6)
+	else if (denominator < EPSILON)
 	{
 		vec3 co2 = center2 - ray->origin;
 		double t4 = co2.dot(upVector) / denominator;
@@ -183,7 +183,8 @@ void Cylinder::intersect(Ray* ray)
 	bool intersects = false;
 	for (int i = 0; i<points.size(); i++)
 	{
-		if (minT > points[i] && points[i] >= 0) {
+		if (minT > points[i] && points[i] >= 0)
+		{
 			minT = points[i];
 			intersects = true;
 		}
