@@ -164,12 +164,12 @@ void Game::loadTeddy()
 
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
 	scene->primitives.push_back(
-		new Plane(planeMaterial, scene->primitives.size(), vec3(0, 0, 50), vec3(0, 0, -1)) // back
+		new Plane(planeMaterial, scene->primitives.size(), vec3(0, 0, 50), vec3(0, 0, -1))
 	);
 
 	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
 	scene->primitives.push_back(
-		new Sphere(redMaterial, scene->primitives.size(), vec3(-25, 10, 0), 5) // back
+		new Sphere(redMaterial, scene->primitives.size(), vec3(-25, 10, 0), 5)
 	);
 
 	scene->camera->position = vec3(0, 0, -50);
