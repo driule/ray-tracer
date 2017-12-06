@@ -257,10 +257,9 @@ void Torus::intersect(Ray* ray)
 	float closestRoot = INFINITY;
 	for (int i = 0; i < maxRootsCount; ++i)
 	{
-		float root = roots[i];
-		if (root >= EPSILON && root < closestRoot)
+		if (roots[i] >= EPSILON && roots[i] < closestRoot)
 		{
-			closestRoot = root;
+			closestRoot = roots[i];
 		}
 	}
 
