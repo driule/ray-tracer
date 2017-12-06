@@ -172,8 +172,8 @@ Ray* Scene::computeReflectionRay(Ray* ray)
 	vec3 N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
 
 	Ray* reflectionRay = new Ray();
-	reflectionRay->origin = hitPoint;
 	reflectionRay->direction = ray->direction - 2 * (ray->direction * N) * N;
+	reflectionRay->origin = hitPoint + reflectionRay->direction * EPSILON;
 
 	return reflectionRay;
 }
