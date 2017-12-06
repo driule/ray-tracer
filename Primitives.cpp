@@ -101,7 +101,7 @@ void Plane::intersect(Ray* ray)
 	float denominator = dot(this->direction, ray->direction);
 	if (abs(denominator) > 1e-6) {
 		float t = dot(this->position - ray->origin, this->direction) / denominator;
-		if (t < ray->t && t > 0)
+		if (t < ray->t && t >= 1e-6)
 		{
 			ray->t = t;
 			ray->intersectedObjectId = this->id;
@@ -112,4 +112,24 @@ void Plane::intersect(Ray* ray)
 vec3 Plane::getNormal(vec3 point)
 {
 	return this->direction;
+}
+
+// -------------------- CYLINDER ------------------------------------
+
+Cylinder::Cylinder(Material* material, int id, vec3 position, float radius, float height) : Primitive(material, id)
+{
+	this->position = position;
+	this->radius = radius;
+	this->height = height;
+}
+
+void Cylinder::intersect(Ray* ray)
+{
+}
+
+vec3 Cylinder::getNormal(vec3 point)
+{
+	vec3 normal;
+
+	return normalize(normal);
 }

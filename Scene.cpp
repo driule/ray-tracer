@@ -13,23 +13,45 @@ Scene::Scene(Surface* screen)
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
 	Material* greenMaterial = new Material(vec4(0, 1, 0, 0), diffuse);
+	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
+
 	Material* blueGlassMaterial = new Material(vec4(0, 0, 1, 0.8), dielectric);
 	blueGlassMaterial->refraction = 1.33;
 	blueGlassMaterial->reflection = 0.5;
-	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
 
 	this->primitives.push_back(
-		new Sphere(blueGlassMaterial, 0, vec3(0, 0, 5), 1)
+		new Sphere(blueGlassMaterial, this->primitives.size(), vec3(0, 0, 5), 1)
 	);
 	this->primitives.push_back(
-		new Sphere(redMaterial, 1, vec3(0, 0, 10), 4)
+		new Sphere(redMaterial, this->primitives.size(), vec3(0, 0, 10), 4)
 	);
 	this->primitives.push_back(
-		new Triangle(greenMaterial, 2, vec3(4, 4, 5), vec3(1, 1, 5), vec3(2, 5, 5))
+		new Triangle(greenMaterial, this->primitives.size(), vec3(4, 4, 5), vec3(1, 1, 5), vec3(2, 5, 5))
 	);
 	this->primitives.push_back(
-		new Plane(planeMaterial, 3, vec3(0, 0, 20), vec3(0, 0, -1))
+		new Plane(planeMaterial, this->primitives.size(), vec3(0, 0, 15), vec3(0, 0, -1)) // back
 	);
+
+	// create box from planes
+	/*
+	this->primitives.push_back(
+		new Sphere(greenMaterial, this->primitives.size(), vec3(0, 0, 2), 0.2) // spehere in the box
+	);
+	this->primitives.push_back(
+		new Plane(planeMaterial, this->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
+	);
+	this->primitives.push_back(
+		new Plane(redMaterial, this->primitives.size(), vec3(0, -5, 5), vec3(0, 1, 0)) //top
+	);
+	this->primitives.push_back(
+		new Plane(redMaterial, this->primitives.size(), vec3(0, 5, 5), vec3(0, -1, 0)) //bottom
+	);
+	this->primitives.push_back(
+		new Plane(greenMaterial, this->primitives.size(), vec3(-5, 0, 5), vec3(-1, 0, 0)) //right
+	);
+	this->primitives.push_back(
+		new Plane(greenMaterial, this->primitives.size(), vec3(5, 0, 5), vec3(-1, 0, 0)) // left
+	);*/
 }
 
 void Scene::render(int row)
@@ -124,7 +146,7 @@ vec4 Scene::illuminate(Ray* ray)
 		if (dotDirectionNormal < 0)
 		{
 			delete reflectionRay;
-			return vec4(0, 0, 0, 0);
+			continue;
 		}
 
 		vec3 hitEpsilon = reflectionRay->origin + reflectionRay->direction * 0.01;
@@ -134,7 +156,7 @@ vec4 Scene::illuminate(Ray* ray)
 		if (reflectionRay->intersectedObjectId != -1)
 		{
 			delete reflectionRay;
-			return vec4(0, 0, 0, 0);
+			continue;
 		}
 
 		float attenuation = reflectionRay->direction.sqrLentgh();

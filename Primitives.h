@@ -58,4 +58,17 @@ namespace Tmpl8 {
 	private:
 		vec3 position, direction;
 	};
+
+	class Cylinder : public Primitive
+	{
+	public:
+		Cylinder(Material* material, int id, vec3 position, float radius, float height);
+
+		void intersect(Ray* ray);
+		vec3 getNormal(vec3 point);
+
+	private:
+		vec3 position;
+		float radius, height;
+	};
 }
