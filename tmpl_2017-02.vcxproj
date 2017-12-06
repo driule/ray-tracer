@@ -232,6 +232,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="LightSources.cpp" />
     <ClCompile Include="Primitives.cpp" />
+    <ClCompile Include="quarticsolver.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="surface.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="LightSources.h" />
     <ClInclude Include="precomp.h" />
     <ClInclude Include="Primitives.h" />
+    <ClInclude Include="quarticsolver.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="surface.h" />

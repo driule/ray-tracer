@@ -71,4 +71,18 @@ namespace Tmpl8 {
 		vec3 position, upVector;
 		float radius, height;
 	};
+
+	class Torus : public Primitive
+	{
+	public:
+		Torus(Material* material, int id, float R, float r, vec3 position, vec3 axis);
+
+		void intersect(Ray* ray);
+		vec3 getNormal(vec3 point);
+
+	private:
+		float R, r;
+		vec3 position, axis;
+
+	};
 }

@@ -16,6 +16,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="LightSources.cpp" />
+    <ClCompile Include="quarticsolver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="LightSources.h" />
+    <ClInclude Include="quarticsolver.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">

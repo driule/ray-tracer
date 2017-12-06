@@ -46,6 +46,8 @@ extern "C"
 #include <sstream>
 #include <vector>
 
+#include "quarticsolver.h"
+
 #include "Ray.h"
 #include "Camera.h"
 #include "Primitives.h"

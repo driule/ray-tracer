@@ -34,6 +34,10 @@ Scene::Scene(Surface* screen)
 		new Cylinder(redMaterial, this->primitives.size(), vec3(-1.5, -1.5, 0), vec3(1, 0, 0), 0.1, 0.5)
 	);
 
+	this->primitives.push_back(
+		new Torus(redMaterial, this->primitives.size(), 0.4f, 0.2f, vec3(-1, -0.5, 0.2), vec3(0.5, 0.5, -1))
+	);
+
 	// create box from planes
 	this->primitives.push_back(
 		new Plane(planeMaterial, this->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
