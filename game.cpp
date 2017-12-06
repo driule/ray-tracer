@@ -162,7 +162,10 @@ void Game::loadTeddy()
 	scene->primitives.clear();
 	scene->lightSources.clear();
 
-	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(-10.0f, 0.0f, -50.0), vec4(1, 1, 1, 0)));
+	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(-10.0f, 0.0f, -20.0), vec4(1, 1, 1, 0), 250));
+	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(8.0f, 0.0f, -18.0), vec4(1, 1, 1, 0), 100));
+	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(4.0f, 8.0f, -20.0), vec4(1, 1, 1, 0), 100));
+
 
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
 	scene->primitives.push_back(

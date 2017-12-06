@@ -7,8 +7,8 @@ Scene::Scene(Surface* screen)
 	this->camera = new Camera();
 
 	// create scene lights
-	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0)));
-	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(0.0f, -2.0f, 0.0f), vec4(0.5, 0.5, 0.5, 0)));
+	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0), 20));
+	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(0.0f, -2.0f, 0.0f), vec4(0.5, 0.5, 0.5, 0), 20));
 
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
@@ -160,7 +160,7 @@ vec4 Scene::illuminate(Ray* ray)
 			continue;
 		}
 
-		float attenuation = 20 / (this->lightSources[i]->position - reflectionRay->origin).sqrLentgh(); // chagne constant by light intensity
+		float attenuation = this->lightSources[i]->intensity / (this->lightSources[i]->position - reflectionRay->origin).sqrLentgh();
 		color += dotDirectionNormal * attenuation * this->lightSources[i]->color;
 		delete reflectionRay;
 	}
