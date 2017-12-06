@@ -22,9 +22,6 @@ Scene::Scene(Surface* screen)
 	blueGlassMaterial->reflection = 0.1;
 
 	this->primitives.push_back(
-		new Sphere(redMaterial, this->primitives.size(), vec3(0, 0, 10), 4)
-	);
-	this->primitives.push_back(
 		new Triangle(greenMaterial, this->primitives.size(), vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
 	);
 	this->primitives.push_back(
@@ -163,7 +160,7 @@ vec4 Scene::illuminate(Ray* ray)
 			continue;
 		}
 
-		float attenuation = reflectionRay->direction.sqrLentgh();
+		float attenuation = 20 / (this->lightSources[i]->position - reflectionRay->origin).sqrLentgh(); // chagne constant by light intensity
 		color += dotDirectionNormal * attenuation * this->lightSources[i]->color;
 		delete reflectionRay;
 	}
