@@ -72,60 +72,62 @@ void Game::moveCamera()
 	// move the camera
 	if (GetAsyncKeyState(VK_DOWN))
 	{
-		scene->camera->position -= scene->camera->up * 0.1;
-		scene->camera->viewDirection -= scene->camera->up * 0.1;		
+		scene->camera->position -= scene->camera->up * 0.2;
+		scene->camera->viewDirection -= scene->camera->up * 0.2;		
 		changed = true;
 	}
 	if (GetAsyncKeyState(VK_RIGHT))
 	{
-		scene->camera->position += scene->camera->right * 0.1;
-		scene->camera->viewDirection += scene->camera->right * 0.1;
+		scene->camera->position += scene->camera->right * 0.2;
+		scene->camera->viewDirection += scene->camera->right * 0.2;
 		changed = true;
 	}
 	if (GetAsyncKeyState(VK_UP))
 	{
-		scene->camera->position += scene->camera->up * 0.1;
-		scene->camera->viewDirection += scene->camera->up * 0.1;
+		scene->camera->position += scene->camera->up * 0.2;
+		scene->camera->viewDirection += scene->camera->up * 0.2;
 		changed = true;
 	}
 	if (GetAsyncKeyState(VK_LEFT))
 	{
-		scene->camera->position -= scene->camera->right * 0.1;
-		scene->camera->viewDirection -= scene->camera->right * 0.1;
+		scene->camera->position -= scene->camera->right * 0.2;
+		scene->camera->viewDirection -= scene->camera->right * 0.2;
 		changed = true;
 	}
 
 	// move camera closer
 	if (GetAsyncKeyState(VK_OEM_PLUS))
 	{
-		scene->camera->position += scene->camera->viewDirectionNormalized * 0.1;
+		scene->camera->position += scene->camera->viewDirectionNormalized * 0.2;
+		scene->camera->viewDirection += scene->camera->viewDirectionNormalized * 0.2;
 		changed = true;
 	}
 	if (GetAsyncKeyState(VK_OEM_MINUS))
 	{
-		scene->camera->position -= scene->camera->viewDirectionNormalized * 0.1;
+		scene->camera->position -= scene->camera->viewDirectionNormalized * 0.2;
+		scene->camera->viewDirection -= scene->camera->viewDirectionNormalized * 0.2;
 		changed = true;
 	}
 
 	// rotating the camera
 	if (GetAsyncKeyState('A'))
 	{
-		scene->camera->viewDirection -= scene->camera->right * 0.1;
+		scene->camera->viewDirection -= scene->camera->right * 0.2;
 		changed = true;
 	}
 	if (GetAsyncKeyState('D'))
 	{
-		scene->camera->viewDirection += scene->camera->right * 0.1;
+		scene->camera->viewDirection += scene->camera->right * 0.2;
 		changed = true;
 	}
 	if (GetAsyncKeyState('W'))
 	{
-		scene->camera->viewDirection += scene->camera->up * 0.1;
+		scene->camera->viewDirection += scene->camera->up * 0.2;
 		changed = true;
 	}
 	if (GetAsyncKeyState('S'))
 	{
-		scene->camera->viewDirection -= scene->camera->up * 0.1;
+		scene->camera->viewDirection -= scene->camera->up * 0.2;
 		changed = true;
 	}
 
