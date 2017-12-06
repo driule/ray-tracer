@@ -8,43 +8,37 @@ Scene::Scene(Surface* screen)
 
 	// create scene lights
 	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0)));
-	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(0.0f, -2.0f, 0.0f), vec4(1, 1, 1, 0)));
+	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(0.0f, -2.0f, 0.0f), vec4(0.5, 0.5, 0.5, 0)));
 
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
 	Material* greenMaterial = new Material(vec4(0, 1, 0, 0), diffuse);
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
+	Material* mirrorMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), mirror);
 
 	Material* blueGlassMaterial = new Material(vec4(0, 0, 1, 0.8), dielectric);
 	blueGlassMaterial->refraction = 1.33;
-	blueGlassMaterial->reflection = 0.5;
+	blueGlassMaterial->reflection = 0.1;
 
-	/*this->primitives.push_back(
-		new Sphere(blueGlassMaterial, this->primitives.size(), vec3(0, 0, 5), 1)
-	);
 	this->primitives.push_back(
 		new Sphere(redMaterial, this->primitives.size(), vec3(0, 0, 10), 4)
 	);
 	this->primitives.push_back(
-		new Triangle(greenMaterial, this->primitives.size(), vec3(4, 4, 5), vec3(1, 1, 5), vec3(2, 5, 5))
+		new Triangle(greenMaterial, this->primitives.size(), vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
 	);
 	this->primitives.push_back(
-		new Plane(planeMaterial, this->primitives.size(), vec3(0, 0, 15), vec3(0, 0, -1)) // back
-	);*/
+		new Sphere(blueGlassMaterial, this->primitives.size(), vec3(2, -1, 2), 0.5) // spehere in the box
+	);
 
 	// create box from planes
-	
-	this->primitives.push_back(
-		new Sphere(greenMaterial, this->primitives.size(), vec3(0, 0, 2), 0.2) // spehere in the box
-	);
 	this->primitives.push_back(
 		new Plane(planeMaterial, this->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
 	);
 	this->primitives.push_back(
-		new Plane(redMaterial, this->primitives.size(), vec3(0, -5, 5), vec3(0, 1, 0)) //top
+		new Plane(mirrorMaterial, this->primitives.size(), vec3(0, -5, 5), vec3(0, 1, 0)) //top
 	);
 	this->primitives.push_back(
-		new Plane(redMaterial, this->primitives.size(), vec3(0, 5, 5), vec3(0, -1, 0)) //bottom
+		new Plane(mirrorMaterial, this->primitives.size(), vec3(0, 5, 5), vec3(0, -1, 0)) //bottom
 	);
 	this->primitives.push_back(
 		new Plane(greenMaterial, this->primitives.size(), vec3(-5, 0, 5), vec3(-1, 0, 0)) //right
@@ -103,7 +97,7 @@ vec4 Scene::trace(Ray* ray, int depth)
 		vec4 reflectionColor = this->trace(reflectionRay, depth);
 		delete reflectionRay;
 
-		return color + reflectionColor;
+		return color + reflectionColor * 0.8;
 	}
 	if (material->type == dielectric)
 	{
