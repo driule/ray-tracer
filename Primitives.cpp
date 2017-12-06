@@ -126,23 +126,23 @@ Cylinder::Cylinder(Material* material, int id, vec3 position, vec3 upVector, flo
 
 void Cylinder::intersect(Ray* ray)
 {
-	vector<double> points;
+	vector<float> points;
 	vec3 alpha = upVector * ray->direction.dot(upVector);
 	vec3 deltaPosition = (ray->origin - this->position);
 	vec3 beta = upVector * deltaPosition.dot(upVector);
 	vec3 center2 = this->position + upVector * height;
 
-	double a = (ray->direction - alpha).sqrLentgh();
-	double b = 2 * ((ray->direction - alpha).dot(deltaPosition - beta));
-	double c = (deltaPosition - beta).sqrLentgh() - radius*radius;
+	float a = (ray->direction - alpha).sqrLentgh();
+	float b = 2 * ((ray->direction - alpha).dot(deltaPosition - beta));
+	float c = (deltaPosition - beta).sqrLentgh() - radius*radius;
 
-	double discriminant = b * b - 4 * a * c;
+	float discriminant = b * b - 4 * a * c;
 	if (discriminant < 0){ return; }
 	else
 	{
 		discriminant = sqrt(discriminant);
-		double t1 = ((-1 * b) + discriminant) / (2 * a);
-		double t2 = ((-1 * b) - discriminant) / (2 * a);
+		float t1 = ((-1 * b) + discriminant) / (2 * a);
+		float t2 = ((-1 * b) - discriminant) / (2 * a);
 		if (t1 >= 0)
 		{
 			if (upVector.dot((ray->origin - this->position) + ray->direction * t1) > 0 && upVector.dot((ray->origin - center2) + ray->direction * t1) < 0)
@@ -163,7 +163,7 @@ void Cylinder::intersect(Ray* ray)
 	if (denominator > EPSILON)
 	{
 		vec3 co = this->position - ray->origin;
-		double t3 = co.dot(upVector) / denominator;
+		float t3 = co.dot(upVector) / denominator;
 		if (t3 > 0 && (ray->direction * t3 - co).sqrLentgh() <= radius*radius)
 		{
 			points.push_back(t3);
@@ -172,14 +172,14 @@ void Cylinder::intersect(Ray* ray)
 	else if (denominator < EPSILON)
 	{
 		vec3 co2 = center2 - ray->origin;
-		double t4 = co2.dot(upVector) / denominator;
+		float t4 = co2.dot(upVector) / denominator;
 		if (t4 > 0 && (ray->direction * t4 - co2).sqrLentgh() <= radius*radius)
 		{
 			points.push_back(t4);
 		}
 	}
 
-	double minT = INFINITY;
+	float minT = INFINITY;
 	bool intersects = false;
 	for (int i = 0; i<points.size(); i++)
 	{
