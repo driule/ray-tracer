@@ -7,8 +7,8 @@ Scene::Scene(Surface* screen)
 	this->camera = new Camera();
 
 	// create scene lights
-	this->lightSources.push_back(new DirectLight(0, vec3(10, -10, -20), vec4(1, 1, 1, 0)));
-	this->lightSources.push_back(new DirectLight(0, vec3(7, -10, -20), vec4(1, 1, 1, 0)));
+	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0)));
+	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(0.0f, -2.0f, 0.0f), vec4(1, 1, 1, 0)));
 
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
@@ -19,7 +19,7 @@ Scene::Scene(Surface* screen)
 	blueGlassMaterial->refraction = 1.33;
 	blueGlassMaterial->reflection = 0.5;
 
-	this->primitives.push_back(
+	/*this->primitives.push_back(
 		new Sphere(blueGlassMaterial, this->primitives.size(), vec3(0, 0, 5), 1)
 	);
 	this->primitives.push_back(
@@ -30,10 +30,10 @@ Scene::Scene(Surface* screen)
 	);
 	this->primitives.push_back(
 		new Plane(planeMaterial, this->primitives.size(), vec3(0, 0, 15), vec3(0, 0, -1)) // back
-	);
+	);*/
 
 	// create box from planes
-	/*
+	
 	this->primitives.push_back(
 		new Sphere(greenMaterial, this->primitives.size(), vec3(0, 0, 2), 0.2) // spehere in the box
 	);
@@ -51,7 +51,7 @@ Scene::Scene(Surface* screen)
 	);
 	this->primitives.push_back(
 		new Plane(greenMaterial, this->primitives.size(), vec3(5, 0, 5), vec3(-1, 0, 0)) // left
-	);*/
+	);
 }
 
 void Scene::render(int row)
@@ -151,6 +151,7 @@ vec4 Scene::illuminate(Ray* ray)
 
 		vec3 hitEpsilon = reflectionRay->origin + reflectionRay->direction * 0.01;
 		reflectionRay->origin = hitEpsilon;
+		reflectionRay->t = (reflectionRay->origin - this->lightSources[i]->position).length();
 		this->intersectPrimitives(reflectionRay);
 
 		if (reflectionRay->intersectedObjectId != -1)
