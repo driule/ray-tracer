@@ -62,13 +62,13 @@ namespace Tmpl8 {
 	class Cylinder : public Primitive
 	{
 	public:
-		Cylinder(Material* material, int id, vec3 position, float radius, float height);
+		Cylinder(Material* material, int id, vec3 position, vec3 upVector, float radius, float height);
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
 
 	private:
-		vec3 position;
+		vec3 position, upVector;
 		float radius, height;
 	};
 }

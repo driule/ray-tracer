@@ -117,6 +117,10 @@ public:
 		return vec3( y * operand.z - z * operand.y, z * operand.x - x * operand.z, x * operand.y - y * operand.x );
 	}
 	float dot( const vec3& operand ) const { return x * operand.x + y * operand.y + z * operand.z; }
+	vec3 project(const vec3& v) const
+	{
+		return (v * (this->dot(v) / v.sqrLentgh()));
+	}
 };
 
 class vec4

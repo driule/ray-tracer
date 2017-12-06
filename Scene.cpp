@@ -30,6 +30,10 @@ Scene::Scene(Surface* screen)
 		new Sphere(blueGlassMaterial, this->primitives.size(), vec3(2, -1, 2), 0.5) // spehere in the box
 	);
 
+	this->primitives.push_back(
+		new Cylinder(redMaterial, this->primitives.size(), vec3(-1.5, -1.5, 0), vec3(1, 0, 0), 0.1, 0.5)
+	);
+
 	// create box from planes
 	this->primitives.push_back(
 		new Plane(planeMaterial, this->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
