@@ -21,8 +21,8 @@ void RayTracerJob::Main()
 void Game::Init()
 {
 	printf("Use arrows to move camera around....\n");
-	scene = new Scene(screen);
 
+	// initialize threads
 	rayTracerJobs = new RayTracerJob*[SCRHEIGHT / 32];
 	for (int i = 0; i < SCRHEIGHT / 32; i++)
 	{
@@ -31,6 +31,10 @@ void Game::Init()
 
 	JobManager::CreateJobManager(4);
 	jobManager = JobManager::GetJobManager();
+
+	//create scene
+	scene = new Scene(screen);
+	this->createScene();
 
 	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
@@ -155,6 +159,56 @@ void Game::moveCamera()
 	{
 		this->loadTeddy();
 	}
+}
+
+void Game::createScene()
+{
+	// create scene lights
+	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0), 20));
+	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(0.0f, -2.0f, 0.0f), vec4(0.5, 0.5, 0.5, 0), 20));
+
+	// create scene objects
+	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
+	Material* greenMaterial = new Material(vec4(0, 1, 0, 0), diffuse);
+	Material* brownMaterial = new Material(vec4(0.756, 0.556, 0.094, 0), diffuse);
+	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
+	Material* mirrorMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), mirror);
+
+	Material* blueGlassMaterial = new Material(vec4(0, 0, 1, 0.8), dielectric);
+	blueGlassMaterial->refraction = 1.33;
+	blueGlassMaterial->reflection = 0.1;
+
+	scene->primitives.push_back(
+		new Triangle(greenMaterial, scene->primitives.size(), vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
+	);
+	scene->primitives.push_back(
+		new Sphere(blueGlassMaterial, scene->primitives.size(), vec3(2, -1, 2), 0.5) // spehere in the box
+	);
+
+	scene->primitives.push_back(
+		new Cylinder(redMaterial, scene->primitives.size(), vec3(-1.5, -1.5, 0), vec3(1, 0, 0), 0.1, 0.5)
+	);
+
+	scene->primitives.push_back(
+		new Torus(brownMaterial, scene->primitives.size(), 0.4f, 0.2f, vec3(-0.5, -0.5, 0.2), vec3(0.5, 0.5, -1))
+	);
+
+	// create box from planes
+	scene->primitives.push_back(
+		new Plane(planeMaterial, scene->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
+	);
+	scene->primitives.push_back(
+		new Plane(mirrorMaterial, scene->primitives.size(), vec3(0, -5, 5), vec3(0, 1, 0)) //top
+	);
+	scene->primitives.push_back(
+		new Plane(mirrorMaterial, scene->primitives.size(), vec3(0, 5, 5), vec3(0, -1, 0)) //bottom
+	);
+	scene->primitives.push_back(
+		new Plane(greenMaterial, scene->primitives.size(), vec3(-5, 0, 5), vec3(1, 0, 0)) //right
+	);
+	scene->primitives.push_back(
+		new Plane(greenMaterial, scene->primitives.size(), vec3(5, 0, 5), vec3(-1, 0, 0)) // left
+	);
 }
 
 void Game::loadTeddy()

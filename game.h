@@ -19,6 +19,7 @@ public:
 private:
 	Surface* screen;
 
+	void createScene();
 	void loadTeddy();
 };
 

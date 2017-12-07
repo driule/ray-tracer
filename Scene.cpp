@@ -5,53 +5,6 @@ Scene::Scene(Surface* screen)
 	// create camera
 	this->screen = screen;
 	this->camera = new Camera();
-
-	// create scene lights
-	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0), 20));
-	this->lightSources.push_back(new DirectLight(this->lightSources.size(), vec3(0.0f, -2.0f, 0.0f), vec4(0.5, 0.5, 0.5, 0), 20));
-
-	// create scene objects
-	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
-	Material* greenMaterial = new Material(vec4(0, 1, 0, 0), diffuse);
-	Material* brownMaterial = new Material(vec4(0.756, 0.556, 0.094, 0), diffuse);
-	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
-	Material* mirrorMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), mirror);
-
-	Material* blueGlassMaterial = new Material(vec4(0, 0, 1, 0.8), dielectric);
-	blueGlassMaterial->refraction = 1.33;
-	blueGlassMaterial->reflection = 0.1;
-
-	this->primitives.push_back(
-		new Triangle(greenMaterial, this->primitives.size(), vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
-	);
-	this->primitives.push_back(
-		new Sphere(blueGlassMaterial, this->primitives.size(), vec3(2, -1, 2), 0.5) // spehere in the box
-	);
-
-	this->primitives.push_back(
-		new Cylinder(redMaterial, this->primitives.size(), vec3(-1.5, -1.5, 0), vec3(1, 0, 0), 0.1, 0.5)
-	);
-
-	this->primitives.push_back(
-		new Torus(brownMaterial, this->primitives.size(), 0.4f, 0.2f, vec3(-0.5, -0.5, 0.2), vec3(0.5, 0.5, -1))
-	);
-
-	// create box from planes
-	this->primitives.push_back(
-		new Plane(planeMaterial, this->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
-	);
-	this->primitives.push_back(
-		new Plane(mirrorMaterial, this->primitives.size(), vec3(0, -5, 5), vec3(0, 1, 0)) //top
-	);
-	this->primitives.push_back(
-		new Plane(mirrorMaterial, this->primitives.size(), vec3(0, 5, 5), vec3(0, -1, 0)) //bottom
-	);
-	this->primitives.push_back(
-		new Plane(greenMaterial, this->primitives.size(), vec3(-5, 0, 5), vec3(1, 0, 0)) //right
-	);
-	this->primitives.push_back(
-		new Plane(greenMaterial, this->primitives.size(), vec3(5, 0, 5), vec3(-1, 0, 0)) // left
-	);
 }
 
 void Scene::render(int row)
