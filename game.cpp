@@ -178,7 +178,20 @@ void Game::createScene()
 	blueGlassMaterial->refraction = 1.33;
 	blueGlassMaterial->reflection = 0.1;
 
+	//simple scene
 	scene->primitives.push_back(
+		new Triangle(greenMaterial, scene->primitives.size(), vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
+	);
+	scene->primitives.push_back(
+		new Sphere(redMaterial, scene->primitives.size(), vec3(2, -1, 2), 0.5) // spehere in the box
+	);
+
+	scene->primitives.push_back(
+		new Plane(planeMaterial, scene->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
+	);
+	//
+
+	/*scene->primitives.push_back(
 		new Triangle(greenMaterial, scene->primitives.size(), vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
 	);
 	scene->primitives.push_back(
@@ -208,7 +221,7 @@ void Game::createScene()
 	);
 	scene->primitives.push_back(
 		new Plane(greenMaterial, scene->primitives.size(), vec3(5, 0, 5), vec3(-1, 0, 0)) // left
-	);
+	);*/
 }
 
 void Game::loadTeddy()
