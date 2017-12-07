@@ -100,6 +100,7 @@ public:
 	vec3 operator + ( const vec3& addOperand ) const { return vec3( x + addOperand.x, y + addOperand.y, z + addOperand.z ); }
 	vec3 operator - ( const vec3& operand ) const { return vec3( x - operand.x, y - operand.y, z - operand.z ); }
 	vec3 operator * ( const vec3& operand ) const { return vec3( x * operand.x, y * operand.y, z * operand.z ); }
+	vec3 operator / (const vec3& operand) const { return vec3(x / operand.x, y / operand.y, z / operand.z); }
 	void operator -= ( const vec3& a ) { x -= a.x; y -= a.y; z -= a.z; }
 	void operator += ( const vec3& a ) { x += a.x; y += a.y; z += a.z; }
 	void operator *= ( const vec3& a ) { x *= a.x; y *= a.y; z *= a.z; }

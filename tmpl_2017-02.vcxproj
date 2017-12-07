@@ -228,6 +228,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BVH.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="LightSources.cpp" />
@@ -242,6 +243,7 @@
     <ClCompile Include="threads.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BVH.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="LightSources.h" />
