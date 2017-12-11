@@ -13,7 +13,7 @@ namespace Tmpl8 {
 	class Primitive
 	{
 	public:
-		Primitive(Material* material, int id);
+		Primitive(Material* material);
 		
 		Material* material;
 		int id;
@@ -25,7 +25,7 @@ namespace Tmpl8 {
 	class Sphere : public Primitive
 	{
 	public:
-		Sphere(Material* material, int id, vec3 position, float radius);
+		Sphere(Material* material, vec3 position, float radius);
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
@@ -38,7 +38,7 @@ namespace Tmpl8 {
 	class Triangle : public Primitive
 	{
 	public:
-		Triangle(Material* material, int id, vec3 a, vec3 b, vec3 c);
+		Triangle(Material* material, vec3 a, vec3 b, vec3 c);
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
@@ -50,7 +50,7 @@ namespace Tmpl8 {
 	class Plane : public Primitive
 	{
 	public:
-		Plane(Material* material, int id, vec3 position, vec3 direction);
+		Plane(Material* material, vec3 position, vec3 direction);
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
@@ -62,7 +62,7 @@ namespace Tmpl8 {
 	class Cylinder : public Primitive
 	{
 	public:
-		Cylinder(Material* material, int id, vec3 position, vec3 upVector, float radius, float height);
+		Cylinder(Material* material, vec3 position, vec3 upVector, float radius, float height);
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
@@ -75,7 +75,7 @@ namespace Tmpl8 {
 	class Torus : public Primitive
 	{
 	public:
-		Torus(Material* material, int id, float R, float r, vec3 position, vec3 axis);
+		Torus(Material* material, float R, float r, vec3 position, vec3 axis);
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);

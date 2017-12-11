@@ -20,6 +20,8 @@ void Scene::render(int row)
 
 		// clear garbages
 		delete ray;
+		
+		//break; //test with one pixel
 	}
 }
 
@@ -166,10 +168,15 @@ Ray* Scene::computeRefractionRay(Ray* ray)
 
 void Scene::intersectPrimitives(Ray* ray)
 {
-	for (int i = 0; i < this->primitives.size(); i++)
+	/*for (int i = 0; i < this->primitives.size(); i++)
 	{
 		this->primitives[i]->intersect(ray);
-	}
+	}*/
+
+	this->accelerationStructure->traverse(
+		this->accelerationStructure->root,
+		ray
+	);
 }
 
 void Scene::intersectLightSources(Ray* ray)
@@ -188,6 +195,30 @@ Pixel Scene::convertColorToPixel(vec4 color)
 	int b = min((int)color.z, 255);
 
 	return (r << 16) + (g << 8) + b;
+}
+
+void Scene::createBVH()
+{
+	this->accelerationStructure = new BVH(this->primitives);
+}
+
+void Scene::addPrimitive(Primitive* primitive)
+{
+	primitive->id = this->primitives.size();
+	this->primitives.push_back(primitive);
+	this->createBVH();
+}
+
+void Scene::addLightSource(LightSource* lightSource)
+{
+	lightSource->id = this->lightSources.size();
+	this->lightSources.push_back(lightSource);
+}
+
+void Scene::clear()
+{
+	this->primitives.clear();
+	this->lightSources.clear();
 }
 
 void Scene::loadObjModel(const char *filename, Material* material)
@@ -264,7 +295,10 @@ void Scene::loadObjModel(const char *filename, Material* material)
 		vec3 b = meshVertices[i * 3 + 1];
 		vec3 c = meshVertices[i * 3 + 2];
 
-		Triangle* triangle = new Triangle(material, this->primitives.size(), a, b, c);
+		Triangle* triangle = new Triangle(material, a, b, c);
+		triangle->id = this->primitives.size();
 		this->primitives.push_back(triangle);
 	}
+
+	this->createBVH();
 }

@@ -7,12 +7,16 @@ namespace Tmpl8 {
 		Camera* camera;
 
 		void render(int row);
+		void addPrimitive(Primitive* primitive);
+		void addLightSource(LightSource* lightSource);
 		void loadObjModel(const char *filename, Material* material);
+		void clear();
+	private:
+		Surface* screen;
+		BVH* accelerationStructure;
 
 		std::vector<Primitive*> primitives;
 		std::vector<LightSource*> lightSources;
-	private:
-		Surface* screen;
 
 		vec4 trace(Ray* ray, int depth);
 		vec4 illuminate(Ray* ray);
@@ -21,5 +25,6 @@ namespace Tmpl8 {
 		void intersectPrimitives(Ray* ray);
 		void intersectLightSources(Ray* ray);
 		Pixel convertColorToPixel(vec4 color);
+		void createBVH();
 	};
 }

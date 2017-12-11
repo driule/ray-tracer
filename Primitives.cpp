@@ -6,7 +6,7 @@ Material::Material(vec4 color, MaterialType type)
 	this->type = type;
 }
 
-Primitive::Primitive(Material* material, int id)
+Primitive::Primitive(Material* material)
 {
 	this->material = material;
 	this->id = id;
@@ -14,7 +14,7 @@ Primitive::Primitive(Material* material, int id)
 
 // -------------------- SPHERE ------------------------------------
 
-Sphere::Sphere(Material* material, int id, vec3 position, float radius) : Primitive(material, id)
+Sphere::Sphere(Material* material, vec3 position, float radius) : Primitive(material)
 {
 	this->position = position;
 	this->radius = radius;
@@ -46,7 +46,7 @@ vec3 Sphere::getNormal(vec3 point)
 
 // -------------------- TRIANGLE ------------------------------------
 
-Triangle::Triangle(Material* material, int id, vec3 a, vec3 b, vec3 c) : Primitive(material, id)
+Triangle::Triangle(Material* material, vec3 a, vec3 b, vec3 c) : Primitive(material)
 {
 	this->a = a;
 	this->b = b;
@@ -90,7 +90,7 @@ vec3 Triangle::getNormal(vec3 point)
 
 // -------------------- PLANE ------------------------------------
 
-Plane::Plane(Material* material, int id, vec3 position, vec3 direction) : Primitive(material, id)
+Plane::Plane(Material* material, vec3 position, vec3 direction) : Primitive(material)
 {
 	this->position = position;
 	this->direction = direction;
@@ -116,7 +116,7 @@ vec3 Plane::getNormal(vec3 point)
 
 // -------------------- CYLINDER ------------------------------------
 
-Cylinder::Cylinder(Material* material, int id, vec3 position, vec3 upVector, float radius, float height) : Primitive(material, id)
+Cylinder::Cylinder(Material* material, vec3 position, vec3 upVector, float radius, float height) : Primitive(material)
 {
 	this->position = position;
 	this->upVector = upVector;
@@ -216,7 +216,7 @@ vec3 Cylinder::getNormal(vec3 point)
 
 // -------------------- TORUS ------------------------------------
 
-Torus::Torus(Material* material, int id, float R, float r, vec3 position, vec3 axis) : Primitive(material, id)
+Torus::Torus(Material* material, float R, float r, vec3 position, vec3 axis) : Primitive(material)
 {
 	this->position = position;
 	this->R = R;

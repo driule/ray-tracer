@@ -1,7 +1,7 @@
 #include "precomp.h"
 
 
-LightSource::LightSource(int id, vec3 position, vec4 color, int intensity)
+LightSource::LightSource(vec3 position, vec4 color, int intensity)
 {
 	this->id = id;
 	this->position = position;
@@ -11,7 +11,7 @@ LightSource::LightSource(int id, vec3 position, vec4 color, int intensity)
 
 // -------------------- DIRECT LIGHT ------------------------------------
 
-DirectLight::DirectLight(int id, vec3 position, vec4 color, int intensity) : LightSource(id, position, color, intensity)
+DirectLight::DirectLight(vec3 position, vec4 color, int intensity) : LightSource(position, color, intensity)
 {
 }
 

@@ -64,6 +64,13 @@ void Game::Tick( float deltaTime )
 	}
 	jobManager->RunJobs();
 
+	// test with 1 pixel, add break to Scene:render()
+	/*
+	scene->render(0);
+	printf("tick\n");
+	Sleep(100000);
+	/*/
+
 	// measure FPS
 	char buffer[15];
 	sprintf(buffer, "FPS: %f", 1000 / _timer.elapsed());
@@ -153,9 +160,6 @@ void Game::moveCamera()
 	if (changed)
 	{
 		scene->camera->calculateScreen();
-		printf("camera.z: %f \n", scene->camera->position.z);
-		printf("FOV: %f \n", scene->camera->fieldOfView);
-		printf("UP: %f, %f, %f \n", scene->camera->up.x, scene->camera->up.y, scene->camera->up.z);
 	}
 
 	// load teddy
@@ -168,8 +172,8 @@ void Game::moveCamera()
 void Game::createScene()
 {
 	// create scene lights
-	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0), 20));
-	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(0.0f, -2.0f, 0.0f), vec4(0.5, 0.5, 0.5, 0), 20));
+	scene->addLightSource(new DirectLight(vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0), 20));
+	scene->addLightSource(new DirectLight(vec3(0.0f, -2.0f, 0.0f), vec4(0.5, 0.5, 0.5, 0), 20));
 
 	// create scene objects
 	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
@@ -183,16 +187,19 @@ void Game::createScene()
 	blueGlassMaterial->reflection = 0.1;
 
 	//simple scene
-	scene->primitives.push_back(
-		new Triangle(greenMaterial, scene->primitives.size(), vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
+	scene->addPrimitive(
+		new Triangle(greenMaterial, vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
 	);
-	scene->primitives.push_back(
-		new Sphere(redMaterial, scene->primitives.size(), vec3(2, -1, 2), 0.5) // spehere in the box
+	scene->addPrimitive(
+		new Sphere(redMaterial, vec3(2, -1, 2), 0.5)
+	);
+	scene->addPrimitive(
+		new Sphere(brownMaterial, vec3(-2, -1, 2), 0.5)
 	);
 
-	scene->primitives.push_back(
+	/*scene->primitives.push_back(
 		new Plane(planeMaterial, scene->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
-	);
+	);*/
 	//
 
 	/*scene->primitives.push_back(
@@ -230,22 +237,21 @@ void Game::createScene()
 
 void Game::loadTeddy()
 {
-	scene->primitives.clear();
-	scene->lightSources.clear();
+	scene->clear();
 
-	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(-10.0f, 0.0f, -20.0), vec4(1, 1, 1, 0), 250));
-	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(8.0f, 0.0f, -18.0), vec4(1, 1, 1, 0), 100));
-	scene->lightSources.push_back(new DirectLight(scene->lightSources.size(), vec3(4.0f, 8.0f, -20.0), vec4(1, 1, 1, 0), 100));
+	scene->addLightSource(new DirectLight(vec3(-10.0f, 0.0f, -20.0), vec4(1, 1, 1, 0), 250));
+	scene->addLightSource(new DirectLight(vec3(8.0f, 0.0f, -18.0), vec4(1, 1, 1, 0), 100));
+	scene->addLightSource(new DirectLight(vec3(4.0f, 8.0f, -20.0), vec4(1, 1, 1, 0), 100));
 
 
 	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
-	scene->primitives.push_back(
-		new Plane(planeMaterial, scene->primitives.size(), vec3(0, 0, 50), vec3(0, 0, -1))
+	scene->addPrimitive(
+		new Plane(planeMaterial, vec3(0, 0, 50), vec3(0, 0, -1))
 	);
 
 	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
-	scene->primitives.push_back(
-		new Sphere(redMaterial, scene->primitives.size(), vec3(-25, 10, 0), 5)
+	scene->addPrimitive(
+		new Sphere(redMaterial, vec3(-25, 10, 0), 5)
 	);
 
 	scene->camera->position = vec3(0, 0, -50);

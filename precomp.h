@@ -50,8 +50,6 @@ extern "C"
 
 #include "quarticsolver.h"
 
-
-
 #include "Ray.h"
 #include "Camera.h"
 #include "Primitives.h"
