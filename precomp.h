@@ -16,6 +16,8 @@
 
 #define EPSILON 1e-6
 
+#define CAMERA_ORIGIN vec3(0, 0, -3)
+
 enum MaterialType { diffuse, mirror, dielectric };
 
 // #define FULLSCREEN

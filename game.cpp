@@ -134,6 +134,10 @@ void Game::moveCamera()
 		scene->camera->viewDirection -= scene->camera->up * 0.2;
 		changed = true;
 	}
+	if (GetAsyncKeyState('R'))
+	{
+		scene->camera = new Camera();
+	}
 
 	// change FOV
 	if (GetAsyncKeyState(VK_NUMPAD1))

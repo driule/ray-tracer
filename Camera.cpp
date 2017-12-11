@@ -1,10 +1,8 @@
 #include "precomp.h"
 
-#define ORIGIN vec3(0, 0, -3)
-
 Camera::Camera()
 {
-	this->position = ORIGIN;
+	this->position = CAMERA_ORIGIN;
 	this->viewDirection = vec3(0, 0, 1);
 	this->fieldOfView = 1;
 	this->up = vec3(0, -1, 0);
