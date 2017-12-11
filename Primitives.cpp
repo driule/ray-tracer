@@ -9,7 +9,6 @@ Material::Material(vec4 color, MaterialType type)
 Primitive::Primitive(Material* material)
 {
 	this->material = material;
-	this->id = id;
 }
 
 // -------------------- SPHERE ------------------------------------

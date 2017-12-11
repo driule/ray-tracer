@@ -3,7 +3,6 @@
 
 LightSource::LightSource(vec3 position, vec4 color, int intensity)
 {
-	this->id = id;
 	this->position = position;
 	this->color = color;
 	this->intensity = intensity;
