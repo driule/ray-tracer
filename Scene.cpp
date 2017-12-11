@@ -225,65 +225,48 @@ void Scene::loadObjModel(const char *filename, Material* material)
 {
 	// obj file content
 	std::vector<vec3> vertices;
-	//std::vector<vec2> textures;
 	std::vector<int> faceIndexes;
-	//std::vector<int> textureIndexes;
 	std::vector<vec3> meshVertices;
-	//std::vector<vec2> textureCoordinates;
 
-	std::ifstream in(filename, std::ios::in);
-	if (!in)
+	std::ifstream stream(filename, std::ios::in);
+	if (!stream)
 	{
 		printf("Cannot load %s file!", filename);
 	}
 
 	std::string line;
-	while (std::getline(in, line))
+	while (std::getline(stream, line))
 	{
-		//check v for vertices
-		if (line.substr(0, 2) == "v ") {
+		if (line.substr(0, 2) == "v ")
+		{
 			std::istringstream v(line.substr(2));
-			vec3 vert;
 			float x, y, z;
 			v >> x; v >> y; v >> z;
-			vert = vec3(x, y, z);
-			vertices.push_back(vert);
-		}
-		//check for texture co-ordinate
-		else if (line.substr(0, 2) == "vt") {
-			/*std::istringstream v(line.substr(3));
-			vec2 tex;
-			int U, V;
-			v >> U; v >> V;
-			tex = vec2(U, V);
-			textures.push_back(tex);*/
-		}
-		//check for faces
-		else if (line.substr(0, 2) == "f ") {
-			int a, b, c; //to store mesh index
-			//int A, B, C; //to store texture index
-			//std::istringstream v;
-			//v.str(line.substr(2));
-			const char* chh = line.c_str();
-			sscanf(chh, "f %i %i %i", &a, &b, &c); //here it read the line start with f and store the corresponding values in the variables
 
-			a--; b--; c--;
-			//A--; B--; C--;
-
-			faceIndexes.push_back(a); //textureIndexes.push_back(A);
-			faceIndexes.push_back(b); //textureIndexes.push_back(B);
-			faceIndexes.push_back(c); //textureIndexes.push_back(C);
+			vertices.push_back(vec3(x, y, z));
 		}
+		else if (line.substr(0, 2) == "vt")
+		{
+			// TODO: implement textures support
+		}
+		else if (line.substr(0, 2) == "f ")
+		{
+			std::istringstream v(line.substr(2));
+			int a, b, c;
+			v >> a; v >> b; v >> c;
 
+			faceIndexes.push_back(--a);
+			faceIndexes.push_back(--b);
+			faceIndexes.push_back(--c);
+		}
 	}
-	//the mesh data is finally calculated here
+
+	// calculate mesh vertices
 	for (unsigned int i = 0; i < faceIndexes.size(); i++)
 	{
 		meshVertices.push_back(
 			vec3(vertices[faceIndexes[i]].x, vertices[faceIndexes[i]].y, vertices[faceIndexes[i]].z)
 		);
-		//vec2 texData = vec2(textures[textureIndexes[i]].x, textures[textureIndexes[i]].y);
-		//texCoord.push_back(texData);
 	}
 
 	// add triangles to the scene
