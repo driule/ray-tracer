@@ -21,7 +21,7 @@ namespace Tmpl8 {
 		vec3 center;
 		virtual void intersect(Ray* ray) = 0;
 		virtual vec3 getNormal(vec3 point) = 0;
-		//void intersectBoundingBox(Ray* ray);
+		void intersectBoundingBox(Ray* ray);
 	};
 
 	class Sphere : public Primitive

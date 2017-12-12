@@ -11,7 +11,7 @@ Primitive::Primitive(Material* material)
 	this->material = material;
 }
 
-/* void Primitive::intersectBoundingBox(Ray* ray)
+void Primitive::intersectBoundingBox(Ray* ray)
 {
 	float tmin = (this->boundingBoxMin.x - ray->origin.x) / ray->direction.x;
 	float tmax = (this->boundingBoxMax.x - ray->origin.x) / ray->direction.x;
@@ -51,7 +51,7 @@ Primitive::Primitive(Material* material)
 		ray->t = tmin;
 		ray->intersectedObjectId = this->id;
 	}
-}*/
+}
 
 // -------------------- SPHERE ------------------------------------
 
@@ -285,8 +285,8 @@ Torus::Torus(Material* material, float R, float r, vec3 position, vec3 axis) : P
 	this->r = r;
 	this->axis = normalize(axis);
 
-	this->boundingBoxMin = position - R;
-	this->boundingBoxMax = position + R;
+	this->boundingBoxMin = position - R * 1.5;
+	this->boundingBoxMax = position + R * 1.5;
 
 	this->center = position;
 }

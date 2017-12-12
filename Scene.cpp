@@ -171,6 +171,7 @@ void Scene::intersectPrimitives(Ray* ray)
 	/*for (int i = 0; i < this->primitives.size(); i++)
 	{
 		this->primitives[i]->intersect(ray);
+		this->primitives[i]->intersectBoundingBox(ray);
 	}*/
 
 	this->accelerationStructure->traverse(
