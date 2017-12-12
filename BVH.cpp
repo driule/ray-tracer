@@ -1,5 +1,8 @@
 #include "precomp.h"
 
+#define MAX_PRIMITIVES 4
+#define MAX_DEPTH 100
+
 BVH::BVH(std::vector<Primitive*> primitives)
 {
 	this->primitives = primitives;
@@ -15,12 +18,12 @@ BVH::BVH(std::vector<Primitive*> primitives)
 	this->root->count = N;
 
 	calculateBounds(this->root, 0, N);
-	subdivide(this->root);
+	subdivide(this->root, 0);
 }
 
-void BVH::subdivide(Node* node)
+void BVH::subdivide(Node* node, int depth)
 {
-	if (node->count < 4)
+	if (node->count <= MAX_PRIMITIVES || depth >= MAX_DEPTH)
 	{
 		node->isLeaf = true;
 		return;
@@ -30,8 +33,9 @@ void BVH::subdivide(Node* node)
 	node->right = new Node();
 	this->partition(node);
 
-	this->subdivide(node->left);
-	this->subdivide(node->right);
+	depth++;
+	this->subdivide(node->left, depth);
+	this->subdivide(node->right, depth);
 }
 
 void BVH::calculateBounds(Node* node, int first, int count)

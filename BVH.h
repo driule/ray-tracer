@@ -20,7 +20,7 @@ namespace Tmpl8
 		std::vector<Primitive*> primitives;
 		int* primitiveIndices;
 
-		void subdivide(Node* node);
+		void subdivide(Node* node, int depth);
 		void calculateBounds(Node* node, int first, int count);
 		void partition(Node* node);
 		bool intersects(Node* node, Ray* ray);
