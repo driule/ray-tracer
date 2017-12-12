@@ -9,7 +9,7 @@ namespace Tmpl8 {
 		void render(int row);
 		void addPrimitive(Primitive* primitive);
 		void addLightSource(LightSource* lightSource);
-		void loadObjModel(const char *filename, Material* material);
+		void loadObjModel(const char *filename, Material* material, vec3 translationVector = vec3(0));
 		void clear();
 	private:
 		Surface* screen;

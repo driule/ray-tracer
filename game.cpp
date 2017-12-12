@@ -265,5 +265,8 @@ void Game::loadTeddy()
 	scene->camera->calculateScreen();
 
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
-	scene->loadObjModel("assets/teddy.obj", brownMaterial);
+	for (int i = 0; i < 3; i++)
+	{
+		scene->loadObjModel("assets/teddy.obj", brownMaterial, vec3(i * 30, 0, 0));
+	}
 }

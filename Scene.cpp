@@ -217,7 +217,7 @@ void Scene::clear()
 	this->lightSources.clear();
 }
 
-void Scene::loadObjModel(const char *filename, Material* material)
+void Scene::loadObjModel(const char *filename, Material* material, vec3 translationVector)
 {
 	// obj file content
 	std::vector<vec3> vertices;
@@ -261,7 +261,7 @@ void Scene::loadObjModel(const char *filename, Material* material)
 	for (unsigned int i = 0; i < faceIndexes.size(); i++)
 	{
 		meshVertices.push_back(
-			vec3(vertices[faceIndexes[i]].x, vertices[faceIndexes[i]].y, vertices[faceIndexes[i]].z)
+			vec3(vertices[faceIndexes[i]].x, vertices[faceIndexes[i]].y, vertices[faceIndexes[i]].z) + translationVector
 		);
 	}
 
