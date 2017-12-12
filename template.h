@@ -111,6 +111,7 @@ public:
 	float length() const { return sqrtf( x * x + y * y + z * z ); }
 	float sqrLentgh() const { return x * x + y * y + z * z; }
 	vec3 normalized() const { float r = 1.0f / length(); return vec3( x * r, y * r, z * r ); }
+	vec3 absolute() const { return vec3(abs(x), abs(y), abs(z)); }
 	void normalize() { float r = 1.0f / length(); x *= r; y *= r; z *= r; }
 	static vec3 normalize( const vec3 v ) { return v.normalized(); }
 	vec3 cross( const vec3& operand ) const

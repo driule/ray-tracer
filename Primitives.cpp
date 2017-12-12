@@ -62,6 +62,7 @@ Sphere::Sphere(Material* material, vec3 position, float radius) : Primitive(mate
 	this->radius2 = radius * radius;
 	this->boundingBoxMin = position - radius;
 	this->boundingBoxMax = position + radius;
+	this->center = position;
 }
 
 void Sphere::intersect(Ray* ray)
@@ -105,6 +106,8 @@ Triangle::Triangle(Material* material, vec3 a, vec3 b, vec3 c) : Primitive(mater
 
 	this->boundingBoxMin = vec3(minX, minY, minZ);
 	this->boundingBoxMax = vec3(maxX, maxY, maxZ);
+
+	this->center = (a + b + c) / 3;
 }
 
 void Triangle::intersect(Ray* ray)
@@ -179,6 +182,8 @@ Cylinder::Cylinder(Material* material, vec3 position, vec3 upVector, float radiu
 
 	this->boundingBoxMin = position - radius;
 	this->boundingBoxMax = (position + radius) + height * upVector;
+
+	this->center = position + height * upVector * 0.5;
 }
 
 void Cylinder::intersect(Ray* ray)
@@ -282,6 +287,8 @@ Torus::Torus(Material* material, float R, float r, vec3 position, vec3 axis) : P
 
 	this->boundingBoxMin = position - R;
 	this->boundingBoxMax = position + R;
+
+	this->center = position;
 }
 
 void Torus::intersect(Ray* ray)

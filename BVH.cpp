@@ -14,13 +14,13 @@ BVH::BVH(std::vector<Primitive*> primitives)
 	this->root->first = 0;
 	this->root->count = N;
 
-	calculateBounds(this->root);
+	calculateBounds(this->root, 0, N);
 	subdivide(this->root);
 }
 
 void BVH::subdivide(Node* node)
 {
-	if (node->count < 5)
+	if (node->count < 4)
 	{
 		node->isLeaf = true;
 		return;
@@ -34,12 +34,12 @@ void BVH::subdivide(Node* node)
 	this->subdivide(node->right);
 }
 
-void BVH::calculateBounds(Node* node)
+void BVH::calculateBounds(Node* node, int first, int count)
 {
 	float maxX = -INFINITY, maxY = -INFINITY, maxZ = -INFINITY;
 	float minX = INFINITY, minY = INFINITY, minZ = INFINITY;
 	
-	for (int i = node->first; i < node->first + node->count; i++)
+	for (int i = first; i < first + count; i++)
 	{
 		int index = this->primitiveIndices[i];
 		minX = MIN(this->primitives[index]->boundingBoxMin.x, minX);
@@ -57,42 +57,73 @@ void BVH::calculateBounds(Node* node)
 void BVH::partition(Node* node)
 {
 	vec3 splitPlane = node->boundingBoxMin + 0.5 * node->boundingBoxMax;
-	int* temporaryIndices = new int[node->count];
-	int leftCount = 0, rightCount = 0;
+	float optimalSAH = INFINITY;
 
-	for (int i = node->first; i < node->first + node->count; i++)
+	for (int j = 0; j < 3; j++)
 	{
-		int index = this->primitiveIndices[i];
-		if (this->primitives[index]->boundingBoxMin.x < splitPlane.x)
+		int* temporaryIndices = new int[node->count];
+		int leftCount = 0, rightCount = 0;
+
+		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			temporaryIndices[leftCount] = index;
-			leftCount++;
+			int index = this->primitiveIndices[i];
+
+			bool left = false;
+			if (j == 0)
+			{
+				left = this->primitives[index]->center.x < splitPlane.x;
+			}
+			else if (j == 1)
+			{
+				left = this->primitives[index]->center.y < splitPlane.y;
+			}
+			else
+			{
+				left = this->primitives[index]->center.z < splitPlane.z;
+			}
+
+			if (left)
+			{
+				temporaryIndices[leftCount] = index;
+				leftCount++;
+			}
+			else
+			{
+				rightCount++;
+				temporaryIndices[node->count - rightCount] = index;
+			}
 		}
-		else
+
+		// left Node
+		calculateBounds(node->left, node->first, leftCount);
+
+		// right Node
+		calculateBounds(node->right, node->first + leftCount, rightCount);
+
+		vec3 diagonalLeft = (node->left->boundingBoxMax - node->left->boundingBoxMin);
+		vec3 diagonalRight = (node->right->boundingBoxMax - node->right->boundingBoxMin);
+
+		float surfaceAreaLeft = (abs(diagonalLeft.x * diagonalLeft.y) + abs(diagonalLeft.x * diagonalLeft.z) + abs(diagonalLeft.z * diagonalLeft.y)) * 2;
+		float surfaceAreaRight = (abs(diagonalRight.x * diagonalRight.y) + abs(diagonalRight.x * diagonalRight.z) + abs(diagonalRight.z * diagonalRight.y)) * 2;
+
+		float SAH = surfaceAreaLeft * leftCount + surfaceAreaRight * rightCount;
+
+		if (SAH < optimalSAH)
 		{
-			rightCount++;
-			temporaryIndices[node->count - rightCount] = index;
+			optimalSAH = SAH;
+			node->left->first = node->first;
+			node->left->count = leftCount;
+
+			node->right->first = node->first + leftCount;
+			node->right->count = rightCount;
+			for (int i = 0; i < node->count; i++)
+			{
+				this->primitiveIndices[node->first + i] = temporaryIndices[i];
+			}
 		}
+
+		delete temporaryIndices;
 	}
-
-	for (int i = 0; i < node->count; i++)
-	{
-		this->primitiveIndices[node->first + i] = temporaryIndices[i];
-	}
-
-	delete temporaryIndices;
-
-	// left Node
-	node->left->first = node->first;
-	node->left->count = leftCount;
-
-	calculateBounds(node->left);
-
-	// right Node
-	node->right->first = node->first + leftCount;
-	node->right->count = rightCount;
-
-	calculateBounds(node->right);
 }
 
 void BVH::traverse(Node* node, Ray* ray)

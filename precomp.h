@@ -47,7 +47,6 @@ extern "C"
 #include <assert.h>
 #include <sstream>
 #include <vector>
-#include <list>
 
 #include "quarticsolver.h"
 
