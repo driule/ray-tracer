@@ -210,7 +210,7 @@ void Game::createScene()
 		new Sphere(blueGlassMaterial, vec3(2, -1, 2), 0.5)
 	);
 	scene->addPrimitive(
-		new Cylinder(redMaterial, vec3(-1.5, -1.5, 0), vec3(1, 0, 0), 0.1, 0.5)
+		new Cylinder(redMaterial, vec3(-1.5, -1.5, 0), vec3(-1, 0, 0), 0.5, 0.5)
 	);
 	scene->addPrimitive(
 		new Torus(brownMaterial, 0.4f, 0.2f, vec3(-0.5, -0.5, 0.2), vec3(0.5, 0.5, -1))

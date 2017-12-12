@@ -181,7 +181,7 @@ Cylinder::Cylinder(Material* material, vec3 position, vec3 upVector, float radiu
 	this->height = height;
 
 	this->boundingBoxMin = position - radius;
-	this->boundingBoxMax = (position + radius) + height * upVector;
+	this->boundingBoxMax = position + radius;
 
 	this->center = position + height * upVector * 0.5;
 }
