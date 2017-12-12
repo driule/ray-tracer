@@ -187,7 +187,7 @@ void Game::createScene()
 	blueGlassMaterial->reflection = 0.1;
 
 	//simple scene
-	scene->addPrimitive(
+	/*scene->addPrimitive(
 		new Triangle(greenMaterial, vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
 	);
 	scene->addPrimitive(
@@ -195,7 +195,7 @@ void Game::createScene()
 	);
 	scene->addPrimitive(
 		new Sphere(brownMaterial, vec3(-2, -1, 2), 0.5)
-	);
+	);*/
 
 	/*scene->primitives.push_back(
 		new Plane(planeMaterial, scene->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
@@ -203,7 +203,7 @@ void Game::createScene()
 	//
 
 	// complex scene
-	/*
+	//*
 	scene->addPrimitive(
 		new Triangle(greenMaterial, vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
 	);
@@ -234,7 +234,7 @@ void Game::createScene()
 	);
 	scene->addPrimitive(
 		new Plane(greenMaterial, vec3(5, 0, 5), vec3(-1, 0, 0)) // left
-	);*/
+	);//*/
 }
 
 void Game::loadTeddy()

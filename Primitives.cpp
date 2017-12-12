@@ -189,7 +189,7 @@ void Cylinder::intersect(Ray* ray)
 		}
 	}
 
-	if (intersects)
+	if (intersects && minT < ray->t)
 	{
 		ray->t = minT / ray->direction.length();
 		ray->intersectedObjectId = this->id;
@@ -226,23 +226,23 @@ Torus::Torus(Material* material, float R, float r, vec3 position, vec3 axis) : P
 void Torus::intersect(Ray* ray)
 {
 	vec3 centerToRayOrigin = ray->origin - position;
-	float centerToRayOriginDotDirectionSquared = dot(centerToRayOrigin, centerToRayOrigin);
-	float r2 = r * r;
-	float R2 = R * R;
+	long double centerToRayOriginDotDirectionSquared = dot(centerToRayOrigin, centerToRayOrigin);
+	long double r2 = r * r;
+	long double R2 = R * R;
 
-	float axisDotCenterToRayOrigin = dot(axis, centerToRayOrigin);
-	float axisDotRayDirection = dot(axis, ray->direction);
-	float a = 1 - axisDotRayDirection * axisDotRayDirection;
-	float b = 2 * (dot(centerToRayOrigin, ray->direction) - axisDotCenterToRayOrigin * axisDotRayDirection);
-	float c = centerToRayOriginDotDirectionSquared - axisDotCenterToRayOrigin * axisDotCenterToRayOrigin;
-	float d = centerToRayOriginDotDirectionSquared + R2 - r2;
+	long double axisDotCenterToRayOrigin = dot(axis, centerToRayOrigin);
+	long double axisDotRayDirection = dot(axis, ray->direction);
+	long double a = 1 - axisDotRayDirection * axisDotRayDirection;
+	long double b = 2 * (dot(centerToRayOrigin, ray->direction) - axisDotCenterToRayOrigin * axisDotRayDirection);
+	long double c = centerToRayOriginDotDirectionSquared - axisDotCenterToRayOrigin * axisDotCenterToRayOrigin;
+	long double d = centerToRayOriginDotDirectionSquared + R2 - r2;
 
 	// Solve quartic equation with coefficients A, B, C, D and E
-	float A = 1;
-	float B = 4 * dot(ray->direction, centerToRayOrigin);
-	float C = 2 * d + B * B * 0.25f - 4 * R2 * a;
-	float D = B * d - 4 * R2 * b;
-	float E = d * d - 4 * R2 * c;
+	long double A = 1;
+	long double B = 4 * dot(ray->direction, centerToRayOrigin);
+	long double C = 2 * d + B * B * 0.25f - 4 * R2 * a;
+	long double D = B * d - 4 * R2 * b;
+	long double E = d * d - 4 * R2 * c;
 
 	// Maximum number of roots is 4
 	QuarticEquation equation(A, B, C, D, E);
@@ -262,8 +262,11 @@ void Torus::intersect(Ray* ray)
 		}
 	}
 
-	ray->t = closestRoot;
-	ray->intersectedObjectId = this->id;
+	if (closestRoot < ray->t)
+	{
+		ray->t = closestRoot;
+		ray->intersectedObjectId = this->id;
+	}
 }
 
 vec3 Torus::getNormal(vec3 point)
