@@ -28,7 +28,8 @@ void BVH::subdivide(Node* node, int depth)
 		printf("Leaf (depth: %i). first: %i, count: %i", depth, node->first, node->count);
 		for (int i = 0; i < node->count; i++)
 		{
-			printf(" i:index: %i:%i |", i, this->primitiveIndices[node->first + i]);
+			int index = this->primitiveIndices[node->first + i];
+			printf(" |(%i) %f,%f,%f |", index, this->primitives[index]->center.x, this->primitives[index]->center.y, this->primitives[index]->center.z);
 		}
 		printf("\n\n");
 		node->isLeaf = true;
@@ -126,7 +127,7 @@ void BVH::partition(Node* node)
 		float SAH = surfaceAreaLeft * leftCount + surfaceAreaRight * rightCount;
 
 		// save the optimal split according Surface Area Heuristic
-		if (SAH < optimalSAH)
+		if (SAH < optimalSAH && SAH < (surfaceAreaLeft + surfaceAreaRight) * node->count)
 		{
 			optimalSAH = SAH;
 			optimalLeftCount = leftCount;
