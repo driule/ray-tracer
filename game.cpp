@@ -202,36 +202,38 @@ void Game::createScene()
 	);*/
 	//
 
-	/*scene->primitives.push_back(
-		new Triangle(greenMaterial, scene->primitives.size(), vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
+	// complex scene
+	/*
+	scene->addPrimitive(
+		new Triangle(greenMaterial, vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
 	);
-	scene->primitives.push_back(
-		new Sphere(blueGlassMaterial, scene->primitives.size(), vec3(2, -1, 2), 0.5) // spehere in the box
-	);
-
-	scene->primitives.push_back(
-		new Cylinder(redMaterial, scene->primitives.size(), vec3(-1.5, -1.5, 0), vec3(1, 0, 0), 0.1, 0.5)
+	scene->addPrimitive(
+		new Sphere(blueGlassMaterial, vec3(2, -1, 2), 0.5) // spehere in the box
 	);
 
-	scene->primitives.push_back(
-		new Torus(brownMaterial, scene->primitives.size(), 0.4f, 0.2f, vec3(-0.5, -0.5, 0.2), vec3(0.5, 0.5, -1))
+	scene->addPrimitive(
+		new Cylinder(redMaterial, vec3(-1.5, -1.5, 0), vec3(1, 0, 0), 0.1, 0.5)
+	);
+
+	scene->addPrimitive(
+		new Torus(brownMaterial, 0.4f, 0.2f, vec3(-0.5, -0.5, 0.2), vec3(0.5, 0.5, -1))
 	);
 
 	// create box from planes
-	scene->primitives.push_back(
-		new Plane(planeMaterial, scene->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
+	scene->addPrimitive(
+		new Plane(planeMaterial, vec3(0, 0, 5), vec3(0, 0, -1)) // back
 	);
-	scene->primitives.push_back(
-		new Plane(mirrorMaterial, scene->primitives.size(), vec3(0, -5, 5), vec3(0, 1, 0)) //top
+	scene->addPrimitive(
+		new Plane(mirrorMaterial, vec3(0, -5, 5), vec3(0, 1, 0)) //top
 	);
-	scene->primitives.push_back(
-		new Plane(mirrorMaterial, scene->primitives.size(), vec3(0, 5, 5), vec3(0, -1, 0)) //bottom
+	scene->addPrimitive(
+		new Plane(mirrorMaterial, vec3(0, 5, 5), vec3(0, -1, 0)) //bottom
 	);
-	scene->primitives.push_back(
-		new Plane(greenMaterial, scene->primitives.size(), vec3(-5, 0, 5), vec3(1, 0, 0)) //right
+	scene->addPrimitive(
+		new Plane(greenMaterial, vec3(-5, 0, 5), vec3(1, 0, 0)) //right
 	);
-	scene->primitives.push_back(
-		new Plane(greenMaterial, scene->primitives.size(), vec3(5, 0, 5), vec3(-1, 0, 0)) // left
+	scene->addPrimitive(
+		new Plane(greenMaterial, vec3(5, 0, 5), vec3(-1, 0, 0)) // left
 	);*/
 }
 
