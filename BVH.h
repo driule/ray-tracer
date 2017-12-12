@@ -8,7 +8,7 @@ namespace Tmpl8
 
 		struct Node
 		{
-			vec3 leftTopFront, rightBottomBack;
+			vec3 boundingBoxMin, boundingBoxMax;
 			bool isLeaf = false;
 			Node *left, *right;
 			int first, count;
@@ -18,10 +18,11 @@ namespace Tmpl8
 		void traverse(Node* node, Ray* ray);
 	private:
 		std::vector<Primitive*> primitives;
-		uint* primitiveIndices;
+		int* primitiveIndices;
 
 		void subdivide(Node* node);
 		void calculateBounds(Node* node);
 		void partition(Node* node);
+		bool intersects(Node* node, Ray* ray);
 	};
 }

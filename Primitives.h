@@ -17,9 +17,10 @@ namespace Tmpl8 {
 		
 		Material* material;
 		int id;
-
+		vec3 boundingBoxMin, boundingBoxMax;
 		virtual void intersect(Ray* ray) = 0;
 		virtual vec3 getNormal(vec3 point) = 0;
+		//void intersectBoundingBox(Ray* ray);
 	};
 
 	class Sphere : public Primitive

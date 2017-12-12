@@ -38,7 +38,7 @@ void Game::Init()
 
 	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
-	scene->loadObjModel("assets/cube.obj", brownMaterial);
+	//scene->loadObjModel("assets/cube.obj", brownMaterial);
 }
 
 // -----------------------------------------------------------
@@ -220,7 +220,7 @@ void Game::createScene()
 	);
 
 	// create box from planes
-	scene->addPrimitive(
+	/*scene->addPrimitive(
 		new Plane(planeMaterial, vec3(0, 0, 5), vec3(0, 0, -1)) // back
 	);
 	scene->addPrimitive(
