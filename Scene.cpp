@@ -174,10 +174,7 @@ void Scene::intersectPrimitives(Ray* ray)
 		this->primitives[i]->intersectBoundingBox(ray);
 	}*/
 
-	this->accelerationStructure->traverse(
-		this->accelerationStructure->root,
-		ray
-	);
+	this->accelerationStructure->traverse(this->accelerationStructure->root, ray);
 }
 
 void Scene::intersectLightSources(Ray* ray)

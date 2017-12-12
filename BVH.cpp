@@ -1,7 +1,7 @@
 #include "precomp.h"
 
 #define MAX_PRIMITIVES 4
-#define MAX_DEPTH 100
+#define MAX_DEPTH 15
 
 BVH::BVH(std::vector<Primitive*> primitives)
 {
@@ -17,7 +17,7 @@ BVH::BVH(std::vector<Primitive*> primitives)
 	this->root->first = 0;
 	this->root->count = N;
 
-	calculateBounds(this->root, 0, N);
+	calculateBounds(this->root, 0, N, this->primitiveIndices);
 	subdivide(this->root, 0);
 }
 
@@ -38,14 +38,14 @@ void BVH::subdivide(Node* node, int depth)
 	this->subdivide(node->right, depth);
 }
 
-void BVH::calculateBounds(Node* node, int first, int count)
+void BVH::calculateBounds(Node* node, int first, int count, int* indices)
 {
 	float maxX = -INFINITY, maxY = -INFINITY, maxZ = -INFINITY;
 	float minX = INFINITY, minY = INFINITY, minZ = INFINITY;
 	
 	for (int i = first; i < first + count; i++)
 	{
-		int index = this->primitiveIndices[i];
+		int index = indices[i];
 		minX = MIN(this->primitives[index]->boundingBoxMin.x, minX);
 		minY = MIN(this->primitives[index]->boundingBoxMin.y, minY);
 		minZ = MIN(this->primitives[index]->boundingBoxMin.z, minZ);
@@ -63,6 +63,12 @@ void BVH::partition(Node* node)
 	vec3 splitPlane = node->boundingBoxMin + 0.5 * node->boundingBoxMax;
 	float optimalSAH = INFINITY;
 
+	int* primitiveIndices = new int[this->primitives.size()];
+	for (int i = 0; i < this->primitives.size(); i++)
+	{
+		primitiveIndices[i] = this->primitiveIndices[i];
+	}
+
 	for (int j = 0; j < 3; j++)
 	{
 		int* temporaryIndices = new int[node->count];
@@ -71,22 +77,13 @@ void BVH::partition(Node* node)
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
 			int index = this->primitiveIndices[i];
+			bool assignedToLeftNode = false;
 
-			bool left = false;
-			if (j == 0)
-			{
-				left = this->primitives[index]->center.x < splitPlane.x;
-			}
-			else if (j == 1)
-			{
-				left = this->primitives[index]->center.y < splitPlane.y;
-			}
-			else
-			{
-				left = this->primitives[index]->center.z < splitPlane.z;
-			}
+			if (j == 0)			assignedToLeftNode = this->primitives[index]->center.x < splitPlane.x;
+			else if (j == 1)	assignedToLeftNode = this->primitives[index]->center.y < splitPlane.y;
+			else if (j == 2)	assignedToLeftNode = this->primitives[index]->center.z < splitPlane.z;
 
-			if (left)
+			if (assignedToLeftNode)
 			{
 				temporaryIndices[leftCount] = index;
 				leftCount++;
@@ -98,11 +95,12 @@ void BVH::partition(Node* node)
 			}
 		}
 
-		// left Node
-		calculateBounds(node->left, node->first, leftCount);
-
-		// right Node
-		calculateBounds(node->right, node->first + leftCount, rightCount);
+		for (int i = 0; i < node->count; i++)
+		{
+			primitiveIndices[node->first + i] = temporaryIndices[i];
+		}
+		calculateBounds(node->left, node->first, leftCount, primitiveIndices);
+		calculateBounds(node->right, node->first + leftCount, rightCount, primitiveIndices);
 
 		vec3 diagonalLeft = (node->left->boundingBoxMax - node->left->boundingBoxMin);
 		vec3 diagonalRight = (node->right->boundingBoxMax - node->right->boundingBoxMin);
@@ -120,6 +118,7 @@ void BVH::partition(Node* node)
 
 			node->right->first = node->first + leftCount;
 			node->right->count = rightCount;
+
 			for (int i = 0; i < node->count; i++)
 			{
 				this->primitiveIndices[node->first + i] = temporaryIndices[i];

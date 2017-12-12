@@ -21,7 +21,7 @@ namespace Tmpl8
 		int* primitiveIndices;
 
 		void subdivide(Node* node, int depth);
-		void calculateBounds(Node* node, int first, int count);
+		void calculateBounds(Node* node, int first, int count, int* indices);
 		void partition(Node* node);
 		bool intersects(Node* node, Ray* ray);
 	};
