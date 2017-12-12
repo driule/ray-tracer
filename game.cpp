@@ -64,13 +64,6 @@ void Game::Tick( float deltaTime )
 	}
 	jobManager->RunJobs();
 
-	// test with 1 pixel, add break to Scene:render()
-	/*
-	scene->render(0);
-	printf("tick\n");
-	Sleep(100000);
-	/*/
-
 	// measure FPS
 	char buffer[15];
 	sprintf(buffer, "FPS: %f", 1000 / _timer.elapsed());

@@ -20,8 +20,6 @@ void Scene::render(int row)
 
 		// clear garbages
 		delete ray;
-		
-		//break; //test with one pixel
 	}
 }
 
