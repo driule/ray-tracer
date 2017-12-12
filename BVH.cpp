@@ -1,7 +1,7 @@
 #include "precomp.h"
 
-#define MAX_PRIMITIVES 4
-#define MAX_DEPTH 15
+#define MAX_PRIMITIVES 3
+#define MAX_DEPTH 20
 
 BVH::BVH(std::vector<Primitive*> primitives)
 {
@@ -25,6 +25,12 @@ void BVH::subdivide(Node* node, int depth)
 {
 	if (node->count <= MAX_PRIMITIVES || depth >= MAX_DEPTH)
 	{
+		printf("Leaf (depth: %i). first: %i, count: %i", depth, node->first, node->count);
+		for (int i = 0; i < node->count; i++)
+		{
+			printf(" i:index: %i:%i |", i, this->primitiveIndices[node->first + i]);
+		}
+		printf("\n\n");
 		node->isLeaf = true;
 		return;
 	}
@@ -62,17 +68,17 @@ void BVH::partition(Node* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
-	int* optimalPrimitiveIndices = new int[this->primitives.size()];
+	/*int* optimalPrimitiveIndices = new int[this->primitives.size()];
 	for (int i = 0; i < this->primitives.size(); i++)
 	{
 		optimalPrimitiveIndices[i] = this->primitiveIndices[i];
-	}
+	}*/
 
 	// try 3 different splits along x, y, z axes
 	vec3 splitPlane = node->boundingBoxMin + 0.5 * node->boundingBoxMax;
 	for (int j = 0; j < 3; j++)
 	{
-		int* nodePrimitiveIndices = new int[node->count];
+		//int* nodePrimitiveIndices = new int[node->count];
 		int leftCount = 0, rightCount = 0;
 
 		for (int i = node->first; i < node->first + node->count; i++)
@@ -86,21 +92,21 @@ void BVH::partition(Node* node)
 
 			if (assignedToLeftNode)
 			{
-				nodePrimitiveIndices[leftCount] = index;
+				//nodePrimitiveIndices[leftCount] = index;
 				leftCount++;
 			}
 			else
 			{
 				rightCount++;
-				nodePrimitiveIndices[node->count - rightCount] = index;
+				//nodePrimitiveIndices[node->count - rightCount] = index;
 			}
 		}
 
 		// update current node state
-		for (int i = 0; i < node->count; i++)
+		/*for (int i = 0; i < node->count; i++)
 		{
 			this->primitiveIndices[node->first + i] = nodePrimitiveIndices[i];
-		}
+		}*/
 
 		node->left->first = node->first;
 		node->left->count = leftCount;
@@ -125,10 +131,10 @@ void BVH::partition(Node* node)
 			optimalSAH = SAH;
 			optimalLeftCount = leftCount;
 			optimalRightCount = rightCount;
-			optimalPrimitiveIndices = this->primitiveIndices;
+			//optimalPrimitiveIndices = this->primitiveIndices;
 		}
 
-		delete nodePrimitiveIndices;
+		//delete nodePrimitiveIndices;
 	}
 
 	// set optimal split values
@@ -140,7 +146,7 @@ void BVH::partition(Node* node)
 	node->right->count = optimalRightCount;
 	calculateBounds(node->right);
 
-	this->primitiveIndices = optimalPrimitiveIndices;
+	//this->primitiveIndices = optimalPrimitiveIndices;
 }
 
 void BVH::traverse(Node* node, Ray* ray)

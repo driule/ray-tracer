@@ -184,7 +184,7 @@ void Game::createScene()
 		new Triangle(greenMaterial, vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
 	);
 	scene->addPrimitive(
-		new Sphere(redMaterial, vec3(2, -1, 2), 0.5)
+		new Sphere(redMaterial, vec3(5, -1, 3), 0.5)
 	);
 	scene->addPrimitive(
 		new Sphere(brownMaterial, vec3(-2, -1, 2), 0.5)
