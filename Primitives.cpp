@@ -285,8 +285,8 @@ Torus::Torus(Material* material, float R, float r, vec3 position, vec3 axis) : P
 	this->r = r;
 	this->axis = normalize(axis);
 
-	this->boundingBoxMin = position - R * 1.5;
-	this->boundingBoxMax = position + R * 1.5;
+	this->boundingBoxMin = position - (R + r);
+	this->boundingBoxMax = position + (R + r);
 
 	this->center = position;
 }
