@@ -25,13 +25,14 @@ void BVH::subdivide(Node* node, int depth)
 {
 	if (node->count <= MAX_PRIMITIVES || depth >= MAX_DEPTH)
 	{
-		printf("Leaf (depth: %i). first: %i, count: %i", depth, node->first, node->count);
+		/*printf("Leaf (depth: %i). first: %i, count: %i", depth, node->first, node->count);
 		for (int i = 0; i < node->count; i++)
 		{
 			int index = this->primitiveIndices[node->first + i];
 			printf(" |(%i) %f,%f,%f |", index, this->primitives[index]->center.x, this->primitives[index]->center.y, this->primitives[index]->center.z);
 		}
 		printf("\n\n");
+		*/
 		node->isLeaf = true;
 		return;
 	}

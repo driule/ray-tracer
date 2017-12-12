@@ -20,7 +20,15 @@ void RayTracerJob::Main()
 // -----------------------------------------------------------
 void Game::Init()
 {
-	printf("Use arrows to move camera around....\n");
+	printf("--------------------------------------------------\n");
+	printf("Application controls:\n");
+	printf("Arrows, '+', '-' to move camera around\n");
+	printf("WASD to rotate camera\n");
+	printf("Numpad1 and Numpad2 to change FOV\n");
+	printf("R to reset camera\n");
+	printf("C to print camera configuration\n");
+	printf("T to load teddy\n");
+	printf("--------------------------------------------------\n");
 
 	// initialize threads
 	rayTracerJobs = new RayTracerJob*[SCRHEIGHT / 32];
@@ -56,7 +64,7 @@ void Game::Tick( float deltaTime )
 	_timer.reset();
 	screen->Clear(0);
 
-	this->moveCamera();
+	this->handleInput();
 
 	for (int i = 0; i < SCRHEIGHT / 32; i++)
 	{
@@ -70,95 +78,105 @@ void Game::Tick( float deltaTime )
 	screen->Print(buffer, 2, 2, 0x000000);
 }
 
-void Game::moveCamera()
+void Game::handleInput()
 {
-	bool changed = false;
 	// move the camera
+	bool cameraChanged = false;
+
 	if (GetAsyncKeyState(VK_DOWN))
 	{
 		scene->camera->position -= scene->camera->up * 0.2;
 		scene->camera->viewDirection -= scene->camera->up * 0.2;		
-		changed = true;
+		cameraChanged = true;
 	}
 	if (GetAsyncKeyState(VK_RIGHT))
 	{
 		scene->camera->position += scene->camera->right * 0.2;
 		scene->camera->viewDirection += scene->camera->right * 0.2;
-		changed = true;
+		cameraChanged = true;
 	}
 	if (GetAsyncKeyState(VK_UP))
 	{
 		scene->camera->position += scene->camera->up * 0.2;
 		scene->camera->viewDirection += scene->camera->up * 0.2;
-		changed = true;
+		cameraChanged = true;
 	}
 	if (GetAsyncKeyState(VK_LEFT))
 	{
 		scene->camera->position -= scene->camera->right * 0.2;
 		scene->camera->viewDirection -= scene->camera->right * 0.2;
-		changed = true;
+		cameraChanged = true;
 	}
-
-	// move camera closer
 	if (GetAsyncKeyState(VK_OEM_PLUS))
 	{
 		scene->camera->position += scene->camera->viewDirectionNormalized * 0.2;
 		scene->camera->viewDirection += scene->camera->viewDirectionNormalized * 0.2;
-		changed = true;
+		cameraChanged = true;
 	}
 	if (GetAsyncKeyState(VK_OEM_MINUS))
 	{
 		scene->camera->position -= scene->camera->viewDirectionNormalized * 0.2;
 		scene->camera->viewDirection -= scene->camera->viewDirectionNormalized * 0.2;
-		changed = true;
+		cameraChanged = true;
 	}
 
-	// rotating the camera
+	// rotate the camera
 	if (GetAsyncKeyState('A'))
 	{
 		scene->camera->viewDirection -= scene->camera->right * 0.2;
-		changed = true;
+		cameraChanged = true;
 	}
 	if (GetAsyncKeyState('D'))
 	{
 		scene->camera->viewDirection += scene->camera->right * 0.2;
-		changed = true;
+		cameraChanged = true;
 	}
 	if (GetAsyncKeyState('W'))
 	{
 		scene->camera->viewDirection += scene->camera->up * 0.2;
-		changed = true;
+		cameraChanged = true;
 	}
 	if (GetAsyncKeyState('S'))
 	{
 		scene->camera->viewDirection -= scene->camera->up * 0.2;
-		changed = true;
-	}
-	if (GetAsyncKeyState('R'))
-	{
-		scene->camera = new Camera();
+		cameraChanged = true;
 	}
 
 	// change FOV
 	if (GetAsyncKeyState(VK_NUMPAD1))
 	{
 		scene->camera->fieldOfView += 0.01;
-		changed = true;
+		cameraChanged = true;
 	}
 	if (GetAsyncKeyState(VK_NUMPAD2))
 	{
 		scene->camera->fieldOfView -= 0.01;
-		changed = true;
+		cameraChanged = true;
 	}
-	if (changed)
+	if (cameraChanged)
 	{
 		scene->camera->calculateScreen();
+	}
+
+	// reset camera
+	if (GetAsyncKeyState('R'))
+	{
+		scene->camera = new Camera();
 	}
 
 	// load teddy
 	if (GetAsyncKeyState('T'))
 	{
 		this->loadTeddy();
+	}
+
+	// print camera configuration
+	if (GetAsyncKeyState('C'))
+	{
+		printf("Camera position: (%f, %f, %f) \n", scene->camera->position.x, scene->camera->position.y, scene->camera->position.z);
+		printf("FOV: %f \n", scene->camera->fieldOfView);
+		printf("UP: (%f, %f, %f) \n", scene->camera->up.x, scene->camera->up.y, scene->camera->up.z);
+		printf("RIGHT: (%f, %f, %f) \n", scene->camera->right.x, scene->camera->right.y, scene->camera->right.z);
 	}
 }
 
@@ -234,23 +252,18 @@ void Game::loadTeddy()
 {
 	scene->clear();
 
-	scene->addLightSource(new DirectLight(vec3(-10.0f, 0.0f, -20.0), vec4(1, 1, 1, 0), 250));
-	scene->addLightSource(new DirectLight(vec3(8.0f, 0.0f, -18.0), vec4(1, 1, 1, 0), 100));
-	scene->addLightSource(new DirectLight(vec3(4.0f, 8.0f, -20.0), vec4(1, 1, 1, 0), 100));
-
-
-	/*Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
-	scene->addPrimitive(
-		new Plane(planeMaterial, vec3(0, 0, 50), vec3(0, 0, -1))
-	);*/
+	scene->addLightSource(new DirectLight(vec3(-10.0f, 0.0f, 20.0), vec4(1, 1, 1, 0), 250));
+	scene->addLightSource(new DirectLight(vec3(8.0f, 0.0f, 18.0), vec4(1, 1, 1, 0), 100));
+	scene->addLightSource(new DirectLight(vec3(4.0f, 8.0f, 20.0), vec4(1, 1, 1, 0), 100));
 
 	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
 	scene->addPrimitive(
 		new Sphere(redMaterial, vec3(-25, 10, 0), 5)
 	);
 
-	scene->camera->position = vec3(0, 0, -50);
+	scene->camera->position = vec3(-32, 0, 40);
 	scene->camera->up = vec3(0, 1, 0);
+	scene->camera->right = vec3(-0.77, 0, -0.62);
 	scene->camera->calculateScreen();
 
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
