@@ -197,7 +197,6 @@ void Game::createScene()
 	blueGlassMaterial->refraction = 1.33;
 	blueGlassMaterial->reflection = 0.1;
 
-	//simple scene
 	scene->addPrimitive(
 		new Triangle(greenMaterial, vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
 	);
@@ -207,27 +206,22 @@ void Game::createScene()
 	scene->addPrimitive(
 		new Sphere(brownMaterial, vec3(-2, -1, 2), 0.5)
 	);
-
-	/*scene->primitives.push_back(
-		new Plane(planeMaterial, scene->primitives.size(), vec3(0, 0, 5), vec3(0, 0, -1)) // back
-	);*/
-	//
-
-	// complex scene
-	//*
 	scene->addPrimitive(
-		new Triangle(greenMaterial, vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
+		new Sphere(blueGlassMaterial, vec3(2, -1, 2), 0.5)
 	);
-	scene->addPrimitive(
-		new Sphere(blueGlassMaterial, vec3(2, -1, 2), 0.5) // spehere in the box
-	);
-
 	scene->addPrimitive(
 		new Cylinder(redMaterial, vec3(-1.5, -1.5, 0), vec3(1, 0, 0), 0.1, 0.5)
 	);
-
 	scene->addPrimitive(
 		new Torus(brownMaterial, 0.4f, 0.2f, vec3(-0.5, -0.5, 0.2), vec3(0.5, 0.5, -1))
+	);
+
+	// ground plane
+	scene->addPrimitive(
+		new Triangle(planeMaterial, vec3(10, -10, 5), vec3(-10, -10, 5), vec3(10, 10, 5))
+	);
+	scene->addPrimitive(
+		new Triangle(planeMaterial, vec3(-10, -10, 5), vec3(-10, 10, 5), vec3(10, 10, 5))
 	);
 
 	// create box from planes
