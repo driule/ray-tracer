@@ -19,7 +19,7 @@ public:
 private:
 	Surface* screen;
 
-	void createScene();
+	void loadScene();
 	void loadTeddy();
 	void loadTeapot();
 };

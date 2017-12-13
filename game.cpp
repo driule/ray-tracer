@@ -24,10 +24,10 @@ void Game::Init()
 	printf("Application controls:\n");
 	printf("Arrows, '+', '-' to move camera around\n");
 	printf("WASD to rotate camera\n");
-	printf("Numpad1 and Numpad2 to change FOV\n");
+	printf("Numpad '+' and '-' to change FOV\n");
 	printf("R to reset camera\n");
 	printf("C to print camera configuration\n");
-	printf("T to load teddy\n");
+	printf("Numpad 1, 2, 3 to toggle between scenes\n");
 	printf("--------------------------------------------------\n");
 
 	// initialize threads
@@ -42,7 +42,7 @@ void Game::Init()
 
 	//create scene
 	scene = new Scene(screen);
-	this->createScene();
+	this->loadScene();
 
 	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
@@ -143,12 +143,12 @@ void Game::handleInput()
 	}
 
 	// change FOV
-	if (GetAsyncKeyState(VK_NUMPAD1))
+	if (GetAsyncKeyState(VK_ADD))
 	{
 		scene->camera->fieldOfView += 0.01;
 		cameraChanged = true;
 	}
-	if (GetAsyncKeyState(VK_NUMPAD2))
+	if (GetAsyncKeyState(VK_SUBTRACT))
 	{
 		scene->camera->fieldOfView -= 0.01;
 		cameraChanged = true;
@@ -164,13 +164,16 @@ void Game::handleInput()
 		scene->camera = new Camera();
 	}
 
-	// load teddy
-	if (GetAsyncKeyState('T'))
+	// toggle scenes
+	if (GetAsyncKeyState(VK_NUMPAD1))
+	{
+		this->loadScene();
+	}
+	if (GetAsyncKeyState(VK_NUMPAD2))
 	{
 		this->loadTeddy();
 	}
-	// load teapot
-	if (GetAsyncKeyState('P'))
+	if (GetAsyncKeyState(VK_NUMPAD3))
 	{
 		this->loadTeapot();
 	}
@@ -185,8 +188,11 @@ void Game::handleInput()
 	}
 }
 
-void Game::createScene()
+void Game::loadScene()
 {
+	scene->clear();
+	scene->camera = new Camera();
+
 	// create scene lights
 	scene->addLightSource(new DirectLight(vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0), 20));
 	scene->addLightSource(new DirectLight(vec3(0.0f, -2.0f, 0.0f), vec4(0.5, 0.5, 0.5, 0), 20));
