@@ -23,6 +23,7 @@ namespace Tmpl8
 		void subdivide(Node* node, int depth);
 		void calculateBounds(Node* node);
 		void partition(Node* node);
+		void randomPartition(Node* node);
 		bool intersects(Node* node, Ray* ray);
 	};
 }
