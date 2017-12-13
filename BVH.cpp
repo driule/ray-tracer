@@ -32,7 +32,7 @@ void BVH::subdivide(Node* node, int depth)
 			printf(" |(%i) %f,%f,%f |", index, this->primitives[index]->center.x, this->primitives[index]->center.y, this->primitives[index]->center.z);
 		}
 		printf("\n\n");
-		*/
+		//*/
 		node->isLeaf = true;
 		return;
 	}
@@ -77,11 +77,11 @@ void BVH::partition(Node* node)
 	}*/
 
 	// try 3 different splits along x, y, z axes
-	vec3 splitPlane = node->boundingBoxMin + 0.5 * node->boundingBoxMax;
-	for (int j = 0; j < 5; j++)
+	//vec3 splitPlane = node->boundingBoxMin + 0.5 * node->boundingBoxMax;
+	for (int j = 0; j < 50; j++)
 	{
 		//int* nodePrimitiveIndices = new int[node->count];
-		int leftCount = 0, rightCount = 0;
+		/*int leftCount = 0, rightCount = 0;
 
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
@@ -103,13 +103,16 @@ void BVH::partition(Node* node)
 				rightCount++;
 				//nodePrimitiveIndices[node->count - rightCount] = index;
 			}
-		}
+		}*/
 
 		// update current node state
 		/*for (int i = 0; i < node->count; i++)
 		{
 			this->primitiveIndices[node->first + i] = nodePrimitiveIndices[i];
 		}*/
+
+		int leftCount = std::rand() % node->count;
+		int rightCount = node->count - leftCount;
 
 		node->left->first = node->first;
 		node->left->count = leftCount;
