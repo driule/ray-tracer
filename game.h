@@ -21,6 +21,7 @@ private:
 
 	void createScene();
 	void loadTeddy();
+	void loadTeapot();
 };
 
 class RayTracerJob : public Job

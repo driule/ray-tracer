@@ -169,6 +169,11 @@ void Game::handleInput()
 	{
 		this->loadTeddy();
 	}
+	// load teapot
+	if (GetAsyncKeyState('P'))
+	{
+		this->loadTeapot();
+	}
 
 	// print camera configuration
 	if (GetAsyncKeyState('C'))
@@ -268,5 +273,29 @@ void Game::loadTeddy()
 	for (int i = 0; i < 3; i++)
 	{
 		scene->loadObjModel("assets/teddy.obj", brownMaterial, vec3(i * 30, 0, 0));
+	}
+}
+
+void Game::loadTeapot()
+{
+	scene->clear();
+
+	scene->addLightSource(new DirectLight(vec3(-10.0f, 0.0f, 20.0), vec4(1, 1, 1, 0), 250));
+	scene->addLightSource(new DirectLight(vec3(8.0f, 0.0f, 18.0), vec4(1, 1, 1, 0), 100));
+	scene->addLightSource(new DirectLight(vec3(4.0f, 8.0f, 20.0), vec4(1, 1, 1, 0), 100));
+
+	scene->addLightSource(new DirectLight(vec3(-10.0f, 0.0f, -20.0), vec4(1, 1, 1, 0), 250));
+	scene->addLightSource(new DirectLight(vec3(8.0f, 0.0f, -18.0), vec4(1, 1, 1, 0), 100));
+	scene->addLightSource(new DirectLight(vec3(4.0f, 8.0f, -20.0), vec4(1, 1, 1, 0), 100));
+
+	scene->camera->position = vec3(-20, -0.013, 20);
+	scene->camera->up = vec3(0, 1, 0);
+	scene->camera->right = vec3(-0.921, 0, -0.387);
+	scene->camera->calculateScreen();
+
+	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
+	for (int i = 0; i < 10; i++)
+	{
+		scene->loadObjModel("assets/teapot.obj", brownMaterial, vec3(i * 7, 0, 0));
 	}
 }
