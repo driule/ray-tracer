@@ -78,7 +78,7 @@ void BVH::partition(Node* node)
 
 	// try 3 different splits along x, y, z axes
 	vec3 splitPlane = node->boundingBoxMin + 0.5 * node->boundingBoxMax;
-	for (int j = 0; j < 3; j++)
+	for (int j = 0; j < 5; j++)
 	{
 		//int* nodePrimitiveIndices = new int[node->count];
 		int leftCount = 0, rightCount = 0;
@@ -87,10 +87,11 @@ void BVH::partition(Node* node)
 		{
 			int index = this->primitiveIndices[i];
 			bool assignedToLeftNode = false;
-
 			if (j == 0)			assignedToLeftNode = this->primitives[index]->center.x < splitPlane.x;
 			else if (j == 1)	assignedToLeftNode = this->primitives[index]->center.y < splitPlane.y;
 			else if (j == 2)	assignedToLeftNode = this->primitives[index]->center.z < splitPlane.z;
+			else if (j == 3)	assignedToLeftNode = this->primitives[index]->center.z < splitPlane.z + std::rand() % 6;
+			else if (j == 4)	assignedToLeftNode = this->primitives[index]->center.z < splitPlane.z - std::rand() % 6;
 
 			if (assignedToLeftNode)
 			{
