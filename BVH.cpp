@@ -28,8 +28,8 @@ void BVH::subdivide(Node* node, int depth)
 		/*printf("Leaf (depth: %i). first: %i, count: %i", depth, node->first, node->count);
 		for (int i = 0; i < node->count; i++)
 		{
-			int index = this->primitiveIndices[node->first + i];
-			printf(" |(%i) %f,%f,%f |", index, this->primitives[index]->center.x, this->primitives[index]->center.y, this->primitives[index]->center.z);
+		int index = this->primitiveIndices[node->first + i];
+		printf(" |(%i) %f,%f,%f |", index, this->primitives[index]->center.x, this->primitives[index]->center.y, this->primitives[index]->center.z);
 		}
 		printf("\n\n");
 		//*/
@@ -51,7 +51,7 @@ void BVH::calculateBounds(Node* node)
 {
 	float maxX = -INFINITY, maxY = -INFINITY, maxZ = -INFINITY;
 	float minX = INFINITY, minY = INFINITY, minZ = INFINITY;
-	
+
 	for (int i = node->first; i < node->first + node->count; i++)
 	{
 		int index = this->primitiveIndices[i];
@@ -72,7 +72,7 @@ void BVH::partition(Node* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
-	
+
 	int* optimalPrimitiveIndices = new int[this->primitives.size()];
 	memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
 
@@ -118,13 +118,9 @@ void BVH::partition(Node* node)
 		calculateBounds(node->right);
 
 		// calculate surface area
-		vec3 diagonalLeft = (node->left->boundingBoxMax - node->left->boundingBoxMin);
-		vec3 diagonalRight = (node->right->boundingBoxMax - node->right->boundingBoxMin);
-
-		float surfaceAreaLeft = (abs(diagonalLeft.x * diagonalLeft.y) + abs(diagonalLeft.x * diagonalLeft.z) + abs(diagonalLeft.z * diagonalLeft.y)) * 2;
-		float surfaceAreaRight = (abs(diagonalRight.x * diagonalRight.y) + abs(diagonalRight.x * diagonalRight.z) + abs(diagonalRight.z * diagonalRight.y)) * 2;
-
-		float SAH = surfaceAreaLeft * leftCount + surfaceAreaRight * rightCount;
+		float surfaceAreaLeft = this->calculateSurfaceArea(node->left);
+		float surfaceAreaRight = this->calculateSurfaceArea(node->right);
+		float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
 
 		// save the optimal split according Surface Area Heuristic
 		if (SAH < optimalSAH && SAH < (surfaceAreaLeft + surfaceAreaRight) * node->count)
@@ -170,13 +166,9 @@ void BVH::randomPartition(Node* node)
 		calculateBounds(node->right);
 
 		// calculate surface area
-		vec3 diagonalLeft = (node->left->boundingBoxMax - node->left->boundingBoxMin);
-		vec3 diagonalRight = (node->right->boundingBoxMax - node->right->boundingBoxMin);
-
-		float surfaceAreaLeft = (abs(diagonalLeft.x * diagonalLeft.y) + abs(diagonalLeft.x * diagonalLeft.z) + abs(diagonalLeft.z * diagonalLeft.y)) * 2;
-		float surfaceAreaRight = (abs(diagonalRight.x * diagonalRight.y) + abs(diagonalRight.x * diagonalRight.z) + abs(diagonalRight.z * diagonalRight.y)) * 2;
-
-		float SAH = surfaceAreaLeft * leftCount + surfaceAreaRight * rightCount;
+		float surfaceAreaLeft = this->calculateSurfaceArea(node->left);
+		float surfaceAreaRight = this->calculateSurfaceArea(node->right);
+		float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
 
 		// save the optimal split according Surface Area Heuristic
 		if (SAH < optimalSAH && SAH < (surfaceAreaLeft + surfaceAreaRight) * node->count)
@@ -195,6 +187,13 @@ void BVH::randomPartition(Node* node)
 	node->right->first = node->first + optimalLeftCount;
 	node->right->count = optimalRightCount;
 	calculateBounds(node->right);
+}
+
+float BVH::calculateSurfaceArea(Node* node)
+{
+	vec3 diagonal = (node->boundingBoxMax - node->boundingBoxMin).absolute();
+
+	return ((diagonal.x * diagonal.y) + (diagonal.x * diagonal.z) + (diagonal.z * diagonal.y)) * 2;
 }
 
 void BVH::traverse(Node* node, Ray* ray)
@@ -252,5 +251,3 @@ bool BVH::intersects(Node* node, Ray* ray)
 
 	return true;
 }
-
-

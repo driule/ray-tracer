@@ -24,6 +24,7 @@ namespace Tmpl8
 		void calculateBounds(Node* node);
 		void partition(Node* node);
 		void randomPartition(Node* node);
+		float calculateSurfaceArea(Node* node);
 		bool intersects(Node* node, Ray* ray);
 	};
 }
