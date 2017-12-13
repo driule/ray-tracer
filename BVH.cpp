@@ -39,8 +39,8 @@ void BVH::subdivide(Node* node, int depth)
 
 	node->left = new Node();
 	node->right = new Node();
-	//this->partition(node);
-	this->randomPartition(node);
+	this->partition(node);
+	//this->randomPartition(node);
 
 	depth++;
 	this->subdivide(node->left, depth);
@@ -63,6 +63,7 @@ void BVH::calculateBounds(Node* node)
 		maxY = MAX(this->primitives[index]->boundingBoxMax.y, maxY);
 		maxZ = MAX(this->primitives[index]->boundingBoxMax.z, maxZ);
 	}
+
 	node->boundingBoxMin = vec3(minX, minY, minZ);
 	node->boundingBoxMax = vec3(maxX, maxY, maxZ);
 }
@@ -74,9 +75,6 @@ void BVH::partition(Node* node)
 	
 	int* optimalPrimitiveIndices = new int[this->primitives.size()];
 	memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
-	
-	int* originalPrimitiveIndices = new int[this->primitives.size()];
-	memcpy(originalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
 
 	// try 3 different splits along x, y, z axes
 	vec3 splitPlane = node->boundingBoxMin + 0.5 * node->boundingBoxMax;
@@ -87,7 +85,7 @@ void BVH::partition(Node* node)
 
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			int index = originalPrimitiveIndices[i];
+			int index = this->primitiveIndices[i];
 			bool assignedToLeftNode = false;
 			if (j == 0)			assignedToLeftNode = this->primitives[index]->center.x < splitPlane.x;
 			else if (j == 1)	assignedToLeftNode = this->primitives[index]->center.y < splitPlane.y;
@@ -140,6 +138,8 @@ void BVH::partition(Node* node)
 		delete nodePrimitiveIndices;
 	}
 
+	memcpy(this->primitiveIndices, optimalPrimitiveIndices, this->primitives.size() * sizeof(int));
+
 	// set optimal split values
 	node->left->first = node->first;
 	node->left->count = optimalLeftCount;
@@ -149,10 +149,7 @@ void BVH::partition(Node* node)
 	node->right->count = optimalRightCount;
 	calculateBounds(node->right);
 
-	memcpy(this->primitiveIndices, optimalPrimitiveIndices, this->primitives.size() * sizeof(int));
-
 	delete optimalPrimitiveIndices;
-	delete originalPrimitiveIndices;
 }
 
 void BVH::randomPartition(Node* node)
