@@ -166,13 +166,18 @@ Ray* Scene::computeRefractionRay(Ray* ray)
 
 void Scene::intersectPrimitives(Ray* ray)
 {
-	/*for (int i = 0; i < this->primitives.size(); i++)
+	if (BVH_ENABLED)
 	{
-		this->primitives[i]->intersect(ray);
-		this->primitives[i]->intersectBoundingBox(ray);
-	}*/
-
-	this->accelerationStructure->traverse(this->accelerationStructure->root, ray);
+		this->accelerationStructure->traverse(this->accelerationStructure->root, ray);
+	}
+	else
+	{
+		for (int i = 0; i < this->primitives.size(); i++)
+		{
+			this->primitives[i]->intersect(ray);
+			//this->primitives[i]->intersectBoundingBox(ray);
+		}
+	}
 }
 
 void Scene::intersectLightSources(Ray* ray)
