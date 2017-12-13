@@ -43,10 +43,6 @@ void Game::Init()
 	//create scene
 	scene = new Scene(screen);
 	this->loadScene();
-
-	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
-	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
-	scene->loadObjModel("assets/cube.obj", brownMaterial);
 }
 
 // -----------------------------------------------------------
@@ -251,6 +247,9 @@ void Game::loadScene()
 	scene->addPrimitive(
 		new Plane(greenMaterial, vec3(5, 0, 5), vec3(-1, 0, 0)) // left
 	);//*/
+
+	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
+	scene->loadObjModel("assets/cube.obj", brownMaterial);
 }
 
 void Game::loadTeddy()
