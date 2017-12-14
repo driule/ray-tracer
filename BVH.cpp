@@ -249,5 +249,14 @@ bool BVH::intersects(Node* node, Ray* ray)
 	if ((tmin > tzmax) || (tzmin > tmax))
 		return false; // no intersection
 
+	if (tzmin > tmin)
+		tmin = tzmin;
+
+	// early out
+	if (tmin > ray->t)
+	{
+		return false;
+	}
+
 	return true;
 }
