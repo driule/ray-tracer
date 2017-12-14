@@ -196,9 +196,9 @@ float BVH::calculateSurfaceArea(Node* node)
 	return ((diagonal.x * diagonal.y) + (diagonal.x * diagonal.z) + (diagonal.z * diagonal.y)) * 2;
 }
 
-void BVH::traverse(Node* node, Ray* ray)
+void BVH::traverse(Node* node, Ray* ray, bool isShadowRay)
 {
-	if (!this->intersects(node, ray))
+	if (!this->intersects(node, ray) || (isShadowRay && ray->intersectedObjectId != -1))
 	{
 		return;
 	}
@@ -210,6 +210,11 @@ void BVH::traverse(Node* node, Ray* ray)
 		{
 			int index = this->primitiveIndices[i];
 			this->primitives[index]->intersect(ray);
+
+			if (isShadowRay && ray->intersectedObjectId != -1)
+			{
+				return;
+			}
 		}
 	}
 	else

@@ -89,33 +89,33 @@ vec4 Scene::illuminate(Ray* ray)
 	
 	for (int i = 0; i < this->lightSources.size(); i++)
 	{
-		Ray* reflectionRay = new Ray();
-		reflectionRay->origin = ray->origin + ray->t * ray->direction;
-		reflectionRay->direction = normalize(this->lightSources[i]->position - reflectionRay->origin);
+		Ray* shadowRay = new Ray();
+		shadowRay->origin = ray->origin + ray->t * ray->direction;
+		shadowRay->direction = normalize(this->lightSources[i]->position - shadowRay->origin);
 
-		vec3 normal = this->primitives[ray->intersectedObjectId]->getNormal(reflectionRay->origin);
+		vec3 normal = this->primitives[ray->intersectedObjectId]->getNormal(shadowRay->origin);
 
-		float dotDirectionNormal = dot(reflectionRay->direction, normal);
+		float dotDirectionNormal = dot(shadowRay->direction, normal);
 		if (dotDirectionNormal < 0)
 		{
-			delete reflectionRay;
+			delete shadowRay;
 			continue;
 		}
 
-		vec3 hitEpsilon = reflectionRay->origin + reflectionRay->direction * 0.01;
-		reflectionRay->origin = hitEpsilon;
-		reflectionRay->t = (reflectionRay->origin - this->lightSources[i]->position).length();
-		this->intersectPrimitives(reflectionRay);
+		vec3 hitEpsilon = shadowRay->origin + shadowRay->direction * 0.01;
+		shadowRay->origin = hitEpsilon;
+		shadowRay->t = (shadowRay->origin - this->lightSources[i]->position).length();
+		this->intersectPrimitives(shadowRay, true);
 
-		if (reflectionRay->intersectedObjectId != -1)
+		if (shadowRay->intersectedObjectId != -1)
 		{
-			delete reflectionRay;
+			delete shadowRay;
 			continue;
 		}
 
-		float attenuation = this->lightSources[i]->intensity / (this->lightSources[i]->position - reflectionRay->origin).sqrLentgh();
+		float attenuation = this->lightSources[i]->intensity / (this->lightSources[i]->position - shadowRay->origin).sqrLentgh();
 		color += dotDirectionNormal * attenuation * this->lightSources[i]->color;
-		delete reflectionRay;
+		delete shadowRay;
 	}
 
 	return color;
@@ -164,11 +164,11 @@ Ray* Scene::computeRefractionRay(Ray* ray)
 	}
 }
 
-void Scene::intersectPrimitives(Ray* ray)
+void Scene::intersectPrimitives(Ray* ray, bool isShadowRay)
 {
 	if (BVH_ENABLED)
 	{
-		this->accelerationStructure->traverse(this->accelerationStructure->root, ray);
+		this->accelerationStructure->traverse(this->accelerationStructure->root, ray, isShadowRay);
 	}
 	else
 	{

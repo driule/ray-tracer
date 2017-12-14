@@ -15,7 +15,7 @@ namespace Tmpl8
 		};
 
 		Node* root;
-		void traverse(Node* node, Ray* ray);
+		void traverse(Node* node, Ray* ray, bool isShadowRay = false);
 	private:
 		std::vector<Primitive*> primitives;
 		int* primitiveIndices;

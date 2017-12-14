@@ -22,7 +22,7 @@ namespace Tmpl8 {
 		vec4 illuminate(Ray* ray);
 		Ray* computeReflectionRay(Ray* ray);
 		Ray* computeRefractionRay(Ray* ray);
-		void intersectPrimitives(Ray* ray);
+		void intersectPrimitives(Ray* ray, bool isShadowRay = false);
 		void intersectLightSources(Ray* ray);
 		Pixel convertColorToPixel(vec4 color);
 		void createBVH();
