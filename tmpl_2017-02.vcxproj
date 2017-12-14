@@ -232,6 +232,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="LightSources.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Primitives.cpp" />
     <ClCompile Include="quarticsolver.cpp" />
     <ClCompile Include="Ray.cpp" />
@@ -247,6 +248,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="LightSources.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="precomp.h" />
     <ClInclude Include="Primitives.h" />
     <ClInclude Include="quarticsolver.h" />

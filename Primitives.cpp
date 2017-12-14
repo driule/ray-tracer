@@ -88,6 +88,14 @@ vec3 Sphere::getNormal(vec3 point)
 	return normalize(point - this->position);
 }
 
+void Sphere::translate(vec3 vector)
+{
+	this->position += vector;
+	this->center = this->position;
+	this->boundingBoxMin = position - radius;
+	this->boundingBoxMax = position + radius;
+}
+
 // -------------------- TRIANGLE ------------------------------------
 
 Triangle::Triangle(Material* material, vec3 a, vec3 b, vec3 c) : Primitive(material)
@@ -138,6 +146,26 @@ void Triangle::intersect(Ray* ray)
 	}
 }
 
+void Triangle::translate(vec3 vector)
+{
+	this->a += vector;
+	this->b += vector;
+	this->b += vector;
+
+	float minX = MIN(MIN(a.x, b.x), c.x);
+	float minY = MIN(MIN(a.y, b.y), c.y);
+	float minZ = MIN(MIN(a.z, b.z), c.z);
+
+	float maxX = MAX(MAX(a.x, b.x), c.x);
+	float maxY = MAX(MAX(a.y, b.y), c.y);
+	float maxZ = MAX(MAX(a.z, b.z), c.z);
+
+	this->boundingBoxMin = vec3(minX, minY, minZ);
+	this->boundingBoxMax = vec3(maxX, maxY, maxZ);
+
+	this->center = (a + b + c) / 3;
+}
+
 vec3 Triangle::getNormal(vec3 point)
 {
 	return normalize(
@@ -169,6 +197,11 @@ void Plane::intersect(Ray* ray)
 vec3 Plane::getNormal(vec3 point)
 {
 	return normalize(this->direction);
+}
+
+void Plane::translate(vec3 vector)
+{
+	this->position += vector;
 }
 
 // -------------------- CYLINDER ------------------------------------
@@ -276,6 +309,16 @@ vec3 Cylinder::getNormal(vec3 point)
 	return normalize(co - co.project(upVector));
 }
 
+void Cylinder::translate(vec3 vector)
+{
+	this->position += vector;
+
+	this->boundingBoxMin = position - radius;
+	this->boundingBoxMax = position + radius;
+
+	this->center = position + height * upVector * 0.5;
+}
+
 // -------------------- TORUS ------------------------------------
 
 Torus::Torus(Material* material, float R, float r, vec3 position, vec3 axis) : Primitive(material)
@@ -352,4 +395,14 @@ vec3 Torus::getNormal(vec3 point)
 	//vec3 direction = normalize(centerToPoint - axis * centerToPointDotAxis);
 
 	//return normalize(point - position + direction * R);
+}
+
+void Torus::translate(vec3 vector)
+{
+	this->position += vector;
+
+	this->boundingBoxMin = this->position - (R + r);
+	this->boundingBoxMax = this->position + (R + r);
+
+	this->center = position;
 }

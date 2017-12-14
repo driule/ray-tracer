@@ -21,6 +21,7 @@ namespace Tmpl8 {
 
 		virtual void intersect(Ray* ray) = 0;
 		virtual vec3 getNormal(vec3 point) = 0;
+		virtual void translate(vec3 vector) = 0;
 		void intersectBoundingBox(Ray* ray);
 	};
 
@@ -31,6 +32,7 @@ namespace Tmpl8 {
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
+		void translate(vec3 vector);
 
 	private:
 		vec3 position;
@@ -44,6 +46,7 @@ namespace Tmpl8 {
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
+		void translate(vec3 vector);
 
 	private:
 		vec3 a, b, c;
@@ -56,6 +59,7 @@ namespace Tmpl8 {
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
+		void translate(vec3 vector);
 
 	private:
 		vec3 position, direction;
@@ -68,6 +72,7 @@ namespace Tmpl8 {
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
+		void translate(vec3 vector);
 
 	private:
 		vec3 position, upVector;
@@ -81,6 +86,7 @@ namespace Tmpl8 {
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
+		void translate(vec3 vector);
 
 	private:
 		float R, r;
