@@ -39,8 +39,8 @@ void BVH::subdivide(Node* node, int depth)
 
 	node->left = new Node();
 	node->right = new Node();
-	this->partition(node);
-	//this->randomPartition(node);
+	//this->partition(node);
+	this->randomPartition(node);
 
 	depth++;
 	this->subdivide(node->left, depth);

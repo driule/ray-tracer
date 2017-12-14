@@ -220,6 +220,7 @@ void Scene::clear()
 {
 	this->primitives.clear();
 	this->lightSources.clear();
+	this->models.clear();
 }
 
 int Scene::loadModel(const char *filename, Material* material, vec3 translationVector)

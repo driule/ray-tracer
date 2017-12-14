@@ -77,6 +77,12 @@ void Game::Tick( float deltaTime )
 		else if (frame > 50 && frame < 75) scene->translateModel(movingModelId, vec3(0, 0.1, 0));
 		else if (frame > 75 && frame < 100) scene->translateModel(movingModelId, vec3(0, -0.1, 0));
 	}
+	if (sceneId == 1)
+	{
+		if (frame <= 10)	scene->translateModel(1, vec3(0, 1, 0));
+		else if (frame > 10 && frame <= 20) scene->translateModel(1, vec3(0, -1, 0));
+		if (frame > 20) frame = 0;
+	}
 
 	// calculate frame
 	frame++;
@@ -297,7 +303,7 @@ void Game::loadTeddy()
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
 	for (int i = 0; i < 3; i++)
 	{
-		scene->loadModel("assets/teddy.obj", brownMaterial, vec3(i * 30, 0, 0));
+		scene->loadModel("assets/teddy.obj", brownMaterial, vec3(i * 40, 0, 0));
 	}
 }
 
