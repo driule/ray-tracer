@@ -83,6 +83,27 @@ void Game::Tick( float deltaTime )
 		else if (frame > 10 && frame <= 20) scene->translateModel(1, vec3(0, -1, 0));
 		if (frame > 20) frame = 0;
 	}
+	if (sceneId == 2)
+	{
+		if (frame <= 10)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				if (i % 2 == 0) scene->translateModel(i, vec3(0, 1, 0));
+				else scene->translateModel(i, vec3(0, -1, 0));
+			}
+		}
+		else if (frame > 10 && frame <= 20)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				if (i % 2 == 0) scene->translateModel(i, vec3(0, -1, 0));
+				else scene->translateModel(i, vec3(0, 1, 0));
+			}
+		}
+
+		if (frame > 20) frame = 0;
+	}
 
 	// calculate frame
 	frame++;

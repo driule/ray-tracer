@@ -152,7 +152,7 @@ void BVH::randomPartition(Node* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
-	for (int j = 0; j < 50; j++)
+	for (int j = 0; j < 5; j++)
 	{
 		int leftCount = std::rand() % node->count;
 		int rightCount = node->count - leftCount;
