@@ -222,7 +222,7 @@ void Scene::clear()
 	this->lightSources.clear();
 }
 
-void Scene::loadObjModel(const char *filename, Material* material, vec3 translationVector)
+int Scene::loadModel(const char *filename, Material* material, vec3 translationVector)
 {
 	// obj file content
 	std::vector<vec3> vertices;
@@ -273,6 +273,9 @@ void Scene::loadObjModel(const char *filename, Material* material, vec3 translat
 	// add triangles to the scene
 	int primitivesCount = meshVertices.size() / 3;
 	printf("primitives count in %s file: %i\n", filename, primitivesCount);
+
+	int startIndex = this->primitives.size();
+
 	for (int i = 0; i < primitivesCount; i++)
 	{
 		vec3 a = meshVertices[i * 3];
@@ -282,6 +285,27 @@ void Scene::loadObjModel(const char *filename, Material* material, vec3 translat
 		Triangle* triangle = new Triangle(material, a, b, c);
 		triangle->id = this->primitives.size();
 		this->primitives.push_back(triangle);
+	}
+
+	// create model
+	int endIndex = this->primitives.size();
+	int modelId = this->models.size();
+	this->models.push_back(
+		new Model(modelId, startIndex, endIndex)
+	);
+
+	this->createBVH();
+
+	return modelId;
+}
+
+void Scene::translateModel(int id, vec3 vector)
+{
+	Model* model = this->models[id];
+
+	for (int i = model->startIndex; i < model->endIndex; i++)
+	{
+		this->primitives[i]->translate(vector);
 	}
 
 	this->createBVH();

@@ -1,5 +1,6 @@
 #include "precomp.h" // include (only) this in every .cpp file
 
+int frame, sceneId, movingModelId;
 timer _timer;
 
 RayTracerJob** rayTracerJobs;
@@ -67,6 +68,22 @@ void Game::Tick( float deltaTime )
 		jobManager->AddJob2(rayTracerJobs[i]);
 	}
 	jobManager->RunJobs();
+
+	// move models
+	if (sceneId == 0)
+	{
+		if (frame < 25)	scene->translateModel(movingModelId, vec3(0.1, 0, 0));
+		else if (frame > 25 && frame < 50) scene->translateModel(movingModelId, vec3(-0.1, 0, 0));
+		else if (frame > 50 && frame < 75) scene->translateModel(movingModelId, vec3(0, 0.1, 0));
+		else if (frame > 75 && frame < 100) scene->translateModel(movingModelId, vec3(0, -0.1, 0));
+	}
+
+	// calculate frame
+	frame++;
+	if (frame == 100)
+	{
+		frame = 0;
+	}
 
 	// measure FPS
 	char buffer[15];
@@ -163,14 +180,17 @@ void Game::handleInput()
 	// toggle scenes
 	if (GetAsyncKeyState(VK_NUMPAD1))
 	{
+		sceneId = 0;
 		this->loadScene();
 	}
 	if (GetAsyncKeyState(VK_NUMPAD2))
 	{
+		sceneId = 1;
 		this->loadTeddy();
 	}
 	if (GetAsyncKeyState(VK_NUMPAD3))
 	{
+		sceneId = 2;
 		this->loadTeapot();
 	}
 
@@ -249,7 +269,7 @@ void Game::loadScene()
 	);//*/
 
 	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
-	scene->loadObjModel("assets/cube.obj", brownMaterial);
+	movingModelId = scene->loadModel("assets/cube.obj", brownMaterial);
 }
 
 void Game::loadTeddy()
@@ -277,7 +297,7 @@ void Game::loadTeddy()
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
 	for (int i = 0; i < 3; i++)
 	{
-		scene->loadObjModel("assets/teddy.obj", brownMaterial, vec3(i * 30, 0, 0));
+		scene->loadModel("assets/teddy.obj", brownMaterial, vec3(i * 30, 0, 0));
 	}
 }
 
@@ -301,6 +321,6 @@ void Game::loadTeapot()
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
 	for (int i = 0; i < 10; i++)
 	{
-		scene->loadObjModel("assets/teapot.obj", brownMaterial, vec3(i * 7, 0, 0));
+		scene->loadModel("assets/teapot.obj", brownMaterial, vec3(i * 7, 0, 0));
 	}
 }

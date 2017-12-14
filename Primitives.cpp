@@ -150,7 +150,7 @@ void Triangle::translate(vec3 vector)
 {
 	this->a += vector;
 	this->b += vector;
-	this->b += vector;
+	this->c += vector;
 
 	float minX = MIN(MIN(a.x, b.x), c.x);
 	float minY = MIN(MIN(a.y, b.y), c.y);
