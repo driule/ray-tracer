@@ -39,8 +39,9 @@ void BVH::subdivide(Node* node, int depth)
 
 	node->left = new Node();
 	node->right = new Node();
-	this->partition(node);
+	//this->partition(node);
 	//this->randomPartition(node);
+	this->binnedPartition(node);
 
 	depth++;
 	this->subdivide(node->left, depth);
@@ -187,6 +188,115 @@ void BVH::randomPartition(Node* node)
 	node->right->first = node->first + optimalLeftCount;
 	node->right->count = optimalRightCount;
 	calculateBounds(node->right);
+}
+
+void BVH::binnedPartition(Node* node)
+{
+	struct Bin
+	{
+		std::vector<int> primitiveIndices;
+	};
+	float optimalSAH = INFINITY;
+	int optimalLeftCount = 0, optimalRightCount = 0;
+
+	int* optimalPrimitiveIndices = new int[this->primitives.size()];
+	memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
+
+	// Create binned BVH for all three axis
+
+	// Create bins
+	int binCount = 8;
+	Bin* bins = new Bin[binCount];
+	vec3 binWidth = (node->boundingBoxMax - node->boundingBoxMin) / binCount;
+	for (int j = 0; j < 3; j++)
+	{
+		for (int i = 0; i < binCount; i++)
+		{
+			bins[i].primitiveIndices.clear();
+		}
+
+		for (int i = node->first; i < node->first + node->count; i++)
+		{
+			int index = this->primitiveIndices[i];
+			int binIndex;
+			// fill bins for x-axis
+			if (j == 0)			binIndex = (this->primitives[index]->center.x - node->boundingBoxMin.x) / binWidth.x;
+			else if (j == 1)	binIndex = (this->primitives[index]->center.y - node->boundingBoxMin.y) / binWidth.y;
+			else if (j == 2) {
+				binIndex = (this->primitives[index]->center.z - node->boundingBoxMin.z) / binWidth.z;
+			}
+
+			binIndex = MIN(binCount - 1, binIndex);
+			bins[binIndex].primitiveIndices.push_back(index);
+		}
+
+		// Sort nodePrimitiveIndices
+		int* nodePrimitiveIndices = new int[node->count];
+		int count = 0;
+		for (int i = 0; i < binCount; i++)
+		{
+			for (int b = 0; b < bins[i].primitiveIndices.size(); b++)
+			{
+				nodePrimitiveIndices[count] = bins[i].primitiveIndices[b];
+				count++;
+			}
+		}
+
+		// update current node state
+		for (int i = 0; i < node->count; i++)
+		{
+			this->primitiveIndices[node->first + i] = nodePrimitiveIndices[i];
+		}
+
+		// evaluate bin combinations
+		for (int i = 0; i < binCount - 1; i++)
+		{
+			int leftCount = 0, rightCount = 0;
+			for (int b = 0; b <= i; b++)
+			{
+				leftCount += bins[b].primitiveIndices.size();
+			}
+			rightCount = node->count - leftCount;
+			if (leftCount == 0 || rightCount == 0)
+				continue;
+
+			node->left->first = node->first;
+			node->left->count = leftCount;
+			calculateBounds(node->left);
+
+			node->right->first = node->first + leftCount;
+			node->right->count = rightCount;
+			calculateBounds(node->right);
+
+			// calculate surface area
+			float surfaceAreaLeft = this->calculateSurfaceArea(node->left);
+			float surfaceAreaRight = this->calculateSurfaceArea(node->right);
+			float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
+
+			// save the optimal split according Surface Area Heuristic
+			if (SAH < optimalSAH && SAH < (surfaceAreaLeft + surfaceAreaRight) * node->count)
+			{
+				optimalSAH = SAH;
+				optimalLeftCount = leftCount;
+				optimalRightCount = rightCount;
+				memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
+			}
+		}
+		delete nodePrimitiveIndices;
+	}
+
+	memcpy(this->primitiveIndices, optimalPrimitiveIndices, this->primitives.size() * sizeof(int));
+
+	// set optimal split values
+	node->left->first = node->first;
+	node->left->count = optimalLeftCount;
+	calculateBounds(node->left);
+
+	node->right->first = node->first + optimalLeftCount;
+	node->right->count = optimalRightCount;
+	calculateBounds(node->right);
+
+	delete optimalPrimitiveIndices;
 }
 
 float BVH::calculateSurfaceArea(Node* node)
