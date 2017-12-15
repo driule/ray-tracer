@@ -34,14 +34,6 @@ void BVH::subdivide(Node* node, int depth)
 {
 	if (node->count <= MAX_PRIMITIVES || depth >= MAX_DEPTH)
 	{
-		/*printf("Leaf (depth: %i). first: %i, count: %i", depth, node->first, node->count);
-		for (int i = 0; i < node->count; i++)
-		{
-		int index = this->primitiveIndices[node->first + i];
-		printf(" |(%i) %f,%f,%f |", index, this->primitives[index]->center.x, this->primitives[index]->center.y, this->primitives[index]->center.z);
-		}
-		printf("\n\n");
-		//*/
 		node->isLeaf = true;
 		return;
 	}
@@ -308,7 +300,6 @@ void BVH::traverse(Node* node, Ray* ray, bool isShadowRay)
 	}
 	if (node->isLeaf)
 	{
-		//printf("traverse leaf, count %i, first: %i\n", node->count, node->first);
 		// intersect primitves
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
@@ -323,7 +314,6 @@ void BVH::traverse(Node* node, Ray* ray, bool isShadowRay)
 	}
 	else
 	{
-		//printf("traverse not leaf, count %i\n", node->count);
 		this->traverse(node->left, ray);
 		this->traverse(node->right, ray);
 	}
@@ -342,7 +332,7 @@ bool BVH::intersects(Node* node, Ray* ray)
 	if (tymin > tymax) swap(tymin, tymax);
 
 	if ((tmin > tymax) || (tymin > tmax))
-		return false; // No intersection
+		return false;
 
 	if (tymin > tmin)
 		tmin = tymin;
@@ -356,7 +346,7 @@ bool BVH::intersects(Node* node, Ray* ray)
 	if (tzmin > tzmax) swap(tzmin, tzmax);
 
 	if ((tmin > tzmax) || (tzmin > tmax))
-		return false; // no intersection
+		return false;
 
 	if (tzmin > tmin)
 		tmin = tzmin;
