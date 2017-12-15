@@ -39,8 +39,8 @@ void BVH::subdivide(Node* node, int depth)
 
 	node->left = new Node();
 	node->right = new Node();
-	//this->partition(node);
-	this->randomPartition(node);
+	this->partition(node);
+	//this->randomPartition(node);
 
 	depth++;
 	this->subdivide(node->left, depth);
@@ -77,7 +77,7 @@ void BVH::partition(Node* node)
 	memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
 
 	// try 3 different splits along x, y, z axes
-	vec3 splitPlane = node->boundingBoxMin + 0.5 * node->boundingBoxMax;
+	vec3 splitPlane = node->boundingBoxMin + 0.5 * (node->boundingBoxMax - node->boundingBoxMin);
 	for (int j = 0; j < 3; j++)
 	{
 		int* nodePrimitiveIndices = new int[node->count];
