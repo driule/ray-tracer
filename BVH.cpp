@@ -205,10 +205,6 @@ void BVH::randomPartition(Node* node)
 
 void BVH::binnedPartition(Node* node)
 {
-	struct Bin
-	{
-		std::vector<int> primitiveIndices;
-	};
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
 
@@ -218,29 +214,26 @@ void BVH::binnedPartition(Node* node)
 	// Create binned BVH for all three axis
 
 	// Create bins
-	int binCount = 8;
-	Bin* bins = new Bin[binCount];
+	int binCount = 4;
+	std::vector<int>* bins = new std::vector<int>[binCount];
 	vec3 binWidth = (node->boundingBoxMax - node->boundingBoxMin) / binCount;
 	for (int j = 0; j < 3; j++)
 	{
 		for (int i = 0; i < binCount; i++)
 		{
-			bins[i].primitiveIndices.clear();
+			bins[i].clear();
 		}
 
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
 			int index = this->primitiveIndices[i];
 			int binIndex;
-			// fill bins for x-axis
 			if (j == 0)			binIndex = (this->primitives[index]->center.x - node->boundingBoxMin.x) / binWidth.x;
 			else if (j == 1)	binIndex = (this->primitives[index]->center.y - node->boundingBoxMin.y) / binWidth.y;
-			else if (j == 2) {
-				binIndex = (this->primitives[index]->center.z - node->boundingBoxMin.z) / binWidth.z;
-			}
+			else if (j == 2)	binIndex = (this->primitives[index]->center.z - node->boundingBoxMin.z) / binWidth.z;
 
 			binIndex = MIN(binCount - 1, binIndex);
-			bins[binIndex].primitiveIndices.push_back(index);
+			bins[binIndex].push_back(index);
 		}
 
 		// Sort nodePrimitiveIndices
@@ -248,9 +241,9 @@ void BVH::binnedPartition(Node* node)
 		int count = 0;
 		for (int i = 0; i < binCount; i++)
 		{
-			for (int b = 0; b < bins[i].primitiveIndices.size(); b++)
+			for (int b = 0; b < bins[i].size(); b++)
 			{
-				nodePrimitiveIndices[count] = bins[i].primitiveIndices[b];
+				nodePrimitiveIndices[count] = bins[i][b];
 				count++;
 			}
 		}
@@ -267,7 +260,7 @@ void BVH::binnedPartition(Node* node)
 			int leftCount = 0, rightCount = 0;
 			for (int b = 0; b <= i; b++)
 			{
-				leftCount += bins[b].primitiveIndices.size();
+				leftCount += bins[b].size();
 			}
 			rightCount = node->count - leftCount;
 			if (leftCount == 0 || rightCount == 0)
