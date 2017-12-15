@@ -10,11 +10,14 @@ namespace Tmpl8
 		{
 			vec3 boundingBoxMin, boundingBoxMax;
 			bool isLeaf = false;
-			Node *left, *right;
+			Node *parent, *left, *right;
 			int first, count;
 		};
 
 		Node* root;
+
+		void createBVH();
+		void createTopBVH();
 		void traverse(Node* node, Ray* ray, bool isShadowRay = false);
 	private:
 		std::vector<Primitive*> primitives;

@@ -6,6 +6,10 @@
 BVH::BVH(std::vector<Primitive*> primitives)
 {
 	this->primitives = primitives;
+}
+
+void BVH::createBVH()
+{
 	int N = this->primitives.size();
 	this->primitiveIndices = new int[N];
 	for (int i = 0; i < N; i++)
@@ -19,6 +23,11 @@ BVH::BVH(std::vector<Primitive*> primitives)
 
 	calculateBounds(this->root);
 	subdivide(this->root, 0);
+}
+
+void BVH::createTopBVH()
+{
+	// todo
 }
 
 void BVH::subdivide(Node* node, int depth)
@@ -38,7 +47,11 @@ void BVH::subdivide(Node* node, int depth)
 	}
 
 	node->left = new Node();
+	node->left->parent = node;
+
 	node->right = new Node();
+	node->right->parent = node;
+
 	//this->partition(node);
 	//this->randomPartition(node);
 	this->binnedPartition(node);

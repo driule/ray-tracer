@@ -17,7 +17,8 @@ namespace Tmpl8 {
 		void clear();
 	private:
 		Surface* screen;
-		BVH* accelerationStructure;
+		BVH* topBHV;
+		std::vector<BVH*> BVHs;
 
 		std::vector<Primitive*> primitives;
 		std::vector<LightSource*> lightSources;

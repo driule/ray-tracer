@@ -168,7 +168,7 @@ void Scene::intersectPrimitives(Ray* ray, bool isShadowRay)
 {
 	if (BVH_ENABLED)
 	{
-		this->accelerationStructure->traverse(this->accelerationStructure->root, ray, isShadowRay);
+		this->topBHV->traverse(this->topBHV->root, ray, isShadowRay);
 	}
 	else
 	{
@@ -200,7 +200,8 @@ Pixel Scene::convertColorToPixel(vec4 color)
 
 void Scene::createBVH()
 {
-	this->accelerationStructure = new BVH(this->primitives);
+	this->topBHV = new BVH(this->primitives);
+	this->topBHV->createBVH();
 }
 
 void Scene::addPrimitive(Primitive* primitive)
