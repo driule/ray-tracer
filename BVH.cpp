@@ -92,7 +92,7 @@ void BVH::partition(Node* node)
 
 	// try 3 different splits along x, y, z axes
 	vec3 splitPlane = node->boundingBoxMin + 0.5 * (node->boundingBoxMax - node->boundingBoxMin);
-	for (int j = 0; j < 3; j++)
+	for (int axis = 0; axis < 3; axis++)
 	{
 		int* nodePrimitiveIndices = new int[node->count];
 		int leftCount = 0, rightCount = 0;
@@ -101,9 +101,9 @@ void BVH::partition(Node* node)
 		{
 			int index = this->primitiveIndices[i];
 			bool assignedToLeftNode = false;
-			if (j == 0)			assignedToLeftNode = this->primitives[index]->center.x < splitPlane.x;
-			else if (j == 1)	assignedToLeftNode = this->primitives[index]->center.y < splitPlane.y;
-			else if (j == 2)	assignedToLeftNode = this->primitives[index]->center.z < splitPlane.z;
+			if (axis == 0)		assignedToLeftNode = this->primitives[index]->center.x < splitPlane.x;
+			else if (axis == 1)	assignedToLeftNode = this->primitives[index]->center.y < splitPlane.y;
+			else if (axis == 2)	assignedToLeftNode = this->primitives[index]->center.z < splitPlane.z;
 
 			if (assignedToLeftNode)
 			{
@@ -166,7 +166,7 @@ void BVH::randomPartition(Node* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
-	for (int j = 0; j < 5; j++)
+	for (int i = 0; i < 5; i++)
 	{
 		int leftCount = std::rand() % node->count;
 		int rightCount = node->count - leftCount;
@@ -211,60 +211,49 @@ void BVH::binnedPartition(Node* node)
 	int* optimalPrimitiveIndices = new int[this->primitives.size()];
 	memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
 
-	// Create binned BVH for all three axis
-
-	// Create bins
 	int binCount = 4;
-	std::vector<int>* bins = new std::vector<int>[binCount];
+	std::vector<int>* bins;
 	vec3 binWidth = (node->boundingBoxMax - node->boundingBoxMin) / binCount;
-	for (int j = 0; j < 3; j++)
-	{
-		for (int i = 0; i < binCount; i++)
-		{
-			bins[i].clear();
-		}
 
+	for (int axis = 0; axis < 3; axis++)
+	{
+		bins = new std::vector<int>[binCount];
+
+		// divide primitives to bins
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			int index = this->primitiveIndices[i];
-			int binIndex;
-			if (j == 0)			binIndex = (this->primitives[index]->center.x - node->boundingBoxMin.x) / binWidth.x;
-			else if (j == 1)	binIndex = (this->primitives[index]->center.y - node->boundingBoxMin.y) / binWidth.y;
-			else if (j == 2)	binIndex = (this->primitives[index]->center.z - node->boundingBoxMin.z) / binWidth.z;
+			int index = this->primitiveIndices[i], binIndex;
+
+			if (axis == 0)		binIndex = (this->primitives[index]->center.x - node->boundingBoxMin.x) / binWidth.x;
+			else if (axis == 1)	binIndex = (this->primitives[index]->center.y - node->boundingBoxMin.y) / binWidth.y;
+			else if (axis == 2)	binIndex = (this->primitives[index]->center.z - node->boundingBoxMin.z) / binWidth.z;
 
 			binIndex = MIN(binCount - 1, binIndex);
 			bins[binIndex].push_back(index);
 		}
 
-		// Sort nodePrimitiveIndices
-		int* nodePrimitiveIndices = new int[node->count];
+		// sort primitive indices
 		int count = 0;
 		for (int i = 0; i < binCount; i++)
 		{
-			for (int b = 0; b < bins[i].size(); b++)
+			for (int j = 0; j < bins[i].size(); j++)
 			{
-				nodePrimitiveIndices[count] = bins[i][b];
+				this->primitiveIndices[node->first + count] = bins[i][j];
 				count++;
 			}
-		}
-
-		// update current node state
-		for (int i = 0; i < node->count; i++)
-		{
-			this->primitiveIndices[node->first + i] = nodePrimitiveIndices[i];
 		}
 
 		// evaluate bin combinations
 		for (int i = 0; i < binCount - 1; i++)
 		{
 			int leftCount = 0, rightCount = 0;
-			for (int b = 0; b <= i; b++)
+			for (int j = 0; j <= i; j++)
 			{
-				leftCount += bins[b].size();
+				leftCount += bins[j].size();
 			}
 			rightCount = node->count - leftCount;
-			if (leftCount == 0 || rightCount == 0)
-				continue;
+
+			if (leftCount == 0 || rightCount == 0) continue;
 
 			node->left->first = node->first;
 			node->left->count = leftCount;
@@ -288,7 +277,6 @@ void BVH::binnedPartition(Node* node)
 				memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
 			}
 		}
-		delete nodePrimitiveIndices;
 	}
 
 	memcpy(this->primitiveIndices, optimalPrimitiveIndices, this->primitives.size() * sizeof(int));
