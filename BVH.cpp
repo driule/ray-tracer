@@ -215,13 +215,13 @@ void BVH::binnedPartition(Node* node)
 		optimalPrimitiveIndices[i] = this->primitiveIndices[node->first + i];
 	}
 
-	int binCount = 4;
-	std::vector<int>* bins;
+	int binCount = 10;
+	std::vector<int>* bins = new std::vector<int>[binCount];
 	vec3 binWidth = (node->boundingBoxMax - node->boundingBoxMin) / binCount;
 
 	for (int axis = 0; axis < 3; axis++)
 	{
-		bins = new std::vector<int>[binCount];
+		for (int i = 0; i < binCount; i++) bins[i].clear();
 
 		// divide primitives to bins
 		for (int i = node->first; i < node->first + node->count; i++)
@@ -312,10 +312,12 @@ float BVH::calculateSurfaceArea(Node* node)
 
 void BVH::traverse(Node* node, Ray* ray, bool isShadowRay)
 {
-	if (!this->intersects(node, ray) || (isShadowRay && ray->intersectedObjectId != -1))
-	{
+	if (!this->intersects(node, ray))
 		return;
-	}
+
+	if (isShadowRay && ray->intersectedObjectId != -1)
+		return;
+
 	if (node->isLeaf)
 	{
 		// intersect primitves
@@ -325,9 +327,7 @@ void BVH::traverse(Node* node, Ray* ray, bool isShadowRay)
 			this->primitives[index]->intersect(ray);
 
 			if (isShadowRay && ray->intersectedObjectId != -1)
-			{
 				return;
-			}
 		}
 	}
 	else
@@ -371,9 +371,7 @@ bool BVH::intersects(Node* node, Ray* ray)
 
 	// early out
 	if (tmin > ray->t)
-	{
 		return false;
-	}
 
 	return true;
 }

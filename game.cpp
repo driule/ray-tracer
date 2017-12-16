@@ -63,11 +63,21 @@ void Game::Tick( float deltaTime )
 
 	this->handleInput();
 
-	for (int i = 0; i < SCRHEIGHT / 32; i++)
+	if (MULTITHREADING_ENABLED)
 	{
-		jobManager->AddJob2(rayTracerJobs[i]);
+		for (int i = 0; i < SCRHEIGHT / 32; i++)
+		{
+			jobManager->AddJob2(rayTracerJobs[i]);
+		}
+		jobManager->RunJobs();
 	}
-	jobManager->RunJobs();
+	else
+	{
+		for (uint i = 0; i < SCRHEIGHT; i++)
+		{
+			scene->render(i);
+		}
+	}
 
 	// move models
 	/*if (sceneId == 0)
