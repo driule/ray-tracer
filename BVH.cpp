@@ -79,8 +79,11 @@ void BVH::partition(Node* node)
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
 
-	int* optimalPrimitiveIndices = new int[this->primitives.size()];
-	memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
+	int* optimalPrimitiveIndices = new int[node->count];
+	for (int i = 0; i < node->count; i++)
+	{
+		optimalPrimitiveIndices[i] = this->primitiveIndices[node->first + i];
+	}
 
 	// try 3 different splits along x, y, z axes
 	vec3 splitPlane = node->boundingBoxMin + 0.5 * (node->boundingBoxMax - node->boundingBoxMin);
@@ -134,15 +137,21 @@ void BVH::partition(Node* node)
 			optimalSAH = SAH;
 			optimalLeftCount = leftCount;
 			optimalRightCount = rightCount;
-			memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
+			for (int j = 0; j < node->count; j++)
+			{
+				optimalPrimitiveIndices[j] = this->primitiveIndices[node->first + j];
+			}
 		}
 
 		delete nodePrimitiveIndices;
 	}
 
-	memcpy(this->primitiveIndices, optimalPrimitiveIndices, this->primitives.size() * sizeof(int));
-
 	// set optimal split values
+	for (int i = 0; i < node->count; i++)
+	{
+		this->primitiveIndices[node->first + i] = optimalPrimitiveIndices[i];
+	}
+
 	node->left->first = node->first;
 	node->left->count = optimalLeftCount;
 	calculateBounds(node->left);
@@ -200,8 +209,11 @@ void BVH::binnedPartition(Node* node)
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
 
-	int* optimalPrimitiveIndices = new int[this->primitives.size()];
-	memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
+	int* optimalPrimitiveIndices = new int[node->count];
+	for (int i = 0; i < node->count; i++)
+	{
+		optimalPrimitiveIndices[i] = this->primitiveIndices[node->first + i];
+	}
 
 	int binCount = 4;
 	std::vector<int>* bins;
@@ -266,14 +278,20 @@ void BVH::binnedPartition(Node* node)
 				optimalSAH = SAH;
 				optimalLeftCount = leftCount;
 				optimalRightCount = rightCount;
-				memcpy(optimalPrimitiveIndices, this->primitiveIndices, this->primitives.size() * sizeof(int));
+				for (int j = 0; j < node->count; j++)
+				{
+					optimalPrimitiveIndices[j] = this->primitiveIndices[node->first + j];
+				}
 			}
 		}
 	}
 
-	memcpy(this->primitiveIndices, optimalPrimitiveIndices, this->primitives.size() * sizeof(int));
-
 	// set optimal split values
+	for (int i = 0; i < node->count; i++)
+	{
+		this->primitiveIndices[node->first + i] = optimalPrimitiveIndices[i];
+	}
+
 	node->left->first = node->first;
 	node->left->count = optimalLeftCount;
 	calculateBounds(node->left);
