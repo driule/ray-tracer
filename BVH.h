@@ -5,6 +5,7 @@ namespace Tmpl8
 	{
 	public:
 		BVH(std::vector<Primitive*> primitives);
+		~BVH();
 
 		struct Node
 		{
@@ -30,5 +31,6 @@ namespace Tmpl8
 		void binnedPartition(Node* node);
 		float calculateSurfaceArea(Node* node);
 		bool intersects(Node* node, Ray* ray);
+		void destroy(Node* node);
 	};
 }

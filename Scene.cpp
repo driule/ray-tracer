@@ -200,6 +200,9 @@ Pixel Scene::convertColorToPixel(vec4 color)
 
 void Scene::createBVH()
 {
+	if (this->topBHV != NULL && this->topBHV->root != NULL)
+		delete this->topBHV;
+
 	this->topBHV = new BVH(this->primitives);
 	this->topBHV->createBVH();
 }

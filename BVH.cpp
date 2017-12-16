@@ -8,6 +8,12 @@ BVH::BVH(std::vector<Primitive*> primitives)
 	this->primitives = primitives;
 }
 
+BVH::~BVH()
+{
+	this->destroy(this->root);
+	delete this->primitiveIndices;
+}
+
 void BVH::createBVH()
 {
 	int N = this->primitives.size();
@@ -285,6 +291,7 @@ void BVH::binnedPartition(Node* node)
 			}
 		}
 	}
+	delete[] bins;
 
 	// set optimal split values
 	for (int i = 0; i < node->count; i++)
@@ -374,4 +381,18 @@ bool BVH::intersects(Node* node, Ray* ray)
 		return false;
 
 	return true;
+}
+
+void BVH::destroy(Node* node)
+{
+	if (node->isLeaf)
+	{
+		delete node;
+		return;
+	}
+
+	this->destroy(node->left);
+	this->destroy(node->right);
+
+	delete node;
 }
