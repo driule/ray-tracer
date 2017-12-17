@@ -32,5 +32,6 @@ namespace Tmpl8
 		float calculateSurfaceArea(Node* node);
 		bool intersects(Node* node, Ray* ray);
 		void destroy(Node* node);
+		void translate(Node* node, vec3 vector);
 	};
 }

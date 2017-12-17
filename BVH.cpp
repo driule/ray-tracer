@@ -396,3 +396,14 @@ void BVH::destroy(Node* node)
 
 	delete node;
 }
+
+void BVH::translate(Node* node, vec3 vector)
+{
+	node->boundingBoxMin += vector;
+	node->boundingBoxMax += vector;
+
+	if (node->isLeaf) return;
+
+	this->translate(node->left, vector);
+	this->translate(node->right, vector);
+}
