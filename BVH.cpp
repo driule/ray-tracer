@@ -3,18 +3,19 @@
 #define MAX_PRIMITIVES 3
 #define MAX_DEPTH 20
 
-BVH::BVH(std::vector<Primitive*> primitives)
+BVH::BVH(int id, std::vector<Primitive*> primitives)
 {
+	this->id = id;
 	this->primitives = primitives;
 }
 
 BVH::~BVH()
 {
-	this->destroy(this->root);
-	delete this->primitiveIndices;
+	//this->destroy(this->root);
+	//delete this->primitiveIndices;
 }
 
-void BVH::createBVH()
+void BVH::createBVH(int startIndex, int endIndex)
 {
 	int N = this->primitives.size();
 	this->primitiveIndices = new int[N];
@@ -23,20 +24,15 @@ void BVH::createBVH()
 		primitiveIndices[i] = i;
 	}
 
-	this->root = new Node();
-	this->root->first = 0;
-	this->root->count = N;
+	this->root = new BVHNode();
+	this->root->first = startIndex;
+	this->root->count = endIndex - startIndex + 1;
 
 	calculateBounds(this->root);
 	subdivide(this->root, 0);
 }
 
-void BVH::createTopBVH()
-{
-	// todo
-}
-
-void BVH::subdivide(Node* node, int depth)
+void BVH::subdivide(BVHNode* node, int depth)
 {
 	if (node->count <= MAX_PRIMITIVES || depth >= MAX_DEPTH)
 	{
@@ -44,10 +40,10 @@ void BVH::subdivide(Node* node, int depth)
 		return;
 	}
 
-	node->left = new Node();
+	node->left = new BVHNode();
 	node->left->parent = node;
 
-	node->right = new Node();
+	node->right = new BVHNode();
 	node->right->parent = node;
 
 	//this->partition(node);
@@ -59,7 +55,7 @@ void BVH::subdivide(Node* node, int depth)
 	this->subdivide(node->right, depth);
 }
 
-void BVH::calculateBounds(Node* node)
+void BVH::calculateBounds(BVHNode* node)
 {
 	float maxX = -INFINITY, maxY = -INFINITY, maxZ = -INFINITY;
 	float minX = INFINITY, minY = INFINITY, minZ = INFINITY;
@@ -80,7 +76,7 @@ void BVH::calculateBounds(Node* node)
 	node->boundingBoxMax = vec3(maxX, maxY, maxZ);
 }
 
-void BVH::partition(Node* node)
+void BVH::partition(BVHNode* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
@@ -133,8 +129,8 @@ void BVH::partition(Node* node)
 		calculateBounds(node->right);
 
 		// calculate surface area
-		float surfaceAreaLeft = this->calculateSurfaceArea(node->left);
-		float surfaceAreaRight = this->calculateSurfaceArea(node->right);
+		float surfaceAreaLeft = node->left->calculateSurfaceArea();
+		float surfaceAreaRight = node->right->calculateSurfaceArea();
 		float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
 
 		// save the optimal split according Surface Area Heuristic
@@ -169,7 +165,7 @@ void BVH::partition(Node* node)
 	delete optimalPrimitiveIndices;
 }
 
-void BVH::randomPartition(Node* node)
+void BVH::randomPartition(BVHNode* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
@@ -187,8 +183,8 @@ void BVH::randomPartition(Node* node)
 		calculateBounds(node->right);
 
 		// calculate surface area
-		float surfaceAreaLeft = this->calculateSurfaceArea(node->left);
-		float surfaceAreaRight = this->calculateSurfaceArea(node->right);
+		float surfaceAreaLeft = node->left->calculateSurfaceArea();
+		float surfaceAreaRight = node->right->calculateSurfaceArea();
 		float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
 
 		// save the optimal split according Surface Area Heuristic
@@ -210,7 +206,7 @@ void BVH::randomPartition(Node* node)
 	calculateBounds(node->right);
 }
 
-void BVH::binnedPartition(Node* node)
+void BVH::binnedPartition(BVHNode* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
@@ -274,8 +270,8 @@ void BVH::binnedPartition(Node* node)
 			calculateBounds(node->right);
 
 			// calculate surface area
-			float surfaceAreaLeft = this->calculateSurfaceArea(node->left);
-			float surfaceAreaRight = this->calculateSurfaceArea(node->right);
+			float surfaceAreaLeft = node->left->calculateSurfaceArea();
+			float surfaceAreaRight = node->right->calculateSurfaceArea();
 			float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
 
 			// save the optimal split according Surface Area Heuristic
@@ -308,102 +304,4 @@ void BVH::binnedPartition(Node* node)
 	calculateBounds(node->right);
 
 	delete optimalPrimitiveIndices;
-}
-
-float BVH::calculateSurfaceArea(Node* node)
-{
-	vec3 diagonal = (node->boundingBoxMax - node->boundingBoxMin).absolute();
-
-	return ((diagonal.x * diagonal.y) + (diagonal.x * diagonal.z) + (diagonal.z * diagonal.y)) * 2;
-}
-
-void BVH::traverse(Node* node, Ray* ray, bool isShadowRay)
-{
-	if (!this->intersects(node, ray))
-		return;
-
-	if (isShadowRay && ray->intersectedObjectId != -1)
-		return;
-
-	if (node->isLeaf)
-	{
-		// intersect primitves
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			int index = this->primitiveIndices[i];
-			this->primitives[index]->intersect(ray);
-
-			if (isShadowRay && ray->intersectedObjectId != -1)
-				return;
-		}
-	}
-	else
-	{
-		this->traverse(node->left, ray);
-		this->traverse(node->right, ray);
-	}
-}
-
-bool BVH::intersects(Node* node, Ray* ray)
-{
-	float tmin = (node->boundingBoxMin.x - ray->origin.x) / ray->direction.x;
-	float tmax = (node->boundingBoxMax.x - ray->origin.x) / ray->direction.x;
-
-	if (tmin > tmax) swap(tmin, tmax);
-
-	float tymin = (node->boundingBoxMin.y - ray->origin.y) / ray->direction.y;
-	float tymax = (node->boundingBoxMax.y - ray->origin.y) / ray->direction.y;
-
-	if (tymin > tymax) swap(tymin, tymax);
-
-	if ((tmin > tymax) || (tymin > tmax))
-		return false;
-
-	if (tymin > tmin)
-		tmin = tymin;
-
-	if (tymax < tmax)
-		tmax = tymax;
-
-	float tzmin = (node->boundingBoxMin.z - ray->origin.z) / ray->direction.z;
-	float tzmax = (node->boundingBoxMax.z - ray->origin.z) / ray->direction.z;
-
-	if (tzmin > tzmax) swap(tzmin, tzmax);
-
-	if ((tmin > tzmax) || (tzmin > tmax))
-		return false;
-
-	if (tzmin > tmin)
-		tmin = tzmin;
-
-	// early out
-	if (tmin > ray->t)
-		return false;
-
-	return true;
-}
-
-void BVH::destroy(Node* node)
-{
-	if (node->isLeaf)
-	{
-		delete node;
-		return;
-	}
-
-	this->destroy(node->left);
-	this->destroy(node->right);
-
-	delete node;
-}
-
-void BVH::translate(Node* node, vec3 vector)
-{
-	node->boundingBoxMin += vector;
-	node->boundingBoxMax += vector;
-
-	if (node->isLeaf) return;
-
-	this->translate(node->left, vector);
-	this->translate(node->right, vector);
 }

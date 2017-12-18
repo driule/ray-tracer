@@ -198,20 +198,19 @@ Pixel Scene::convertColorToPixel(vec4 color)
 	return (r << 16) + (g << 8) + b;
 }
 
-void Scene::createBVH()
+void Scene::createTopBVH()
 {
-	if (this->topBHV != NULL && this->topBHV->root != NULL)
-		delete this->topBHV;
+	//if (this->topBHV != NULL && this->topBHV->root != NULL)
+		//delete this->topBHV;
 
-	this->topBHV = new BVH(this->primitives);
-	this->topBHV->createBVH();
+	this->topBHV = new TopBVH(this->primitives, BVHs);
 }
 
 void Scene::addPrimitive(Primitive* primitive)
 {
 	primitive->id = this->primitives.size();
 	this->primitives.push_back(primitive);
-	this->createBVH();
+	this->createTopBVH();
 }
 
 void Scene::addLightSource(LightSource* lightSource)
@@ -293,13 +292,17 @@ int Scene::loadModel(const char *filename, Material* material, vec3 translationV
 	}
 
 	// create model
-	int endIndex = this->primitives.size();
+	int endIndex = this->primitives.size() - 1;
 	int modelId = this->models.size();
 	this->models.push_back(
 		new Model(modelId, startIndex, endIndex)
 	);
 
-	this->createBVH();
+	// add new BVH to top-BVH
+	BVH* modelBVH = new BVH(this->BVHs.size(), this->primitives);
+	modelBVH->createBVH(startIndex, endIndex);
+	this->BVHs.push_back(modelBVH);
+	this->createTopBVH();
 
 	return modelId;
 }
@@ -308,10 +311,10 @@ void Scene::translateModel(int id, vec3 vector)
 {
 	Model* model = this->models[id];
 
-	for (int i = model->startIndex; i < model->endIndex; i++)
+	for (int i = model->startIndex; i <= model->endIndex; i++)
 	{
 		this->primitives[i]->translate(vector);
 	}
 
-	this->createBVH();
+	this->createTopBVH();
 }

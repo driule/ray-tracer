@@ -4,34 +4,22 @@ namespace Tmpl8
 	class BVH
 	{
 	public:
-		BVH(std::vector<Primitive*> primitives);
+		BVH(int id, std::vector<Primitive*> primitives);
 		~BVH();
 
-		struct Node
-		{
-			vec3 boundingBoxMin, boundingBoxMax;
-			bool isLeaf = false;
-			Node *parent, *left, *right;
-			int first, count;
-		};
-
-		Node* root;
-
-		void createBVH();
-		void createTopBVH();
-		void traverse(Node* node, Ray* ray, bool isShadowRay = false);
-	private:
-		std::vector<Primitive*> primitives;
+		BVHNode* root;
+		int id;
 		int* primitiveIndices;
 
-		void subdivide(Node* node, int depth);
-		void calculateBounds(Node* node);
-		void partition(Node* node);
-		void randomPartition(Node* node);
-		void binnedPartition(Node* node);
-		float calculateSurfaceArea(Node* node);
-		bool intersects(Node* node, Ray* ray);
-		void destroy(Node* node);
-		void translate(Node* node, vec3 vector);
+		void createBVH(int startIndex, int endIndex);
+		
+	private:
+		std::vector<Primitive*> primitives;
+
+		void subdivide(BVHNode* node, int depth);
+		void calculateBounds(BVHNode* node);
+		void partition(BVHNode* node);
+		void randomPartition(BVHNode* node);
+		void binnedPartition(BVHNode* node);
 	};
 }

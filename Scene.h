@@ -17,7 +17,8 @@ namespace Tmpl8 {
 		void clear();
 	private:
 		Surface* screen;
-		BVH* topBHV;
+
+		TopBVH* topBHV;
 		std::vector<BVH*> BVHs;
 
 		std::vector<Primitive*> primitives;
@@ -44,8 +45,6 @@ namespace Tmpl8 {
 
 		Pixel convertColorToPixel(vec4 color);
 
-		void createModel(int id, int startIndex, int endIndex);
-
-		void createBVH();
+		void createTopBVH();
 	};
 }

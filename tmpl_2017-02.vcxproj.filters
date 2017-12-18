@@ -18,6 +18,8 @@
     <ClCompile Include="LightSources.cpp" />
     <ClCompile Include="quarticsolver.cpp" />
     <ClCompile Include="BVH.cpp" />
+    <ClCompile Include="TopBVH.cpp" />
+    <ClCompile Include="BVHNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -38,6 +40,8 @@
     <ClInclude Include="LightSources.h" />
     <ClInclude Include="quarticsolver.h" />
     <ClInclude Include="BVH.h" />
+    <ClInclude Include="TopBVH.h" />
+    <ClInclude Include="BVHNode.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">
