@@ -13,7 +13,7 @@ TopBVH::TopBVH(std::vector<Primitive*> primitives, std::vector<BVH*> BVHs)
 	{
 		for (int j = this->BVHs[i]->root->first; j < this->BVHs[i]->root->first + this->BVHs[i]->root->count; j++)
 		{
-			this->primitiveIndices[count] = this->BVHs[i]->primitiveIndices[this->BVHs[i]->root->first + j];
+			this->primitiveIndices[count] = this->BVHs[i]->primitiveIndices[j];
 			count++;
 		}
 
