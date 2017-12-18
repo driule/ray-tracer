@@ -62,10 +62,7 @@ void BVH::subdivide(BVHNode* node, int depth)
 	}
 
 	node->left = new BVHNode();
-	node->left->parent = node;
-
 	node->right = new BVHNode();
-	node->right->parent = node;
 
 	this->partition(node);
 

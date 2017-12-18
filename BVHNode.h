@@ -8,7 +8,7 @@ namespace Tmpl8
 
 		vec3 boundingBoxMin, boundingBoxMax;
 		bool isLeaf;
-		BVHNode *parent, *left, *right;
+		BVHNode *left, *right;
 		int first, count;
 
 		bool intersects(Ray* ray);

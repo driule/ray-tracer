@@ -70,10 +70,7 @@ void TopBVH::subdivide(BVHNode* node)
 	}
 
 	node->left = new BVHNode();
-	node->left->parent = node;
-
 	node->right = new BVHNode();
-	node->right->parent = node;
 
 	this->partition(node);
 
