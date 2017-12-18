@@ -322,10 +322,10 @@ void Game::loadTeddy()
 	scene->addLightSource(new DirectLight(vec3(8.0f, 0.0f, -18.0), vec4(1, 1, 1, 0), 100));
 	scene->addLightSource(new DirectLight(vec3(4.0f, 8.0f, -20.0), vec4(1, 1, 1, 0), 100));
 
-	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
+	/*Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
 	scene->addPrimitive(
 		new Sphere(redMaterial, vec3(-25, 10, 0), 5)
-	);
+	);*/
 
 	scene->camera->position = vec3(-32, 0, 40);
 	scene->camera->up = vec3(0, 1, 0);

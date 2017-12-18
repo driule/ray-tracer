@@ -6,15 +6,15 @@ TopBVH::TopBVH(std::vector<Primitive*> primitives, std::vector<BVH*> BVHs)
 	this->BVHs = BVHs;
 
 	// build primitive indices
-	int N = this->primitives.size();
-	this->primitiveIndices = new int[N];
+	this->primitiveIndices = new int[this->primitives.size()];
 	this->BVHsIndices = new int[BVHs.size()];
 	int count = 0;
 	for (int i = 0; i < this->BVHs.size(); i++)
 	{
 		for (int j = this->BVHs[i]->root->first; j < this->BVHs[i]->root->first + this->BVHs[i]->root->count; j++)
 		{
-			this->primitiveIndices[count++] = this->BVHs[i]->primitiveIndices[this->BVHs[i]->root->first + j];
+			this->primitiveIndices[count] = this->BVHs[i]->primitiveIndices[this->BVHs[i]->root->first + j];
+			count++;
 		}
 
 		// create BVHs indices array
@@ -57,8 +57,14 @@ void TopBVH::subdivide(BVHNode* node)
 	if (node->count == 1)
 	{
 		int index = this->BVHsIndices[node->first];
-		node = this->BVHs[index]->root;
-		
+
+		node->first = this->BVHs[index]->root->first;
+		node->count = this->BVHs[index]->root->count;
+
+		node->left = this->BVHs[index]->root->left;
+		node->right = this->BVHs[index]->root->right;
+
+
 		return;
 	}
 
@@ -78,7 +84,7 @@ void TopBVH::randomPartition(BVHNode* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		int leftCount = std::rand() % node->count;
 		int rightCount = node->count - leftCount;
