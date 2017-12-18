@@ -44,6 +44,7 @@ void Game::Init()
 	//create scene
 	scene = new Scene(screen);
 	//this->loadScene();
+	sceneId = 1;
 	this->loadTeddy();
 }
 
@@ -81,7 +82,7 @@ void Game::Tick( float deltaTime )
 	}
 
 	// move models
-	/*if (sceneId == 0)
+	if (sceneId == 0)
 	{
 		if (frame < 25)	scene->translateModel(movingModelId, vec3(0.1, 0, 0));
 		else if (frame > 25 && frame < 50) scene->translateModel(movingModelId, vec3(-0.1, 0, 0));
@@ -114,7 +115,7 @@ void Game::Tick( float deltaTime )
 		}
 
 		if (frame > 20) frame = 0;
-	}*/
+	}
 
 	// calculate frame
 	frame++;

@@ -66,7 +66,7 @@ void BVHNode::translate(vec3 vector)
 	if (this->isLeaf) return;
 
 	this->left->translate(vector);
-	this->left->translate(vector);
+	this->right->translate(vector);
 }
 
 float BVHNode::calculateSurfaceArea()
