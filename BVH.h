@@ -19,7 +19,5 @@ namespace Tmpl8
 		void subdivide(BVHNode* node, int depth);
 		void calculateBounds(BVHNode* node);
 		void partition(BVHNode* node);
-		void randomPartition(BVHNode* node);
-		void binnedPartition(BVHNode* node);
 	};
 }

@@ -75,13 +75,13 @@ void TopBVH::subdivide(BVHNode* node)
 	node->right = new BVHNode();
 	node->right->parent = node;
 
-	this->binnedPartition(node);
+	this->partition(node);
 
 	this->subdivide(node->left);
 	this->subdivide(node->right);
 }
 
-void TopBVH::binnedPartition(BVHNode* node)
+void TopBVH::partition(BVHNode* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;

@@ -46,9 +46,7 @@ void BVH::subdivide(BVHNode* node, int depth)
 	node->right = new BVHNode();
 	node->right->parent = node;
 
-	//this->partition(node);
-	//this->randomPartition(node);
-	this->binnedPartition(node);
+	this->partition(node);
 
 	depth++;
 	this->subdivide(node->left, depth);
@@ -77,136 +75,6 @@ void BVH::calculateBounds(BVHNode* node)
 }
 
 void BVH::partition(BVHNode* node)
-{
-	float optimalSAH = INFINITY;
-	int optimalLeftCount = 0, optimalRightCount = 0;
-
-	int* optimalPrimitiveIndices = new int[node->count];
-	for (int i = 0; i < node->count; i++)
-	{
-		optimalPrimitiveIndices[i] = this->primitiveIndices[node->first + i];
-	}
-
-	// try 3 different splits along x, y, z axes
-	vec3 splitPlane = node->boundingBoxMin + 0.5 * (node->boundingBoxMax - node->boundingBoxMin);
-	for (int axis = 0; axis < 3; axis++)
-	{
-		int* nodePrimitiveIndices = new int[node->count];
-		int leftCount = 0, rightCount = 0;
-
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			int index = this->primitiveIndices[i];
-			bool assignedToLeftNode = false;
-			if (axis == 0)		assignedToLeftNode = this->primitives[index]->center.x < splitPlane.x;
-			else if (axis == 1)	assignedToLeftNode = this->primitives[index]->center.y < splitPlane.y;
-			else if (axis == 2)	assignedToLeftNode = this->primitives[index]->center.z < splitPlane.z;
-
-			if (assignedToLeftNode)
-			{
-				nodePrimitiveIndices[leftCount] = index;
-				leftCount++;
-			}
-			else
-			{
-				rightCount++;
-				nodePrimitiveIndices[node->count - rightCount] = index;
-			}
-		}
-
-		// update current node state
-		for (int i = 0; i < node->count; i++)
-		{
-			this->primitiveIndices[node->first + i] = nodePrimitiveIndices[i];
-		}
-
-		node->left->first = node->first;
-		node->left->count = leftCount;
-		calculateBounds(node->left);
-
-		node->right->first = node->first + leftCount;
-		node->right->count = rightCount;
-		calculateBounds(node->right);
-
-		// calculate surface area
-		float surfaceAreaLeft = node->left->calculateSurfaceArea();
-		float surfaceAreaRight = node->right->calculateSurfaceArea();
-		float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
-
-		// save the optimal split according Surface Area Heuristic
-		if (SAH < optimalSAH && SAH < (surfaceAreaLeft + surfaceAreaRight) * node->count)
-		{
-			optimalSAH = SAH;
-			optimalLeftCount = leftCount;
-			optimalRightCount = rightCount;
-			for (int j = 0; j < node->count; j++)
-			{
-				optimalPrimitiveIndices[j] = this->primitiveIndices[node->first + j];
-			}
-		}
-
-		delete nodePrimitiveIndices;
-	}
-
-	// set optimal split values
-	for (int i = 0; i < node->count; i++)
-	{
-		this->primitiveIndices[node->first + i] = optimalPrimitiveIndices[i];
-	}
-
-	node->left->first = node->first;
-	node->left->count = optimalLeftCount;
-	calculateBounds(node->left);
-
-	node->right->first = node->first + optimalLeftCount;
-	node->right->count = optimalRightCount;
-	calculateBounds(node->right);
-
-	delete optimalPrimitiveIndices;
-}
-
-void BVH::randomPartition(BVHNode* node)
-{
-	float optimalSAH = INFINITY;
-	int optimalLeftCount = 0, optimalRightCount = 0;
-	for (int i = 0; i < 5; i++)
-	{
-		int leftCount = std::rand() % node->count;
-		int rightCount = node->count - leftCount;
-
-		node->left->first = node->first;
-		node->left->count = leftCount;
-		calculateBounds(node->left);
-
-		node->right->first = node->first + leftCount;
-		node->right->count = rightCount;
-		calculateBounds(node->right);
-
-		// calculate surface area
-		float surfaceAreaLeft = node->left->calculateSurfaceArea();
-		float surfaceAreaRight = node->right->calculateSurfaceArea();
-		float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
-
-		// save the optimal split according Surface Area Heuristic
-		if (SAH < optimalSAH && SAH < (surfaceAreaLeft + surfaceAreaRight) * node->count)
-		{
-			optimalSAH = SAH;
-			optimalLeftCount = leftCount;
-			optimalRightCount = rightCount;
-		}
-	}
-
-	// set optimal split values
-	node->left->first = node->first;
-	node->left->count = optimalLeftCount;
-	calculateBounds(node->left);
-
-	node->right->first = node->first + optimalLeftCount;
-	node->right->count = optimalRightCount;
-	calculateBounds(node->right);
-}
-
-void BVH::binnedPartition(BVHNode* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;

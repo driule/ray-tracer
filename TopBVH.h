@@ -12,7 +12,7 @@ namespace Tmpl8
 	private:
 		void calculateBounds(BVHNode* node);
 		void subdivide(BVHNode* node);
-		void binnedPartition(BVHNode* node);
+		void partition(BVHNode* node);
 		std::vector<Primitive*> primitives;
 		int* primitiveIndices;
 
