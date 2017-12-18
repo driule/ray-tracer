@@ -286,9 +286,10 @@ void Game::loadScene()
 	scene->addPrimitive(
 		new Triangle(planeMaterial, vec3(10, -10, 5), vec3(-10, -10, 5), vec3(10, 10, 5))
 	);
-	scene->addPrimitive(
+	// TODO: why this triangle does not work?
+	/*scene->addPrimitive(
 		new Triangle(planeMaterial, vec3(-10, -10, 5), vec3(-10, 10, 5), vec3(10, 10, 5))
-	);
+	);*/
 
 	// create box from planes
 	/*scene->addPrimitive(
