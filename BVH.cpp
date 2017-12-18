@@ -9,12 +9,6 @@ BVH::BVH(int id, std::vector<Primitive*> primitives)
 	this->primitives = primitives;
 }
 
-BVH::~BVH()
-{
-	//this->destroy(this->root);
-	//delete this->primitiveIndices;
-}
-
 void BVH::createBVH(int startIndex, int endIndex)
 {
 	int N = this->primitives.size();

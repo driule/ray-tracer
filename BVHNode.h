@@ -14,7 +14,6 @@ namespace Tmpl8
 		bool intersects(Ray* ray);
 		float calculateSurfaceArea();
 		void translate(vec3 vector);
-		void destroy();
 	private:
 	};
 }

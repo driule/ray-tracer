@@ -44,20 +44,6 @@ bool BVHNode::intersects(Ray* ray)
 	return true;
 }
 
-void BVHNode::destroy()
-{
-	if (this->isLeaf)
-	{
-		delete this;
-		return;
-	}
-
-	this->left->destroy();
-	this->right->destroy();
-
-	delete this;
-}
-
 void BVHNode::translate(vec3 vector)
 {
 	this->boundingBoxMin += vector;

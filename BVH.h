@@ -5,7 +5,6 @@ namespace Tmpl8
 	{
 	public:
 		BVH(int id, std::vector<Primitive*> primitives);
-		~BVH();
 
 		BVHNode* root;
 		int id;
