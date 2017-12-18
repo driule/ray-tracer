@@ -198,7 +198,7 @@ Pixel Scene::convertColorToPixel(vec4 color)
 	return (r << 16) + (g << 8) + b;
 }
 
-void Scene::createTopBVH()
+void Scene::buildTopBVH()
 {
 	//if (this->topBHV != NULL && this->topBHV->root != NULL)
 	//delete this->topBHV;
@@ -206,10 +206,30 @@ void Scene::createTopBVH()
 	this->topBHV = new TopBVH(this->primitives, BVHs);
 }
 
-void Scene::addPrimitive(Primitive* primitive)
+int Scene::createBVH(int startIndex, int endIndex)
+{
+	int id = this->BVHs.size();
+
+	BVH* tree = new BVH(id, this->primitives);
+	tree->createBVH(startIndex, endIndex);
+	this->BVHs.push_back(tree);
+	this->buildTopBVH();
+
+	return id;
+}
+
+int Scene::addPrimitive(Primitive* primitive)
 {
 	primitive->id = this->primitives.size();
 	this->primitives.push_back(primitive);
+
+	int modelId = this->createBVH(primitive->id, primitive->id);
+
+	this->models.push_back(
+		new Model(modelId, primitive->id, primitive->id)
+	);
+
+	return modelId;
 }
 
 void Scene::addLightSource(LightSource* lightSource)
@@ -279,7 +299,6 @@ int Scene::loadModel(const char *filename, Material* material, vec3 translationV
 	printf("primitives count in %s file: %i\n", filename, primitivesCount);
 
 	int startIndex = this->primitives.size();
-
 	for (int i = 0; i < primitivesCount; i++)
 	{
 		vec3 a = meshVertices[i * 3];
@@ -290,33 +309,40 @@ int Scene::loadModel(const char *filename, Material* material, vec3 translationV
 		triangle->id = this->primitives.size();
 		this->primitives.push_back(triangle);
 	}
-
-	// create model
 	int endIndex = this->primitives.size() - 1;
-	int modelId = this->BVHs.size();
+
+	int modelId = this->createBVH(startIndex, endIndex);
 	this->models.push_back(
 		new Model(modelId, startIndex, endIndex)
 	);
-
-	// add new BVH to top-BVH
-	BVH* modelBVH = new BVH(modelId, this->primitives);
-	modelBVH->createBVH(startIndex, endIndex);
-	this->BVHs.push_back(modelBVH);
-	this->createTopBVH();
 
 	return modelId;
 }
 
 void Scene::translateModel(int id, vec3 vector)
 {
-	Model* model = this->models[id];
+	// find model by id
+	Model* model;
+	for (int i = 0; i < this->models.size(); i++)
+	{
+		if (this->models[i]->id == id) model = this->models[i];
+	}
 
+	// find BVH by id
+	BVH* bvh;
+	for (int i = 0; i < this->BVHs.size(); i++)
+	{
+		if (this->BVHs[i]->id == id) bvh = this->BVHs[i];
+	}
+
+	// translate model
 	for (int i = model->startIndex; i <= model->endIndex; i++)
 	{
 		this->primitives[i]->translate(vector);
 	}
 
-	this->BVHs[id]->root->translate(vector);
+	// translate bvh
+	bvh->root->translate(vector);
 
-	this->createTopBVH();
+	this->buildTopBVH();
 }

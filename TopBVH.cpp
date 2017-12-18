@@ -64,6 +64,7 @@ void TopBVH::subdivide(BVHNode* node)
 		node->left = this->BVHs[index]->root->left;
 		node->right = this->BVHs[index]->root->right;
 
+		node->isLeaf = this->BVHs[index]->root->isLeaf;
 
 		return;
 	}

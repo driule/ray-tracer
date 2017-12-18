@@ -7,7 +7,7 @@ namespace Tmpl8 {
 		Camera* camera;
 
 		void render(int row);
-		void addPrimitive(Primitive* primitive);
+		int addPrimitive(Primitive* primitive);
 		void addLightSource(LightSource* lightSource);
 
 		// returns loaded model id
@@ -45,6 +45,7 @@ namespace Tmpl8 {
 
 		Pixel convertColorToPixel(vec4 color);
 
-		void createTopBVH();
+		void buildTopBVH();
+		int createBVH(int startIndex, int endIndex);
 	};
 }
