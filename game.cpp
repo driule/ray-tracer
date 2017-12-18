@@ -43,8 +43,6 @@ void Game::Init()
 
 	//create scene
 	scene = new Scene(screen);
-	//this->loadScene();
-	sceneId = 1;
 	this->loadTeddy();
 }
 
@@ -206,19 +204,16 @@ void Game::handleInput()
 	// toggle scenes
 	if (GetAsyncKeyState(VK_NUMPAD1))
 	{
-		sceneId = 0;
 		frame = 0;
 		this->loadScene();
 	}
 	if (GetAsyncKeyState(VK_NUMPAD2))
 	{
-		sceneId = 1;
 		frame = 0;
 		this->loadTeddy();
 	}
 	if (GetAsyncKeyState(VK_NUMPAD3))
 	{
-		sceneId = 2;
 		frame = 15;
 		this->loadTeapot();
 	}
@@ -235,6 +230,7 @@ void Game::handleInput()
 
 void Game::loadScene()
 {
+	sceneId = 0;
 	scene->clear();
 	scene->camera = new Camera();
 
@@ -304,6 +300,7 @@ void Game::loadScene()
 
 void Game::loadTeddy()
 {
+	sceneId = 1;
 	scene->clear();
 
 	scene->addLightSource(new DirectLight(vec3(-10.0f, 0.0f, 20.0), vec4(1, 1, 1, 0), 250));
@@ -333,6 +330,7 @@ void Game::loadTeddy()
 
 void Game::loadTeapot()
 {
+	sceneId = 2;
 	scene->clear();
 
 	scene->addLightSource(new DirectLight(vec3(-10.0f, 0.0f, 20.0), vec4(1, 1, 1, 0), 250));
