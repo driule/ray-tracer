@@ -16,8 +16,8 @@ namespace Tmpl8
 	private:
 		std::vector<Primitive*> primitives;
 
-		void subdivide(BVHNode* node, int depth);
 		void calculateBounds(BVHNode* node);
+		void subdivide(BVHNode* node, int depth);
 		void partition(BVHNode* node);
 	};
 }

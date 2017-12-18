@@ -32,27 +32,6 @@ void BVH::createBVH(int startIndex, int endIndex)
 	subdivide(this->root, 0);
 }
 
-void BVH::subdivide(BVHNode* node, int depth)
-{
-	if (node->count <= MAX_PRIMITIVES || depth >= MAX_DEPTH)
-	{
-		node->isLeaf = true;
-		return;
-	}
-
-	node->left = new BVHNode();
-	node->left->parent = node;
-
-	node->right = new BVHNode();
-	node->right->parent = node;
-
-	this->partition(node);
-
-	depth++;
-	this->subdivide(node->left, depth);
-	this->subdivide(node->right, depth);
-}
-
 void BVH::calculateBounds(BVHNode* node)
 {
 	float maxX = -INFINITY, maxY = -INFINITY, maxZ = -INFINITY;
@@ -72,6 +51,27 @@ void BVH::calculateBounds(BVHNode* node)
 
 	node->boundingBoxMin = vec3(minX, minY, minZ);
 	node->boundingBoxMax = vec3(maxX, maxY, maxZ);
+}
+
+void BVH::subdivide(BVHNode* node, int depth)
+{
+	if (node->count <= MAX_PRIMITIVES || depth >= MAX_DEPTH)
+	{
+		node->isLeaf = true;
+		return;
+	}
+
+	node->left = new BVHNode();
+	node->left->parent = node;
+
+	node->right = new BVHNode();
+	node->right->parent = node;
+
+	this->partition(node);
+
+	depth++;
+	this->subdivide(node->left, depth);
+	this->subdivide(node->right, depth);
 }
 
 void BVH::partition(BVHNode* node)

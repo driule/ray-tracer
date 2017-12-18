@@ -10,14 +10,15 @@ namespace Tmpl8
 
 		void traverse(BVHNode* node, Ray* ray, bool isShadowRay);
 	private:
-		void calculateBounds(BVHNode* node);
-		void subdivide(BVHNode* node);
-		void partition(BVHNode* node);
 		std::vector<Primitive*> primitives;
 		int* primitiveIndices;
 
 		std::vector<BVH*> BVHs;
 		int* BVHsIndices;
+
+		void calculateBounds(BVHNode* node);
+		void subdivide(BVHNode* node);
+		void partition(BVHNode* node);
 	};
 }
 
