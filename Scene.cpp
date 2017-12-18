@@ -335,6 +335,8 @@ void Scene::translateModel(int id, vec3 vector)
 		if (this->BVHs[i]->id == id) bvh = this->BVHs[i];
 	}
 
+	if (model == NULL || bvh == NULL) return;
+
 	// translate model
 	for (int i = model->startIndex; i <= model->endIndex; i++)
 	{
