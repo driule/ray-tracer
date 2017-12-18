@@ -220,16 +220,19 @@ void Game::handleInput()
 	if (GetAsyncKeyState(VK_NUMPAD1))
 	{
 		sceneId = 0;
+		frame = 0;
 		this->loadScene();
 	}
 	if (GetAsyncKeyState(VK_NUMPAD2))
 	{
 		sceneId = 1;
+		frame = 0;
 		this->loadTeddy();
 	}
 	if (GetAsyncKeyState(VK_NUMPAD3))
 	{
 		sceneId = 2;
+		frame = 15;
 		this->loadTeapot();
 	}
 
@@ -287,9 +290,9 @@ void Game::loadScene()
 		new Triangle(planeMaterial, vec3(10, -10, 5), vec3(-10, -10, 5), vec3(10, 10, 5))
 	);
 	// TODO: why this triangle does not work?
-	/*scene->addPrimitive(
-		new Triangle(planeMaterial, vec3(-10, -10, 5), vec3(-10, 10, 5), vec3(10, 10, 5))
-	);*/
+	scene->addPrimitive(
+		new Triangle(planeMaterial, vec3(-10, -10, 5 + EPSILON), vec3(-10, 10, 5 + EPSILON), vec3(10, 10, 5 + EPSILON))
+	);
 
 	// create box from planes
 	/*scene->addPrimitive(
