@@ -74,44 +74,101 @@ void TopBVH::subdivide(BVHNode* node)
 	node->right = new BVHNode();
 	node->right->parent = node;
 
-	this->randomPartition(node);
+	this->binnedPartition(node);
 
 	this->subdivide(node->left);
 	this->subdivide(node->right);
 }
 
-void TopBVH::randomPartition(BVHNode* node)
+void TopBVH::binnedPartition(BVHNode* node)
 {
 	float optimalSAH = INFINITY;
 	int optimalLeftCount = 0, optimalRightCount = 0;
-	for (int i = 0; i < 2; i++)
+
+	int* optimalBVHIndices = new int[node->count];
+	for (int i = 0; i < node->count; i++)
 	{
-		int leftCount = std::rand() % node->count;
-		int rightCount = node->count - leftCount;
-
-		node->left->first = node->first;
-		node->left->count = leftCount;
-		calculateBounds(node->left);
-
-		node->right->first = node->first + leftCount;
-		node->right->count = rightCount;
-		calculateBounds(node->right);
-
-		// calculate surface area
-		float surfaceAreaLeft = node->left->calculateSurfaceArea();
-		float surfaceAreaRight = node->right->calculateSurfaceArea();
-		float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
-
-		// save the optimal split according Surface Area Heuristic
-		if (SAH < optimalSAH && SAH < (surfaceAreaLeft + surfaceAreaRight) * node->count)
-		{
-			optimalSAH = SAH;
-			optimalLeftCount = leftCount;
-			optimalRightCount = rightCount;
-		}
+		optimalBVHIndices[i] = this->BVHsIndices[node->first + i];
 	}
 
+	int binCount = 10;
+	std::vector<int>* bins = new std::vector<int>[binCount];
+	vec3 binWidth = (node->boundingBoxMax - node->boundingBoxMin) / binCount;
+
+	for (int axis = 0; axis < 3; axis++)
+	{
+		for (int i = 0; i < binCount; i++) bins[i].clear();
+
+		// divide primitives to bins
+		for (int i = node->first; i < node->first + node->count; i++)
+		{
+			int index = this->BVHsIndices[i], binIndex;
+			vec3 center = this->BVHs[index]->root->boundingBoxMin + 0.5 * (this->BVHs[index]->root->boundingBoxMax - this->BVHs[index]->root->boundingBoxMin);
+			if (axis == 0)		binIndex = (center.x - node->boundingBoxMin.x) / binWidth.x;
+			else if (axis == 1)	binIndex = (center.y - node->boundingBoxMin.y) / binWidth.y;
+			else if (axis == 2)	binIndex = (center.z - node->boundingBoxMin.z) / binWidth.z;
+
+			binIndex = MIN(binCount - 1, binIndex);
+			bins[binIndex].push_back(index);
+		}
+
+		// sort primitive indices
+		int count = 0;
+		for (int i = 0; i < binCount; i++)
+		{
+			for (int j = 0; j < bins[i].size(); j++)
+			{
+				this->BVHsIndices[node->first + count] = bins[i][j];
+				count++;
+			}
+		}
+
+		// evaluate bin combinations
+		for (int i = 0; i < binCount - 1; i++)
+		{
+			int leftCount = 0, rightCount = 0;
+			for (int j = 0; j <= i; j++)
+			{
+				leftCount += bins[j].size();
+			}
+			rightCount = node->count - leftCount;
+
+			if (leftCount == 0 || rightCount == 0) continue;
+
+			node->left->first = node->first;
+			node->left->count = leftCount;
+			calculateBounds(node->left);
+
+			node->right->first = node->first + leftCount;
+			node->right->count = rightCount;
+			calculateBounds(node->right);
+
+			// calculate surface area
+			float surfaceAreaLeft = node->left->calculateSurfaceArea();
+			float surfaceAreaRight = node->right->calculateSurfaceArea();
+			float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
+
+			// save the optimal split according Surface Area Heuristic
+			if (SAH < optimalSAH && SAH < (surfaceAreaLeft + surfaceAreaRight) * node->count)
+			{
+				optimalSAH = SAH;
+				optimalLeftCount = leftCount;
+				optimalRightCount = rightCount;
+				for (int j = 0; j < node->count; j++)
+				{
+					optimalBVHIndices[j] = this->BVHsIndices[node->first + j];
+				}
+			}
+		}
+	}
+	delete[] bins;
+
 	// set optimal split values
+	for (int i = 0; i < node->count; i++)
+	{
+		this->BVHsIndices[node->first + i] = optimalBVHIndices[i];
+	}
+
 	node->left->first = node->first;
 	node->left->count = optimalLeftCount;
 	calculateBounds(node->left);
@@ -119,6 +176,8 @@ void TopBVH::randomPartition(BVHNode* node)
 	node->right->first = node->first + optimalLeftCount;
 	node->right->count = optimalRightCount;
 	calculateBounds(node->right);
+
+	delete optimalBVHIndices;
 }
 
 void TopBVH::traverse(BVHNode* node, Ray* ray, bool isShadowRay)
