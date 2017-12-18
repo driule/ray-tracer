@@ -89,7 +89,7 @@ void TopBVH::partition(BVHNode* node)
 		optimalBVHIndices[i] = this->BVHsIndices[node->first + i];
 	}
 
-	int binCount = 10;
+	int binCount = 4;
 	std::vector<int>* bins = new std::vector<int>[binCount];
 	vec3 binWidth = (node->boundingBoxMax - node->boundingBoxMin) / binCount;
 
@@ -97,7 +97,7 @@ void TopBVH::partition(BVHNode* node)
 	{
 		for (int i = 0; i < binCount; i++) bins[i].clear();
 
-		// divide primitives to bins
+		// divide BVHs to bins
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
 			int index = this->BVHsIndices[i], binIndex;
@@ -110,7 +110,7 @@ void TopBVH::partition(BVHNode* node)
 			bins[binIndex].push_back(index);
 		}
 
-		// sort primitive indices
+		// sort BVHs indices
 		int count = 0;
 		for (int i = 0; i < binCount; i++)
 		{
