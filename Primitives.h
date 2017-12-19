@@ -15,17 +15,13 @@ namespace Tmpl8 {
 	public:
 		Primitive(Material* material);
 		
-		Material* material;
 		int id;
-		vec3 boundingBoxMin, boundingBoxMax, center;
+		Material* material;
+		BoundingBox* boundingBox;
 
 		virtual void intersect(Ray* ray) = 0;
 		virtual vec3 getNormal(vec3 point) = 0;
 		virtual void translate(vec3 vector) = 0;
-		void intersectBoundingBox(Ray* ray);
-
-	protected:
-		virtual void createBoundingBox() = 0;
 	};
 
 	class Sphere : public Primitive
@@ -36,9 +32,6 @@ namespace Tmpl8 {
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
 		void translate(vec3 vector);
-
-	protected:
-		void createBoundingBox();
 
 	private:
 		vec3 position;
@@ -53,9 +46,6 @@ namespace Tmpl8 {
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
 		void translate(vec3 vector);
-
-	protected:
-		void createBoundingBox();
 
 	private:
 		vec3 a, b, c;
@@ -83,9 +73,6 @@ namespace Tmpl8 {
 		vec3 getNormal(vec3 point);
 		void translate(vec3 vector);
 
-	protected:
-		void createBoundingBox();
-
 	private:
 		vec3 position, upVector;
 		float radius, height;
@@ -99,9 +86,6 @@ namespace Tmpl8 {
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
 		void translate(vec3 vector);
-
-	protected:
-		void createBoundingBox();
 
 	private:
 		float R, r;

@@ -6,13 +6,12 @@ namespace Tmpl8
 	public:
 		BVHNode();
 
-		vec3 boundingBoxMin, boundingBoxMax;
+		BoundingBox* boundingBox;
 		bool isLeaf;
 		BVHNode *left, *right;
 		int first, count;
 
 		bool intersects(Ray* ray);
-		float calculateSurfaceArea();
 		void translate(vec3 vector);
 	private:
 	};

@@ -200,8 +200,8 @@ Pixel Scene::convertColorToPixel(vec4 color)
 
 void Scene::buildTopBVH()
 {
-	if (this->topBHV != NULL)
-		delete this->topBHV;
+	//if (this->topBHV != NULL)
+		//delete this->topBHV;
 
 	this->topBHV = new TopBVH(this->primitives, BVHs);
 }
@@ -210,8 +210,8 @@ int Scene::createBVH(int startIndex, int endIndex)
 {
 	int id = this->BVHs.size();
 
-	BVH* tree = new BVH(id, this->primitives);
-	tree->createBVH(startIndex, endIndex);
+	BVH* tree = new BVH(this->primitives);
+	tree->createBVH(id, startIndex, endIndex);
 	this->BVHs.push_back(tree);
 	this->buildTopBVH();
 

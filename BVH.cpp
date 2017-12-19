@@ -2,20 +2,26 @@
 
 #define MAX_PRIMITIVES 3
 #define MAX_DEPTH 20
+#define BINS_COUNT 10
 
-BVH::BVH(int id, std::vector<Primitive*> primitives)
+BVH::BVH(std::vector<Primitive*> primitives)
 {
-	this->id = id;
 	this->primitives = primitives;
 }
 
-void BVH::createBVH(int startIndex, int endIndex)
+void BVH::createBVH(int id, int startIndex, int endIndex)
 {
-	int N = this->primitives.size();
-	this->primitiveIndices = new int[N];
-	for (int i = 0; i < N; i++)
+	this->id = id;
+
+	this->objectIndices = new int[this->primitives.size()];
+	for (int i = 0; i < this->primitives.size(); i++)
 	{
-		primitiveIndices[i] = i;
+		objectIndices[i] = i;
+	}
+
+	for (int i = 0; i < this->primitives.size(); i++)
+	{
+		this->boundingBoxes.push_back(this->primitives[i]->boundingBox);
 	}
 
 	this->root = new BVHNode();
@@ -33,18 +39,17 @@ void BVH::calculateBounds(BVHNode* node)
 
 	for (int i = node->first; i < node->first + node->count; i++)
 	{
-		int index = this->primitiveIndices[i];
-		minX = MIN(this->primitives[index]->boundingBoxMin.x, minX);
-		minY = MIN(this->primitives[index]->boundingBoxMin.y, minY);
-		minZ = MIN(this->primitives[index]->boundingBoxMin.z, minZ);
+		int index = this->objectIndices[i];
+		minX = MIN(this->boundingBoxes[index]->min.x, minX);
+		minY = MIN(this->boundingBoxes[index]->min.y, minY);
+		minZ = MIN(this->boundingBoxes[index]->min.z, minZ);
 
-		maxX = MAX(this->primitives[index]->boundingBoxMax.x, maxX);
-		maxY = MAX(this->primitives[index]->boundingBoxMax.y, maxY);
-		maxZ = MAX(this->primitives[index]->boundingBoxMax.z, maxZ);
+		maxX = MAX(this->boundingBoxes[index]->max.x, maxX);
+		maxY = MAX(this->boundingBoxes[index]->max.y, maxY);
+		maxZ = MAX(this->boundingBoxes[index]->max.z, maxZ);
 	}
 
-	node->boundingBoxMin = vec3(minX, minY, minZ);
-	node->boundingBoxMax = vec3(maxX, maxY, maxZ);
+	node->boundingBox = new BoundingBox(vec3(minX, minY, minZ), vec3(maxX, maxY, maxZ));
 }
 
 void BVH::subdivide(BVHNode* node, int depth)
@@ -58,27 +63,27 @@ void BVH::subdivide(BVHNode* node, int depth)
 	node->left = new BVHNode();
 	node->right = new BVHNode();
 
-	this->partition(node);
+	this->partition(node, BINS_COUNT);
 
 	depth++;
 	this->subdivide(node->left, depth);
 	this->subdivide(node->right, depth);
 }
 
-void BVH::partition(BVHNode* node)
+void BVH::partition(BVHNode* node, int binCount)
 {
 	float optimalSAH = INFINITY;
-	int optimalLeftCount = 0, optimalRightCount = 0;
+	int optimalLeftCount = 1;
+	int optimalRightCount = node->count - optimalLeftCount;
 
-	int* optimalPrimitiveIndices = new int[node->count];
+	int* optimalObjectIndices = new int[node->count];
 	for (int i = 0; i < node->count; i++)
 	{
-		optimalPrimitiveIndices[i] = this->primitiveIndices[node->first + i];
+		optimalObjectIndices[i] = this->objectIndices[node->first + i];
 	}
 
-	int binCount = 10;
 	std::vector<int>* bins = new std::vector<int>[binCount];
-	vec3 binWidth = (node->boundingBoxMax - node->boundingBoxMin) / binCount;
+	vec3 binWidth = (node->boundingBox->max - node->boundingBox->min) / binCount;
 	if (binWidth.x == 0) binWidth.x = 1;
 	if (binWidth.y == 0) binWidth.y = 1;
 	if (binWidth.z == 0) binWidth.z = 1;
@@ -87,26 +92,26 @@ void BVH::partition(BVHNode* node)
 	{
 		for (int i = 0; i < binCount; i++) bins[i].clear();
 
-		// divide primitives to bins
+		// divide objects to bins
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			int index = this->primitiveIndices[i], binIndex;
+			int index = this->objectIndices[i], binIndex;
 
-			if (axis == 0)		binIndex = (this->primitives[index]->center.x - node->boundingBoxMin.x) / binWidth.x;
-			else if (axis == 1)	binIndex = (this->primitives[index]->center.y - node->boundingBoxMin.y) / binWidth.y;
-			else if (axis == 2)	binIndex = (this->primitives[index]->center.z - node->boundingBoxMin.z) / binWidth.z;
+			if (axis == 0)		binIndex = (this->boundingBoxes[index]->center.x - node->boundingBox->min.x) / binWidth.x;
+			else if (axis == 1)	binIndex = (this->boundingBoxes[index]->center.y - node->boundingBox->min.y) / binWidth.y;
+			else if (axis == 2)	binIndex = (this->boundingBoxes[index]->center.z - node->boundingBox->min.z) / binWidth.z;
 
 			binIndex = MIN(binCount - 1, binIndex);
 			bins[binIndex].push_back(index);
 		}
 
-		// sort primitive indices
+		// sort objects
 		int count = 0;
 		for (int i = 0; i < binCount; i++)
 		{
 			for (int j = 0; j < bins[i].size(); j++)
 			{
-				this->primitiveIndices[node->first + count] = bins[i][j];
+				this->objectIndices[node->first + count] = bins[i][j];
 				count++;
 			}
 		}
@@ -132,8 +137,8 @@ void BVH::partition(BVHNode* node)
 			calculateBounds(node->right);
 
 			// calculate surface area
-			float surfaceAreaLeft = node->left->calculateSurfaceArea();
-			float surfaceAreaRight = node->right->calculateSurfaceArea();
+			float surfaceAreaLeft = node->left->boundingBox->calculateSurfaceArea();
+			float surfaceAreaRight = node->right->boundingBox->calculateSurfaceArea();
 			float SAH = surfaceAreaLeft * node->left->count + surfaceAreaRight * node->right->count;
 
 			// save the optimal split according Surface Area Heuristic
@@ -142,25 +147,20 @@ void BVH::partition(BVHNode* node)
 				optimalSAH = SAH;
 				optimalLeftCount = leftCount;
 				optimalRightCount = rightCount;
+
 				for (int j = 0; j < node->count; j++)
 				{
-					optimalPrimitiveIndices[j] = this->primitiveIndices[node->first + j];
+					optimalObjectIndices[j] = this->objectIndices[node->first + j];
 				}
 			}
 		}
-	}
-
-	if (optimalSAH == INFINITY)
-	{
-		optimalLeftCount = 1;
-		optimalRightCount = node->count - optimalLeftCount;
 	}
 	delete[] bins;
 
 	// set optimal split values
 	for (int i = 0; i < node->count; i++)
 	{
-		this->primitiveIndices[node->first + i] = optimalPrimitiveIndices[i];
+		this->objectIndices[node->first + i] = optimalObjectIndices[i];
 	}
 
 	node->left->first = node->first;
@@ -171,5 +171,5 @@ void BVH::partition(BVHNode* node)
 	node->right->count = optimalRightCount;
 	calculateBounds(node->right);
 
-	delete optimalPrimitiveIndices;
+	delete optimalObjectIndices;
 }

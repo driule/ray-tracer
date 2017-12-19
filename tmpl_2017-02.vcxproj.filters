@@ -26,6 +26,9 @@
     <ClCompile Include="TopBVH.cpp">
       <Filter>AccelerationStructure</Filter>
     </ClCompile>
+    <ClCompile Include="BoundingBox.cpp">
+      <Filter>AccelerationStructure</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -52,6 +55,9 @@
       <Filter>AccelerationStructure</Filter>
     </ClInclude>
     <ClInclude Include="TopBVH.h">
+      <Filter>AccelerationStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBox.h">
       <Filter>AccelerationStructure</Filter>
     </ClInclude>
   </ItemGroup>

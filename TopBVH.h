@@ -1,26 +1,23 @@
 #pragma once
 namespace Tmpl8
 {
-	class TopBVH
+	class TopBVH : public BVH
 	{
 	public:
 		TopBVH(std::vector<Primitive*> primitives, std::vector<BVH*> BVHs);
 		~TopBVH();
+
 		BVHNode* root;
 
 		void traverse(BVHNode* node, Ray* ray, bool isShadowRay);
-	private:
-		std::vector<Primitive*> primitives;
-		int* primitiveIndices;
 
-		std::vector<BVH*> BVHs;
-		int* BVHsIndices;
-
-		std::vector<BVHNode*> nodes;
-
-		void calculateBounds(BVHNode* node);
+	protected:
 		void subdivide(BVHNode* node);
-		void partition(BVHNode* node);
+
+	private:
+		int* primitiveIndices;
+		std::vector<BVH*> BVHs;
+		std::vector<BVHNode*> nodes;
 	};
 }
 

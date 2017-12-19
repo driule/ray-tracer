@@ -11,48 +11,6 @@ Primitive::Primitive(Material* material)
 	this->material = material;
 }
 
-void Primitive::intersectBoundingBox(Ray* ray)
-{
-	float tmin = (this->boundingBoxMin.x - ray->origin.x) / ray->direction.x;
-	float tmax = (this->boundingBoxMax.x - ray->origin.x) / ray->direction.x;
-
-	if (tmin > tmax) swap(tmin, tmax);
-
-	float tymin = (this->boundingBoxMin.y - ray->origin.y) / ray->direction.y;
-	float tymax = (this->boundingBoxMax.y - ray->origin.y) / ray->direction.y;
-
-	if (tymin > tymax) swap(tymin, tymax);
-
-	if ((tmin > tymax) || (tymin > tmax))
-		return; // No intersection
-
-	if (tymin > tmin)
-		tmin = tymin;
-
-	if (tymax < tmax)
-		tmax = tymax;
-
-	float tzmin = (this->boundingBoxMin.z - ray->origin.z) / ray->direction.z;
-	float tzmax = (this->boundingBoxMax.z - ray->origin.z) / ray->direction.z;
-
-	if (tzmin > tzmax) swap(tzmin, tzmax);
-
-	if ((tmin > tzmax) || (tzmin > tmax))
-		return; // no intersection
-
-	if (tzmin > tmin)
-		tmin = tzmin;
-
-	if (tzmax < tmax)
-		tmax = tzmax;
-
-	if (tmin < ray->t)
-	{
-		ray->t = tmin;
-		ray->intersectedObjectId = this->id;
-	}
-}
-
 // -------------------- SPHERE ------------------------------------
 
 Sphere::Sphere(Material* material, vec3 position, float radius) : Primitive(material)
@@ -61,7 +19,7 @@ Sphere::Sphere(Material* material, vec3 position, float radius) : Primitive(mate
 	this->radius = radius;
 	this->radius2 = radius * radius;
 	
-	this->createBoundingBox();
+	this->boundingBox = new BoundingBox(this->position - this->radius, this->position + this->radius);
 }
 
 void Sphere::intersect(Ray* ray)
@@ -90,14 +48,7 @@ vec3 Sphere::getNormal(vec3 point)
 void Sphere::translate(vec3 vector)
 {
 	this->position += vector;
-	this->createBoundingBox();
-}
-
-void Sphere::createBoundingBox()
-{
-	this->center = this->position;
-	this->boundingBoxMin = this->position - this->radius;
-	this->boundingBoxMax = this->position + this->radius;
+	this->boundingBox->translate(vector);
 }
 
 // -------------------- TRIANGLE ------------------------------------
@@ -108,7 +59,15 @@ Triangle::Triangle(Material* material, vec3 a, vec3 b, vec3 c) : Primitive(mater
 	this->b = b;
 	this->c = c;
 
-	this->createBoundingBox();
+	float minX = MIN(MIN(this->a.x, this->b.x), this->c.x);
+	float minY = MIN(MIN(this->a.y, this->b.y), this->c.y);
+	float minZ = MIN(MIN(this->a.z, this->b.z), this->c.z);
+
+	float maxX = MAX(MAX(this->a.x, this->b.x), this->c.x);
+	float maxY = MAX(MAX(this->a.y, this->b.y), this->c.y);
+	float maxZ = MAX(MAX(this->a.z, this->b.z), this->c.z);
+
+	this->boundingBox = new BoundingBox(vec3(minX, minY, minZ), vec3(maxX, maxY, maxZ));
 }
 
 void Triangle::intersect(Ray* ray)
@@ -152,23 +111,7 @@ void Triangle::translate(vec3 vector)
 	this->b += vector;
 	this->c += vector;
 
-	this->createBoundingBox();
-}
-
-void Triangle::createBoundingBox()
-{
-	float minX = MIN(MIN(this->a.x, this->b.x), this->c.x);
-	float minY = MIN(MIN(this->a.y, this->b.y), this->c.y);
-	float minZ = MIN(MIN(this->a.z, this->b.z), this->c.z);
-
-	float maxX = MAX(MAX(this->a.x, this->b.x), this->c.x);
-	float maxY = MAX(MAX(this->a.y, this->b.y), this->c.y);
-	float maxZ = MAX(MAX(this->a.z, this->b.z), this->c.z);
-
-	this->boundingBoxMin = vec3(minX, minY, minZ);
-	this->boundingBoxMax = vec3(maxX, maxY, maxZ);
-
-	this->center = (this->a + this->b + this->c) / 3;
+	this->boundingBox->translate(vector);
 }
 
 // -------------------- PLANE ------------------------------------
@@ -211,7 +154,7 @@ Cylinder::Cylinder(Material* material, vec3 position, vec3 upVector, float radiu
 	this->radius = radius;
 	this->height = height;
 
-	this->createBoundingBox();
+	this->boundingBox = new BoundingBox(this->position - this->radius, this->position + this->radius);
 }
 
 void Cylinder::intersect(Ray* ray)
@@ -307,15 +250,7 @@ vec3 Cylinder::getNormal(vec3 point)
 void Cylinder::translate(vec3 vector)
 {
 	this->position += vector;
-	this->createBoundingBox();
-}
-
-void Cylinder::createBoundingBox()
-{
-	this->boundingBoxMin = this->position - this->radius;
-	this->boundingBoxMax = this->position + this->radius;
-
-	this->center = this->position + this->height * this->upVector * 0.5;
+	this->boundingBox->translate(vector);
 }
 
 // -------------------- TORUS ------------------------------------
@@ -327,7 +262,7 @@ Torus::Torus(Material* material, float R, float r, vec3 position, vec3 axis) : P
 	this->r = r;
 	this->axis = normalize(axis);
 
-	this->createBoundingBox();
+	this->boundingBox = new BoundingBox(this->position - (this->R + this->r), this->position + (this->R + this->r));
 }
 
 void Torus::intersect(Ray* ray)
@@ -385,24 +320,10 @@ vec3 Torus::getNormal(vec3 point)
 	vec3 N = normalize(P - Q);
 
 	return N;
-
-	//vec3 centerToPoint = point - position;
-	//float centerToPointDotAxis = dot(axis, centerToPoint);
-	//vec3 direction = normalize(centerToPoint - axis * centerToPointDotAxis);
-
-	//return normalize(point - position + direction * R);
 }
 
 void Torus::translate(vec3 vector)
 {
 	this->position += vector;
-	this->createBoundingBox();
-}
-
-void Torus::createBoundingBox()
-{
-	this->boundingBoxMin = this->position - (this->R + this->r);
-	this->boundingBoxMax = this->position + (this->R + this->r);
-
-	this->center = this->position;
+	this->boundingBox->translate(vector);
 }

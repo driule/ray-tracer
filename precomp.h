@@ -55,11 +55,12 @@ extern "C"
 
 #include "Ray.h"
 #include "Camera.h"
+#include "BoundingBox.h"
 #include "Primitives.h"
+#include "LightSources.h"
 #include "BVHNode.h"
 #include "BVH.h"
 #include "TopBVH.h"
-#include "LightSources.h"
 #include "Scene.h"
 
 

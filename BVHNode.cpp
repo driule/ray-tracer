@@ -7,13 +7,13 @@ BVHNode::BVHNode()
 
 bool BVHNode::intersects(Ray* ray)
 {
-	float tmin = (this->boundingBoxMin.x - ray->origin.x) / ray->direction.x;
-	float tmax = (this->boundingBoxMax.x - ray->origin.x) / ray->direction.x;
+	float tmin = (this->boundingBox->min.x - ray->origin.x) / ray->direction.x;
+	float tmax = (this->boundingBox->max.x - ray->origin.x) / ray->direction.x;
 
 	if (tmin > tmax) swap(tmin, tmax);
 
-	float tymin = (this->boundingBoxMin.y - ray->origin.y) / ray->direction.y;
-	float tymax = (this->boundingBoxMax.y - ray->origin.y) / ray->direction.y;
+	float tymin = (this->boundingBox->min.y - ray->origin.y) / ray->direction.y;
+	float tymax = (this->boundingBox->max.y - ray->origin.y) / ray->direction.y;
 
 	if (tymin > tymax) swap(tymin, tymax);
 
@@ -26,8 +26,8 @@ bool BVHNode::intersects(Ray* ray)
 	if (tymax < tmax)
 		tmax = tymax;
 
-	float tzmin = (this->boundingBoxMin.z - ray->origin.z) / ray->direction.z;
-	float tzmax = (this->boundingBoxMax.z - ray->origin.z) / ray->direction.z;
+	float tzmin = (this->boundingBox->min.z - ray->origin.z) / ray->direction.z;
+	float tzmax = (this->boundingBox->max.z - ray->origin.z) / ray->direction.z;
 
 	if (tzmin > tzmax) swap(tzmin, tzmax);
 
@@ -46,18 +46,10 @@ bool BVHNode::intersects(Ray* ray)
 
 void BVHNode::translate(vec3 vector)
 {
-	this->boundingBoxMin += vector;
-	this->boundingBoxMax += vector;
+	this->boundingBox->translate(vector);
 
 	if (this->isLeaf) return;
 
 	this->left->translate(vector);
 	this->right->translate(vector);
-}
-
-float BVHNode::calculateSurfaceArea()
-{
-	vec3 diagonal = (this->boundingBoxMax - this->boundingBoxMin).absolute();
-
-	return ((diagonal.x * diagonal.y) + (diagonal.x * diagonal.z) + (diagonal.z * diagonal.y)) * 2;
 }

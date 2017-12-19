@@ -4,19 +4,20 @@ namespace Tmpl8
 	class BVH
 	{
 	public:
-		BVH(int id, std::vector<Primitive*> primitives);
+		BVH(std::vector<Primitive*> primitives);
 
 		BVHNode* root;
 		int id;
-		int* primitiveIndices;
+		int* objectIndices;
 
-		void createBVH(int startIndex, int endIndex);
-		
-	private:
+		void createBVH(int id, int startIndex, int endIndex);
+
+	protected:
 		std::vector<Primitive*> primitives;
+		std::vector<BoundingBox*> boundingBoxes;
 
 		void calculateBounds(BVHNode* node);
 		void subdivide(BVHNode* node, int depth);
-		void partition(BVHNode* node);
+		void partition(BVHNode* node, int binCount);
 	};
 }
