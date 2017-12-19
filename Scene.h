@@ -10,7 +10,6 @@ namespace Tmpl8 {
 		int addPrimitive(Primitive* primitive);
 		void addLightSource(LightSource* lightSource);
 
-		// returns loaded model id
 		int loadModel(const char *filename, Material* material, vec3 translationVector = vec3(0));
 		void translateModel(int id, vec3 vector);
 
@@ -21,7 +20,6 @@ namespace Tmpl8 {
 
 		TopBVH* topBHV;
 		std::vector<BVH*> BVHs;
-		bool topBVHExists;
 
 		std::vector<Primitive*> primitives;
 		std::vector<LightSource*> lightSources;
@@ -48,6 +46,6 @@ namespace Tmpl8 {
 		Pixel convertColorToPixel(vec4 color);
 
 		void buildTopBVH();
-		int createBVH(int startIndex, int endIndex);
+		int buildBVH(int startIndex, int endIndex);
 	};
 }

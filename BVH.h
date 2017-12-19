@@ -10,7 +10,7 @@ namespace Tmpl8
 		int id;
 		int* objectIndices;
 
-		void createBVH(int id, int startIndex, int endIndex);
+		void build(int id, int startIndex, int endIndex);
 
 	protected:
 		std::vector<Primitive*> primitives;

@@ -9,7 +9,7 @@ BVH::BVH(std::vector<Primitive*> primitives)
 	this->primitives = primitives;
 }
 
-void BVH::createBVH(int id, int startIndex, int endIndex)
+void BVH::build(int id, int startIndex, int endIndex)
 {
 	this->id = id;
 

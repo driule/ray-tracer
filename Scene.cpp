@@ -6,7 +6,7 @@ Scene::Scene(Surface* screen)
 	this->screen = screen;
 	this->camera = new Camera();
 
-	this->topBVHExists = false;
+	this->topBHV = new TopBVH();
 }
 
 void Scene::render(int row)
@@ -201,19 +201,17 @@ Pixel Scene::convertColorToPixel(vec4 color)
 
 void Scene::buildTopBVH()
 {
-	if (this->topBVHExists)
-		delete this->topBHV;
+	delete this->topBHV;
 
-	this->topBHV = new TopBVH(this->primitives, BVHs);
-	this->topBVHExists = true;
+	this->topBHV = new TopBVH(this->primitives, this->BVHs);
 }
 
-int Scene::createBVH(int startIndex, int endIndex)
+int Scene::buildBVH(int startIndex, int endIndex)
 {
 	int id = this->BVHs.size();
 
 	BVH* tree = new BVH(this->primitives);
-	tree->createBVH(id, startIndex, endIndex);
+	tree->build(id, startIndex, endIndex);
 	this->BVHs.push_back(tree);
 	this->buildTopBVH();
 
@@ -225,7 +223,7 @@ int Scene::addPrimitive(Primitive* primitive)
 	primitive->id = this->primitives.size();
 	this->primitives.push_back(primitive);
 
-	int modelId = this->createBVH(primitive->id, primitive->id);
+	int modelId = this->buildBVH(primitive->id, primitive->id);
 
 	this->models.push_back(
 		new Model(modelId, primitive->id, primitive->id)
@@ -316,7 +314,7 @@ int Scene::loadModel(const char *filename, Material* material, vec3 translationV
 	}
 	int endIndex = this->primitives.size() - 1;
 
-	int modelId = this->createBVH(startIndex, endIndex);
+	int modelId = this->buildBVH(startIndex, endIndex);
 	this->models.push_back(
 		new Model(modelId, startIndex, endIndex)
 	);

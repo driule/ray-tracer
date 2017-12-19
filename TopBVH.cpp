@@ -2,6 +2,10 @@
 
 #define BINS_COUNT 4
 
+TopBVH::TopBVH() : BVH(this->primitives)
+{
+}
+
 TopBVH::TopBVH(std::vector<Primitive*> primitives, std::vector<BVH*> BVHs) : BVH(primitives)
 {
 	this->BVHs = BVHs;
