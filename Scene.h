@@ -21,6 +21,7 @@ namespace Tmpl8 {
 
 		TopBVH* topBHV;
 		std::vector<BVH*> BVHs;
+		bool topBVHExists;
 
 		std::vector<Primitive*> primitives;
 		std::vector<LightSource*> lightSources;
