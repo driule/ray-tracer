@@ -12,17 +12,18 @@ bool BVHNode::intersects(Ray* ray)
 
 	txmin = (this->boundingBox->min.x - ray->origin.x) * invertedDirection.x;
 	txmax = (this->boundingBox->max.x - ray->origin.x) * invertedDirection.x;
+
 	tymin = (this->boundingBox->min.y - ray->origin.y) * invertedDirection.y;
 	tymax = (this->boundingBox->max.y - ray->origin.y) * invertedDirection.y;
+
+	tzmin = (this->boundingBox->min.z - ray->origin.z) * invertedDirection.z;
+	tzmax = (this->boundingBox->max.z - ray->origin.z) * invertedDirection.z;
 
 	tmin = min(txmin, txmax);
 	tmax = max(txmin, txmax);
 
 	tmin = max(tmin, min(tymin, tymax));
 	tmax = min(tmax, max(tymin, tymax));
-
-	tzmin = (this->boundingBox->min.z - ray->origin.z) * invertedDirection.z;
-	tzmax = (this->boundingBox->max.z - ray->origin.z) * invertedDirection.z;
 
 	tmin = max(tmin, min(tzmin, tzmax));
 	tmax = min(tmax, max(tzmin, tzmax));
