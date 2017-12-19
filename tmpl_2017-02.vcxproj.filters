@@ -17,9 +17,15 @@
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="LightSources.cpp" />
     <ClCompile Include="quarticsolver.cpp" />
-    <ClCompile Include="BVH.cpp" />
-    <ClCompile Include="TopBVH.cpp" />
-    <ClCompile Include="BVHNode.cpp" />
+    <ClCompile Include="BVH.cpp">
+      <Filter>AccelerationStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="BVHNode.cpp">
+      <Filter>AccelerationStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="TopBVH.cpp">
+      <Filter>AccelerationStructure</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -39,13 +45,22 @@
     <ClInclude Include="Ray.h" />
     <ClInclude Include="LightSources.h" />
     <ClInclude Include="quarticsolver.h" />
-    <ClInclude Include="BVH.h" />
-    <ClInclude Include="TopBVH.h" />
-    <ClInclude Include="BVHNode.h" />
+    <ClInclude Include="BVH.h">
+      <Filter>AccelerationStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="BVHNode.h">
+      <Filter>AccelerationStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="TopBVH.h">
+      <Filter>AccelerationStructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">
       <UniqueIdentifier>{bf32dd6e-4be7-4889-8ac6-49e7ee163c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AccelerationStructure">
+      <UniqueIdentifier>{ebce198a-df0d-4837-90d7-b80d91d20194}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
