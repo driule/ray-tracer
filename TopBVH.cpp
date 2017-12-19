@@ -27,6 +27,8 @@ TopBVH::TopBVH(std::vector<Primitive*> primitives, std::vector<BVH*> BVHs)
 	this->root->first = 0;
 	this->root->count = this->BVHs.size();
 
+	this->nodes.push_back(this->root);
+
 	this->calculateBounds(this->root);
 	this->subdivide(this->root);
 }
@@ -71,6 +73,9 @@ void TopBVH::subdivide(BVHNode* node)
 
 	node->left = new BVHNode();
 	node->right = new BVHNode();
+	
+	this->nodes.push_back(node->left);
+	this->nodes.push_back(node->right);
 
 	this->partition(node);
 
@@ -212,4 +217,14 @@ void TopBVH::traverse(BVHNode* node, Ray* ray, bool isShadowRay)
 		this->traverse(node->left, ray, isShadowRay);
 		this->traverse(node->right, ray, isShadowRay);
 	}
+}
+
+TopBVH::~TopBVH()
+{
+	for (int i = 0; i < this->nodes.size(); i++)
+	{
+		delete this->nodes[i];
+	}
+	delete this->primitiveIndices;
+	delete this->BVHsIndices;
 }
