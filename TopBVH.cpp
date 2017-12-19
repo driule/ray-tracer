@@ -99,10 +99,11 @@ void TopBVH::traverse(BVHNode* node, Ray* ray, bool isShadowRay)
 
 TopBVH::~TopBVH()
 {
-	/*for (int i = 0; i < this->nodes.size(); i++)
+	for (int i = 0; i < this->nodes.size(); i++)
 	{
 		delete this->nodes[i];
 	}
+
 	delete this->primitiveIndices;
-	delete this->BVHsIndices;*/
+	delete this->objectIndices;
 }
