@@ -7,41 +7,31 @@ BVHNode::BVHNode()
 
 bool BVHNode::intersects(Ray* ray)
 {
-	float tmin = (this->boundingBox->min.x - ray->origin.x) / ray->direction.x;
-	float tmax = (this->boundingBox->max.x - ray->origin.x) / ray->direction.x;
+	float tmin, tmax, txmin, txmax, tymin, tymax, tzmin, tzmax;
+	vec3 invertedDirection = vec3(1.0f / ray->direction.x, 1.0f / ray->direction.y, 1.0f / ray->direction.z);
 
-	if (tmin > tmax) swap(tmin, tmax);
+	txmin = (this->boundingBox->min.x - ray->origin.x) * invertedDirection.x;
+	txmax = (this->boundingBox->max.x - ray->origin.x) * invertedDirection.x;
+	tymin = (this->boundingBox->min.y - ray->origin.y) * invertedDirection.y;
+	tymax = (this->boundingBox->max.y - ray->origin.y) * invertedDirection.y;
 
-	float tymin = (this->boundingBox->min.y - ray->origin.y) / ray->direction.y;
-	float tymax = (this->boundingBox->max.y - ray->origin.y) / ray->direction.y;
+	tmin = min(txmin, txmax);
+	tmax = max(txmin, txmax);
 
-	if (tymin > tymax) swap(tymin, tymax);
+	tmin = max(tmin, min(tymin, tymax));
+	tmax = min(tmax, max(tymin, tymax));
 
-	if ((tmin > tymax) || (tymin > tmax))
-		return false;
+	tzmin = (this->boundingBox->min.z - ray->origin.z) * invertedDirection.z;
+	tzmax = (this->boundingBox->max.z - ray->origin.z) * invertedDirection.z;
 
-	if (tymin > tmin)
-		tmin = tymin;
-
-	if (tymax < tmax)
-		tmax = tymax;
-
-	float tzmin = (this->boundingBox->min.z - ray->origin.z) / ray->direction.z;
-	float tzmax = (this->boundingBox->max.z - ray->origin.z) / ray->direction.z;
-
-	if (tzmin > tzmax) swap(tzmin, tzmax);
-
-	if ((tmin > tzmax) || (tzmin > tmax))
-		return false;
-
-	if (tzmin > tmin)
-		tmin = tzmin;
+	tmin = max(tmin, min(tzmin, tzmax));
+	tmax = min(tmax, max(tzmin, tzmax));
 
 	// early out
 	if (tmin > ray->t)
 		return false;
 
-	return true;
+	return tmax >= tmin && tmax >= 0;
 }
 
 void BVHNode::translate(vec3 vector)
