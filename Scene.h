@@ -14,6 +14,7 @@ namespace Tmpl8 {
 		int loadModel(const char *filename, Material* material, vec3 translationVector = vec3(0));
 		void translateModel(int id, vec3 vector);
 
+		int getPrimitivesCount();
 		void clear();
 	private:
 		Surface* screen;

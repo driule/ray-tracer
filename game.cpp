@@ -110,9 +110,12 @@ void Game::Tick( float deltaTime )
 	}
 
 	// measure FPS
-	char buffer[15];
+	char buffer[20];
 	sprintf(buffer, "FPS: %f", 1000 / _timer.elapsed());
 	screen->Print(buffer, 2, 2, 0x000000);
+
+	sprintf(buffer, "Primitives: %i", scene->getPrimitivesCount());
+	screen->Print(buffer, 2, 12, 0x000000);
 }
 
 void Game::handleInput()

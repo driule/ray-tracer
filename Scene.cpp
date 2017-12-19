@@ -175,7 +175,6 @@ void Scene::intersectPrimitives(Ray* ray, bool isShadowRay)
 		for (int i = 0; i < this->primitives.size(); i++)
 		{
 			this->primitives[i]->intersect(ray);
-			//this->primitives[i]->intersectBoundingBox(ray);
 		}
 	}
 }
@@ -246,6 +245,11 @@ void Scene::clear()
 	this->BVHs.clear();
 }
 
+int Scene::getPrimitivesCount()
+{
+	return this->primitives.size();
+}
+
 int Scene::loadModel(const char *filename, Material* material, vec3 translationVector)
 {
 	// obj file content
@@ -296,8 +300,6 @@ int Scene::loadModel(const char *filename, Material* material, vec3 translationV
 
 	// add triangles to the scene
 	int primitivesCount = meshVertices.size() / 3;
-	printf("primitives count in %s file: %i\n", filename, primitivesCount);
-
 	int startIndex = this->primitives.size();
 	for (int i = 0; i < primitivesCount; i++)
 	{
