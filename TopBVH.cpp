@@ -101,6 +101,7 @@ TopBVH::~TopBVH()
 {
 	for (int i = 0; i < this->nodes.size(); i++)
 	{
+		delete this->nodes[i]->boundingBox;
 		delete this->nodes[i];
 	}
 
