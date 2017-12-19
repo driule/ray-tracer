@@ -5,7 +5,7 @@ namespace Tmpl8
 	{
 	public:
 		TopBVH(std::vector<Primitive*> primitives, std::vector<BVH*> BVHs);
-
+		~TopBVH();
 		BVHNode* root;
 
 		void traverse(BVHNode* node, Ray* ray, bool isShadowRay);
@@ -15,6 +15,8 @@ namespace Tmpl8
 
 		std::vector<BVH*> BVHs;
 		int* BVHsIndices;
+
+		std::vector<BVHNode*> nodes;
 
 		void calculateBounds(BVHNode* node);
 		void subdivide(BVHNode* node);

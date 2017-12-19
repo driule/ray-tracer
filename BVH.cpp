@@ -79,6 +79,9 @@ void BVH::partition(BVHNode* node)
 	int binCount = 10;
 	std::vector<int>* bins = new std::vector<int>[binCount];
 	vec3 binWidth = (node->boundingBoxMax - node->boundingBoxMin) / binCount;
+	if (binWidth.x == 0) binWidth.x = 1;
+	if (binWidth.y == 0) binWidth.y = 1;
+	if (binWidth.z == 0) binWidth.z = 1;
 
 	for (int axis = 0; axis < 3; axis++)
 	{
@@ -145,6 +148,12 @@ void BVH::partition(BVHNode* node)
 				}
 			}
 		}
+	}
+
+	if (optimalSAH == INFINITY)
+	{
+		optimalLeftCount = 1;
+		optimalRightCount = node->count - optimalLeftCount;
 	}
 	delete[] bins;
 
