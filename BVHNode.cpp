@@ -3,6 +3,7 @@
 BVHNode::BVHNode()
 {
 	this->isLeaf = false;
+	this->boundingBox = new BoundingBox();
 }
 
 bool BVHNode::intersects(Ray* ray)

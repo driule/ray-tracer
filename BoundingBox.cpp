@@ -1,10 +1,19 @@
 #include "precomp.h"
 
+BoundingBox::BoundingBox()
+{
+}
+
 BoundingBox::BoundingBox(vec3 min, vec3 max)
 {
 	this->min = min;
 	this->max = max;
 
+	this->calculateCenter();
+}
+
+void BoundingBox::calculateCenter()
+{
 	this->center = this->min + 0.5 * (this->max - this->min);
 }
 

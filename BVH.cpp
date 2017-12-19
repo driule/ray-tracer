@@ -49,7 +49,9 @@ void BVH::calculateBounds(BVHNode* node)
 		maxZ = MAX(this->boundingBoxes[index]->max.z, maxZ);
 	}
 
-	node->boundingBox = new BoundingBox(vec3(minX, minY, minZ), vec3(maxX, maxY, maxZ));
+	node->boundingBox->min = vec3(minX, minY, minZ);
+	node->boundingBox->max = vec3(maxX, maxY, maxZ);
+	node->boundingBox->calculateCenter();
 }
 
 void BVH::subdivide(BVHNode* node, int depth)
