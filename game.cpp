@@ -46,7 +46,6 @@ void Game::Init()
 	scene = new Scene(screen);
 	//this->loadTeddy();
 	this->loadNiceScene();
-	//this->loadScene();
 }
 
 // -----------------------------------------------------------
@@ -228,7 +227,7 @@ void Game::handleInput()
 	if (GetAsyncKeyState(VK_NUMPAD1))
 	{
 		frame = 0;
-		this->loadScene();
+		this->loadNiceScene();
 	}
 	if (GetAsyncKeyState(VK_NUMPAD2))
 	{
@@ -251,82 +250,14 @@ void Game::handleInput()
 	}
 }
 
-void Game::loadScene()
-{
-	sceneId = 0;
-	cameraSpeed = 0.2;
-	scene->clear();
-
-	scene->camera->reset();
-
-	// create scene lights
-	scene->addLightSource(new DirectLight(vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0), 20));
-	scene->addLightSource(new DirectLight(vec3(0.0f, -2.0f, 0.0f), vec4(0.5, 0.5, 0.5, 0), 20));
-
-	// create scene objects
-	Material* redMaterial = new Material(vec4(1, 0, 0, 0), diffuse);
-	Material* greenMaterial = new Material(vec4(0, 1, 0, 0), diffuse);
-	Material* brownMaterial = new Material(vec4(0.756, 0.556, 0.094, 0), diffuse);
-	Material* planeMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), diffuse);
-	Material* mirrorMaterial = new Material(vec4(0.75, 0.8, 0.7, 1), mirror);
-
-	Material* blueGlassMaterial = new Material(vec4(0, 0, 1, 0.8), dielectric);
-	blueGlassMaterial->refraction = 1.33;
-	blueGlassMaterial->reflection = 0.1;
-
-	scene->addPrimitive(
-		new Triangle(greenMaterial, vec3(4, 4, 4), vec3(1, 1, 4), vec3(2, 5, 4))
-	);
-	scene->addPrimitive(
-		new Sphere(redMaterial, vec3(5, -1, 3), 0.5)
-	);
-	scene->addPrimitive(
-		new Sphere(brownMaterial, vec3(-2, -1, 2), 0.5)
-	);
-	scene->addPrimitive(
-		new Sphere(blueGlassMaterial, vec3(2, -1, 2), 0.5)
-	);
-	scene->addPrimitive(
-		new Cylinder(redMaterial, vec3(-1.5, -1.5, 0), vec3(-1, 0, 0), 0.5, 0.5)
-	);
-	scene->addPrimitive(
-		new Torus(brownMaterial, 0.4f, 0.2f, vec3(-0.5, -0.5, 0.2), vec3(0.5, 0.5, -1))
-	);
-
-	// ground plane
-	scene->addPrimitive(
-		new Triangle(planeMaterial, vec3(10, -10, 5), vec3(-10, -10, 5), vec3(10, 10, 5))
-	);
-	scene->addPrimitive(
-		new Triangle(planeMaterial, vec3(-10, -10, 5), vec3(-10, 10, 5), vec3(10, 10, 5))
-	);
-
-	// create box from planes
-	/*scene->addPrimitive(
-		new Plane(planeMaterial, vec3(0, 0, 5), vec3(0, 0, -1)) // back
-	);
-	scene->addPrimitive(
-		new Plane(mirrorMaterial, vec3(0, -5, 5), vec3(0, 1, 0)) //top
-	);
-	scene->addPrimitive(
-		new Plane(mirrorMaterial, vec3(0, 5, 5), vec3(0, -1, 0)) //bottom
-	);
-	scene->addPrimitive(
-		new Plane(greenMaterial, vec3(-5, 0, 5), vec3(1, 0, 0)) //right
-	);
-	scene->addPrimitive(
-		new Plane(greenMaterial, vec3(5, 0, 5), vec3(-1, 0, 0)) // left
-	);//*/
-
-	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
-	movingModelId = scene->loadModel("assets/cube.obj", brownMaterial);
-}
-
 void Game::loadNiceScene()
 {
+	// https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/
+	//movingModelId = scene->loadModel("assets/cube.obj", brownMaterial);
+
 	// Reset scene
 	sceneId = 3;
-	cameraSpeed = 0.2;
+	cameraSpeed = 1;
 	scene->clear();
 	scene->camera->reset();
 
@@ -359,7 +290,7 @@ void Game::loadNiceScene()
 	//Add Teapot
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
 	scene->loadModel("assets/teapot.obj", brownMaterial, vec3(-15, -10, -20));
-	scene->loadModel("assets/teapot.obj", redMaterial, vec3(1, -10, -20));
+	scene->loadModel("assets/teapot.obj", redMaterial, vec3(4, -10, -20));
 	scene->loadModel("assets/teapot.obj", glassMaterial, vec3(15, -10, -20));
 
 	//Floor primitives
@@ -386,6 +317,9 @@ void Game::loadNiceScene()
 
 	//More primitives
 	scene->addPrimitive(new Torus(glassMaterial, 2, 1, vec3(-3, -6, -20), vec3(0.2, -0.2, -1)));
+	//scene->addPrimitive(new Cylinder(glassMaterial, vec3(-10, -20, -20), vec3(0, 1, 0), 0.5, 100));
+	//scene->addPrimitive(new Cylinder(glassMaterial, vec3(-13, -20, -22), vec3(0, 1, 0), 0.5, 100));
+	//scene->addPrimitive(new Cylinder(glassMaterial, vec3(-16, -20, -24), vec3(0, 1, 0), 0.5, 100));
 }
 
 void Game::loadTeddy()

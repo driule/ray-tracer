@@ -154,7 +154,9 @@ Cylinder::Cylinder(Material* material, vec3 position, vec3 upVector, float radiu
 	this->radius = radius;
 	this->height = height;
 
-	this->boundingBox = new BoundingBox(this->position - this->radius, this->position + this->radius);
+	float boundingRadius = MAX(this->radius, this->height);
+
+	this->boundingBox = new BoundingBox(this->position - boundingRadius, this->position + boundingRadius);
 }
 
 void Cylinder::intersect(Ray* ray)
