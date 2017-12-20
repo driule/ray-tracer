@@ -45,3 +45,20 @@ void BVHNode::translate(vec3 vector)
 	this->left->translate(vector);
 	this->right->translate(vector);
 }
+
+void BVHNode::destroy()
+{
+	if (this->isLeaf)
+	{
+		delete this->boundingBox;
+		delete this;
+
+		return;
+	}
+
+	this->left->destroy();
+	this->right->destroy();
+
+	delete this->boundingBox;
+	delete this;
+}

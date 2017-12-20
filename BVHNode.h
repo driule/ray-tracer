@@ -13,6 +13,7 @@ namespace Tmpl8
 
 		bool intersects(Ray* ray);
 		void translate(vec3 vector);
+		void destroy();
 	private:
 	};
 }

@@ -242,10 +242,28 @@ void Scene::addLightSource(LightSource* lightSource)
 
 void Scene::clear()
 {
+	for (int i = 0; i < this->primitives.size(); i++)
+	{
+		delete this->primitives[i]->boundingBox;
+		delete this->primitives[i];
+	}
 	this->primitives.clear();
+
+	for (int i = 0; i < this->lightSources.size(); i++)
+	{
+		delete this->lightSources[i];
+	}
 	this->lightSources.clear();
-	this->models.clear();
+
+	for (int i = 0; i < this->BVHs.size(); i++)
+	{
+		this->BVHs[i]->root->destroy();
+		delete this->BVHs[i]->objectIndices;
+		delete this->BVHs[i];
+	}
 	this->BVHs.clear();
+
+	this->models.clear();
 }
 
 int Scene::getPrimitivesCount()
