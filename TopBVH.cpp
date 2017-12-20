@@ -107,14 +107,16 @@ void TopBVH::traverse(BVHNode* node, Ray* ray, bool isShadowRay)
 
 			if (distanceLeft < distanceRight)
 			{
-				this->traverse(node->left, ray, isShadowRay);
+				if (ray->t * ray->t > distanceLeft)
+					this->traverse(node->left, ray, isShadowRay);
 				//printf("DistanceLeft: %f, DistanceRight: %f, ray->t: %f \n", distanceLeft, distanceRight, ray->t);
 				if (ray->t * ray->t > distanceRight)
 					this->traverse(node->right, ray, isShadowRay);
 			}
 			else
 			{
-				this->traverse(node->right, ray, isShadowRay);
+				if (ray->t * ray->t > distanceRight)
+					this->traverse(node->right, ray, isShadowRay);
 				//printf("DistanceLeft: %f, DistanceRight: %f, ray->t: %f \n", distanceLeft, distanceRight, ray->t);
 				if (ray->t * ray->t > distanceLeft)
 					this->traverse(node->left, ray, isShadowRay);
