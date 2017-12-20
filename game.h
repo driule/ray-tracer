@@ -20,6 +20,7 @@ private:
 	Surface* screen;
 
 	void loadScene();
+	void loadNiceScene();
 	void loadTeddy();
 	void loadTeapot();
 };
