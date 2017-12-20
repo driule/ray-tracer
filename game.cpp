@@ -104,7 +104,7 @@ void Game::Tick( float deltaTime )
 		if (frame > 20) frame = 0;
 	}
 
-	if (sceneId == 3)
+	if (sceneId == 0)
 	{
 		if (frame <= 10)
 		{
@@ -256,7 +256,7 @@ void Game::loadNiceScene()
 	//movingModelId = scene->loadModel("assets/cube.obj", brownMaterial);
 
 	// Reset scene
-	sceneId = 3;
+	sceneId = 0;
 	cameraSpeed = 1;
 	scene->clear();
 	scene->camera->reset();
