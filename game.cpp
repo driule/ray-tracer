@@ -1,6 +1,7 @@
 #include "precomp.h" // include (only) this in every .cpp file
 
 int frame, sceneId, movingModelId;
+float cameraSpeed = 0.2;
 timer _timer;
 
 RayTracerJob** rayTracerJobs;
@@ -125,60 +126,60 @@ void Game::handleInput()
 
 	if (GetAsyncKeyState(VK_DOWN))
 	{
-		scene->camera->position -= scene->camera->up * 0.2;
-		scene->camera->viewDirection -= scene->camera->up * 0.2;		
+		scene->camera->position -= scene->camera->up * cameraSpeed;
+		scene->camera->viewDirection -= scene->camera->up * cameraSpeed;
 		cameraChanged = true;
 	}
 	if (GetAsyncKeyState(VK_RIGHT))
 	{
-		scene->camera->position += scene->camera->right * 0.2;
-		scene->camera->viewDirection += scene->camera->right * 0.2;
+		scene->camera->position += scene->camera->right * cameraSpeed;
+		scene->camera->viewDirection += scene->camera->right * cameraSpeed;
 		cameraChanged = true;
 	}
 	if (GetAsyncKeyState(VK_UP))
 	{
-		scene->camera->position += scene->camera->up * 0.2;
-		scene->camera->viewDirection += scene->camera->up * 0.2;
+		scene->camera->position += scene->camera->up * cameraSpeed;
+		scene->camera->viewDirection += scene->camera->up * cameraSpeed;
 		cameraChanged = true;
 	}
 	if (GetAsyncKeyState(VK_LEFT))
 	{
-		scene->camera->position -= scene->camera->right * 0.2;
-		scene->camera->viewDirection -= scene->camera->right * 0.2;
+		scene->camera->position -= scene->camera->right * cameraSpeed;
+		scene->camera->viewDirection -= scene->camera->right * cameraSpeed;
 		cameraChanged = true;
 	}
 	if (GetAsyncKeyState(VK_OEM_PLUS))
 	{
-		scene->camera->position += scene->camera->viewDirectionNormalized * 0.2;
-		scene->camera->viewDirection += scene->camera->viewDirectionNormalized * 0.2;
+		scene->camera->position += scene->camera->viewDirectionNormalized * cameraSpeed;
+		scene->camera->viewDirection += scene->camera->viewDirectionNormalized * cameraSpeed;
 		cameraChanged = true;
 	}
 	if (GetAsyncKeyState(VK_OEM_MINUS))
 	{
-		scene->camera->position -= scene->camera->viewDirectionNormalized * 0.2;
-		scene->camera->viewDirection -= scene->camera->viewDirectionNormalized * 0.2;
+		scene->camera->position -= scene->camera->viewDirectionNormalized * cameraSpeed;
+		scene->camera->viewDirection -= scene->camera->viewDirectionNormalized * cameraSpeed;
 		cameraChanged = true;
 	}
 
 	// rotate the camera
 	if (GetAsyncKeyState('A'))
 	{
-		scene->camera->viewDirection -= scene->camera->right * 0.2;
+		scene->camera->viewDirection -= scene->camera->right * cameraSpeed;
 		cameraChanged = true;
 	}
 	if (GetAsyncKeyState('D'))
 	{
-		scene->camera->viewDirection += scene->camera->right * 0.2;
+		scene->camera->viewDirection += scene->camera->right * cameraSpeed;
 		cameraChanged = true;
 	}
 	if (GetAsyncKeyState('W'))
 	{
-		scene->camera->viewDirection += scene->camera->up * 0.2;
+		scene->camera->viewDirection += scene->camera->up * cameraSpeed;
 		cameraChanged = true;
 	}
 	if (GetAsyncKeyState('S'))
 	{
-		scene->camera->viewDirection -= scene->camera->up * 0.2;
+		scene->camera->viewDirection -= scene->camera->up * cameraSpeed;
 		cameraChanged = true;
 	}
 
@@ -234,6 +235,7 @@ void Game::handleInput()
 void Game::loadScene()
 {
 	sceneId = 0;
+	cameraSpeed = 0.2;
 	scene->clear();
 
 	scene->camera->reset();
@@ -304,6 +306,7 @@ void Game::loadScene()
 void Game::loadTeddy()
 {
 	sceneId = 1;
+	cameraSpeed = 1;
 	scene->clear();
 
 	scene->camera->reset();
@@ -335,6 +338,7 @@ void Game::loadTeddy()
 void Game::loadTeapot()
 {
 	sceneId = 2;
+	cameraSpeed = 0.5;
 	scene->clear();
 
 	scene->camera->reset();
