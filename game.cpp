@@ -201,7 +201,7 @@ void Game::handleInput()
 	// reset camera
 	if (GetAsyncKeyState('R'))
 	{
-		scene->camera = new Camera();
+		scene->camera->reset();
 	}
 
 	// toggle scenes
