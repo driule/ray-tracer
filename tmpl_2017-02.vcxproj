@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>Tmpl2017-02</ProjectName>
+    <ProjectName>ray-tracer</ProjectName>
     <ProjectGuid>{D8FE2186-4BF0-4B89-913F-6C26818E5AC5}</ProjectGuid>
     <RootNamespace>Tmpl2017-02</RootNamespace>
     <Keyword>Win32Proj</Keyword>

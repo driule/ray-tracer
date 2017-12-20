@@ -6,8 +6,8 @@
 /dlls_x64
 /dlls_x86
 
-Tmpl2017-02.exe
-Tmpl2017-02.pdb
+ray-tracer.exe
+ray-tracer.pdb
 
-Tmpl2017-02_debug.exe
-Tmpl2017-02_debug.pdb
+ray-tracer_debug.exe
+ray-tracer_debug.pdb
