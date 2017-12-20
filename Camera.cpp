@@ -2,6 +2,11 @@
 
 Camera::Camera()
 {
+	this->reset();
+}
+
+void Camera::reset()
+{
 	this->position = CAMERA_ORIGIN;
 	this->viewDirection = vec3(0, 0, 1);
 	this->fieldOfView = 1;

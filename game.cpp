@@ -235,7 +235,8 @@ void Game::loadScene()
 {
 	sceneId = 0;
 	scene->clear();
-	scene->camera = new Camera();
+
+	scene->camera->reset();
 
 	// create scene lights
 	scene->addLightSource(new DirectLight(vec3(-1.0f, 0.0f, -3.0), vec4(1, 1, 1, 0), 20));
@@ -305,6 +306,12 @@ void Game::loadTeddy()
 	sceneId = 1;
 	scene->clear();
 
+	scene->camera->reset();
+	scene->camera->position = vec3(-32, 0, 40);
+	scene->camera->up = vec3(0, 1, 0);
+	scene->camera->right = vec3(-0.77, 0, -0.62);
+	scene->camera->calculateScreen();
+
 	scene->addLightSource(new DirectLight(vec3(-10.0f, 0.0f, 20.0), vec4(1, 1, 1, 0), 250));
 	scene->addLightSource(new DirectLight(vec3(8.0f, 0.0f, 18.0), vec4(1, 1, 1, 0), 100));
 	scene->addLightSource(new DirectLight(vec3(4.0f, 8.0f, 20.0), vec4(1, 1, 1, 0), 100));
@@ -318,11 +325,6 @@ void Game::loadTeddy()
 		new Sphere(redMaterial, vec3(-25, 10, 0), 5)
 	);
 
-	scene->camera->position = vec3(-32, 0, 40);
-	scene->camera->up = vec3(0, 1, 0);
-	scene->camera->right = vec3(-0.77, 0, -0.62);
-	scene->camera->calculateScreen();
-
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
 	for (int i = 0; i < 3; i++)
 	{
@@ -335,6 +337,12 @@ void Game::loadTeapot()
 	sceneId = 2;
 	scene->clear();
 
+	scene->camera->reset();
+	scene->camera->position = vec3(-20, -0.013, 20);
+	scene->camera->up = vec3(0, 1, 0);
+	scene->camera->right = vec3(-0.921, 0, -0.387);
+	scene->camera->calculateScreen();
+
 	scene->addLightSource(new DirectLight(vec3(-10.0f, 0.0f, 20.0), vec4(1, 1, 1, 0), 250));
 	scene->addLightSource(new DirectLight(vec3(8.0f, 0.0f, 18.0), vec4(1, 1, 1, 0), 100));
 	scene->addLightSource(new DirectLight(vec3(4.0f, 8.0f, 20.0), vec4(1, 1, 1, 0), 100));
@@ -342,11 +350,6 @@ void Game::loadTeapot()
 	scene->addLightSource(new DirectLight(vec3(-10.0f, 0.0f, -20.0), vec4(1, 1, 1, 0), 250));
 	scene->addLightSource(new DirectLight(vec3(8.0f, 0.0f, -18.0), vec4(1, 1, 1, 0), 100));
 	scene->addLightSource(new DirectLight(vec3(4.0f, 8.0f, -20.0), vec4(1, 1, 1, 0), 100));
-
-	scene->camera->position = vec3(-20, -0.013, 20);
-	scene->camera->up = vec3(0, 1, 0);
-	scene->camera->right = vec3(-0.921, 0, -0.387);
-	scene->camera->calculateScreen();
 
 	Material* brownMaterial = new Material(vec4(1, 0.8, 0.5, 0), diffuse);
 	for (int i = 0; i < 10; i++)
