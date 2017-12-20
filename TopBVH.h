@@ -4,7 +4,6 @@ namespace Tmpl8
 	class TopBVH : public BVH
 	{
 	public:
-		TopBVH();
 		TopBVH(std::vector<Primitive*> primitives, std::vector<BVH*> BVHs);
 		~TopBVH();
 

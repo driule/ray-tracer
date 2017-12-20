@@ -6,7 +6,7 @@ Scene::Scene(Surface* screen)
 	this->screen = screen;
 	this->camera = new Camera();
 
-	this->topBHV = new TopBVH();
+	this->topBVHExists = false;
 }
 
 void Scene::render(int row)
@@ -201,9 +201,11 @@ Pixel Scene::convertColorToPixel(vec4 color)
 
 void Scene::buildTopBVH()
 {
-	delete this->topBHV;
+	if (this->topBVHExists)
+		delete this->topBHV;
 
 	this->topBHV = new TopBVH(this->primitives, this->BVHs);
+	this->topBVHExists = true;
 }
 
 int Scene::buildBVH(int startIndex, int endIndex)
