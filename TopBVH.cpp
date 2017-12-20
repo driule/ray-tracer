@@ -92,8 +92,34 @@ void TopBVH::traverse(BVHNode* node, Ray* ray, bool isShadowRay)
 	}
 	else
 	{
-		this->traverse(node->left, ray, isShadowRay);
-		this->traverse(node->right, ray, isShadowRay);
+		float dxLeft = MAX(node->left->boundingBox->min.x - ray->origin.x, ray->origin.x - node->left->boundingBox->max.x);
+		float dyLeft = MAX(node->left->boundingBox->min.y - ray->origin.y, ray->origin.y - node->left->boundingBox->max.y);
+		float dzLeft = MAX(node->left->boundingBox->min.z - ray->origin.z, ray->origin.z - node->left->boundingBox->max.z);
+
+		float dxRight = MAX(node->right->boundingBox->min.x - ray->origin.x, ray->origin.x - node->right->boundingBox->max.x);
+		float dyRight = MAX(node->right->boundingBox->min.y - ray->origin.y, ray->origin.y - node->right->boundingBox->max.y);
+		float dzRight = MAX(node->right->boundingBox->min.z - ray->origin.z, ray->origin.z - node->right->boundingBox->max.z);
+
+		float distanceLeft = vec3(dxLeft, dyLeft, dzLeft).sqrLentgh();
+		float distanceRight = vec3(dxRight, dyRight, dzRight).sqrLentgh();
+
+		if (distanceLeft < distanceRight)
+		{
+			this->traverse(node->left, ray, isShadowRay);
+			//printf("DistanceLeft: %f, DistanceRight: %f, ray->t: %f \n", distanceLeft, distanceRight, ray->t);
+			if(ray->t * ray->t > distanceRight)
+				this->traverse(node->right, ray, isShadowRay);
+		}
+		else
+		{
+			this->traverse(node->right, ray, isShadowRay);
+			//printf("DistanceLeft: %f, DistanceRight: %f, ray->t: %f \n", distanceLeft, distanceRight, ray->t);
+			if (ray->t * ray->t > distanceLeft)
+				this->traverse(node->left, ray, isShadowRay);
+		}
+
+		//this->traverse(node->left, ray, isShadowRay);
+		//this->traverse(node->right, ray, isShadowRay);
 	}
 }
 
