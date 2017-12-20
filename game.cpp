@@ -104,7 +104,7 @@ void Game::Tick( float deltaTime )
 		if (frame > 20) frame = 0;
 	}
 
-	if (sceneId == 3)
+	if (sceneId == 0)
 	{
 		if (frame <= 10)
 		{
@@ -256,7 +256,7 @@ void Game::loadNiceScene()
 	//movingModelId = scene->loadModel("assets/cube.obj", brownMaterial);
 
 	// Reset scene
-	sceneId = 3;
+	sceneId = 0;
 	cameraSpeed = 1;
 	scene->clear();
 	scene->camera->reset();
@@ -317,9 +317,9 @@ void Game::loadNiceScene()
 
 	//More primitives
 	scene->addPrimitive(new Torus(glassMaterial, 2, 1, vec3(-3, -6, -20), vec3(0.2, -0.2, -1)));
-	//scene->addPrimitive(new Cylinder(glassMaterial, vec3(-10, -20, -20), vec3(0, 1, 0), 0.5, 100));
-	//scene->addPrimitive(new Cylinder(glassMaterial, vec3(-13, -20, -22), vec3(0, 1, 0), 0.5, 100));
-	//scene->addPrimitive(new Cylinder(glassMaterial, vec3(-16, -20, -24), vec3(0, 1, 0), 0.5, 100));
+	scene->addPrimitive(new Cylinder(redMaterial, vec3(-10, -5, -20), vec3(0, 1, 0), 0.5, 10));
+	scene->addPrimitive(new Cylinder(redMaterial, vec3(-13, -5, -22), vec3(0, 1, 0), 0.5, 10));
+	scene->addPrimitive(new Cylinder(redMaterial, vec3(-16, -5, -24), vec3(0, 1, 0), 0.5, 10));
 }
 
 void Game::loadTeddy()
