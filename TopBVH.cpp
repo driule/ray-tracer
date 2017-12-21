@@ -92,7 +92,7 @@ void TopBVH::traverse(BVHNode* node, Ray* ray, bool isShadowRay)
 	}
 	else
 	{
-		if (!isShadowRay)
+		/*if (!isShadowRay)
 		{
 			float dxLeft = MAX(node->left->boundingBox->min.x - ray->origin.x, ray->origin.x - node->left->boundingBox->max.x);
 			float dyLeft = MAX(node->left->boundingBox->min.y - ray->origin.y, ray->origin.y - node->left->boundingBox->max.y);
@@ -124,7 +124,9 @@ void TopBVH::traverse(BVHNode* node, Ray* ray, bool isShadowRay)
 		{
 			this->traverse(node->left, ray, isShadowRay);
 			this->traverse(node->right, ray, isShadowRay);
-		}
+		}*/
+		this->traverse(node->left, ray, isShadowRay);
+		this->traverse(node->right, ray, isShadowRay);
 	}
 }
 
