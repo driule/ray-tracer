@@ -91,9 +91,9 @@ vec4 Scene::illuminate(Ray* ray)
 	
 	for (int i = 0; i < this->lightSources.size(); i++)
 	{
-		Ray* shadowRay = new Ray();
-		shadowRay->origin = ray->origin + ray->t * ray->direction;
-		shadowRay->direction = normalize(this->lightSources[i]->position - shadowRay->origin);
+		vec3 origin = ray->origin + ray->t * ray->direction;
+		vec3 direction = normalize(this->lightSources[i]->position - origin);
+		Ray* shadowRay = new Ray(origin, direction);
 
 		vec3 normal = this->primitives[ray->intersectedObjectId]->getNormal(shadowRay->origin);
 
@@ -128,11 +128,10 @@ Ray* Scene::computeReflectionRay(Ray* ray)
 	vec3 hitPoint = ray->origin + ray->t * ray->direction;
 	vec3 N = this->primitives[ray->intersectedObjectId]->getNormal(hitPoint);
 
-	Ray* reflectionRay = new Ray();
-	reflectionRay->direction = ray->direction - 2 * (ray->direction * N) * N;
-	reflectionRay->origin = hitPoint + reflectionRay->direction * EPSILON;
+	vec3 direction = ray->direction - 2 * (ray->direction * N) * N;
+	vec3 origin = hitPoint + direction * EPSILON;
 
-	return reflectionRay;
+	return new Ray(origin, direction);
 }
 
 Ray* Scene::computeRefractionRay(Ray* ray)
@@ -151,18 +150,18 @@ Ray* Scene::computeRefractionRay(Ray* ray)
 	float eta = etai / etat;
 	float k = 1 - eta * eta * (1 - cosi * cosi);
 
-	Ray* refractionRay = new Ray();
 	if (k < 0)
 	{
+		Ray* refractionRay = new Ray(vec3(0), vec3(0));
 		refractionRay->intersectedObjectId = -2;
 		return refractionRay;
 	}
 	else
 	{
-		refractionRay->direction = eta * ray->direction + (eta * cosi - sqrtf(k)) * n;
-		refractionRay->origin = hitPoint + refractionRay->direction * 0.01;
+		vec3 direction = eta * ray->direction + (eta * cosi - sqrtf(k)) * n;
+		vec3 origin = hitPoint + direction * 0.01;
 		
-		return refractionRay;
+		return new Ray(origin, direction);
 	}
 }
 

@@ -36,11 +36,9 @@ void Camera::calculateScreen()
 
 Ray* Camera::generateRay(int x, int y)
 {
-	Ray* ray = new Ray();
-	ray->direction = normalize(
+	vec3 direction = normalize(
 		(this->topLeft + (x / SCRWIDTHf) * (this->topRight - this->topLeft) + (y / SCRHEIGHTf) * (this->bottomLeft - this->topLeft)) - this->position
 	);
-	ray->origin = this->position;
 
-	return ray;
+	return new Ray(this->position, direction);
 }

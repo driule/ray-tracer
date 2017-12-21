@@ -9,16 +9,15 @@ BVHNode::BVHNode()
 bool BVHNode::intersects(Ray* ray)
 {
 	float tmin, tmax, txmin, txmax, tymin, tymax, tzmin, tzmax;
-	vec3 invertedDirection = vec3(1.0f / ray->direction.x, 1.0f / ray->direction.y, 1.0f / ray->direction.z);
 
-	txmin = (this->boundingBox->min.x - ray->origin.x) * invertedDirection.x;
-	txmax = (this->boundingBox->max.x - ray->origin.x) * invertedDirection.x;
+	txmin = (this->boundingBox->min.x - ray->origin.x) * ray->invertedDirection.x;
+	txmax = (this->boundingBox->max.x - ray->origin.x) * ray->invertedDirection.x;
 
-	tymin = (this->boundingBox->min.y - ray->origin.y) * invertedDirection.y;
-	tymax = (this->boundingBox->max.y - ray->origin.y) * invertedDirection.y;
+	tymin = (this->boundingBox->min.y - ray->origin.y) * ray->invertedDirection.y;
+	tymax = (this->boundingBox->max.y - ray->origin.y) * ray->invertedDirection.y;
 
-	tzmin = (this->boundingBox->min.z - ray->origin.z) * invertedDirection.z;
-	tzmax = (this->boundingBox->max.z - ray->origin.z) * invertedDirection.z;
+	tzmin = (this->boundingBox->min.z - ray->origin.z) * ray->invertedDirection.z;
+	tzmax = (this->boundingBox->max.z - ray->origin.z) * ray->invertedDirection.z;
 
 	tmin = min(txmin, txmax);
 	tmax = max(txmin, txmax);
