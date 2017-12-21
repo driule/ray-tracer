@@ -49,6 +49,7 @@ namespace Tmpl8 {
 
 	private:
 		vec3 a, b, c;
+		vec3 normal;
 	};
 
 	class Plane : public Primitive

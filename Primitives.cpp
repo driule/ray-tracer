@@ -68,6 +68,10 @@ Triangle::Triangle(Material* material, vec3 a, vec3 b, vec3 c) : Primitive(mater
 	float maxZ = MAX(MAX(this->a.z, this->b.z), this->c.z);
 
 	this->boundingBox = new BoundingBox(vec3(minX, minY, minZ), vec3(maxX, maxY, maxZ));
+
+	this->normal = normalize(
+		cross(this->a - this->b, this->b - this->c)
+	);
 }
 
 void Triangle::intersect(Ray* ray)
@@ -100,9 +104,7 @@ void Triangle::intersect(Ray* ray)
 
 vec3 Triangle::getNormal(vec3 point)
 {
-	return normalize(
-		cross(this->a - this->b, this->b - this->c)
-	);
+	return this->normal;
 }
 
 void Triangle::translate(vec3 vector)
