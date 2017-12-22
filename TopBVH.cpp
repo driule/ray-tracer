@@ -92,15 +92,15 @@ void TopBVH::traverse(BVHNode* node, Ray* ray, bool isShadowRay)
 	}
 	else
 	{
-		/*if (!isShadowRay)
+		if (!isShadowRay)
 		{
-			float dxLeft = MAX(node->left->boundingBox->min.x - ray->origin.x, ray->origin.x - node->left->boundingBox->max.x);
-			float dyLeft = MAX(node->left->boundingBox->min.y - ray->origin.y, ray->origin.y - node->left->boundingBox->max.y);
-			float dzLeft = MAX(node->left->boundingBox->min.z - ray->origin.z, ray->origin.z - node->left->boundingBox->max.z);
+			float dxLeft = MAX(MAX(node->left->boundingBox->min.x - ray->origin.x, 0), ray->origin.x - node->left->boundingBox->max.x);
+			float dyLeft = MAX(MAX(node->left->boundingBox->min.y - ray->origin.y, 0), ray->origin.y - node->left->boundingBox->max.y);
+			float dzLeft = MAX(MAX(node->left->boundingBox->min.z - ray->origin.z, 0), ray->origin.z - node->left->boundingBox->max.z);
 
-			float dxRight = MAX(node->right->boundingBox->min.x - ray->origin.x, ray->origin.x - node->right->boundingBox->max.x);
-			float dyRight = MAX(node->right->boundingBox->min.y - ray->origin.y, ray->origin.y - node->right->boundingBox->max.y);
-			float dzRight = MAX(node->right->boundingBox->min.z - ray->origin.z, ray->origin.z - node->right->boundingBox->max.z);
+			float dxRight = MAX(MAX(node->right->boundingBox->min.x - ray->origin.x, 0), ray->origin.x - node->right->boundingBox->max.x);
+			float dyRight = MAX(MAX(node->right->boundingBox->min.y - ray->origin.y, 0), ray->origin.y - node->right->boundingBox->max.y);
+			float dzRight = MAX(MAX(node->right->boundingBox->min.z - ray->origin.z, 0), ray->origin.z - node->right->boundingBox->max.z);
 
 			float distanceLeft = vec3(dxLeft, dyLeft, dzLeft).sqrLentgh();
 			float distanceRight = vec3(dxRight, dyRight, dzRight).sqrLentgh();
@@ -124,9 +124,9 @@ void TopBVH::traverse(BVHNode* node, Ray* ray, bool isShadowRay)
 		{
 			this->traverse(node->left, ray, isShadowRay);
 			this->traverse(node->right, ray, isShadowRay);
-		}*/
-		this->traverse(node->left, ray, isShadowRay);
-		this->traverse(node->right, ray, isShadowRay);
+		}
+		//this->traverse(node->left, ray, isShadowRay);
+		//this->traverse(node->right, ray, isShadowRay);
 	}
 }
 
