@@ -16,7 +16,7 @@ void BVH::build(int id, int startIndex, int endIndex)
 	this->objectIndices = new int[this->primitives.size()];
 	for (int i = 0; i < this->primitives.size(); i++)
 	{
-		objectIndices[i] = i;
+		objectIndices[i] = this->primitives[i]->id;
 	}
 
 	for (int i = 0; i < this->primitives.size(); i++)
