@@ -118,10 +118,12 @@ void Triangle::translate(vec3 vector)
 
 // -------------------- PLANE ------------------------------------
 
-Plane::Plane(Material* material, vec3 position, vec3 direction) : Primitive(material)
+Plane::Plane(Material* material, vec3 position, vec3 direction, float size) : Primitive(material)
 {
 	this->position = position;
 	this->direction = direction;
+
+	this->boundingBox = new BoundingBox(this->position - size, this->position + size);
 }
 
 void Plane::intersect(Ray* ray)
@@ -145,6 +147,7 @@ vec3 Plane::getNormal(vec3 point)
 void Plane::translate(vec3 vector)
 {
 	this->position += vector;
+	this->boundingBox->translate(vector);
 }
 
 // -------------------- CYLINDER ------------------------------------

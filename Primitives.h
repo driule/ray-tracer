@@ -55,7 +55,7 @@ namespace Tmpl8 {
 	class Plane : public Primitive
 	{
 	public:
-		Plane(Material* material, vec3 position, vec3 direction);
+		Plane(Material* material, vec3 position, vec3 direction, float size = 10);
 
 		void intersect(Ray* ray);
 		vec3 getNormal(vec3 point);
