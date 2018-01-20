@@ -159,7 +159,7 @@ Ray* Scene::computeRefractionRay(Ray* ray)
 	else
 	{
 		vec3 direction = eta * ray->direction + (eta * cosi - sqrtf(k)) * n;
-		vec3 origin = hitPoint + direction * 0.01;
+		vec3 origin = hitPoint + direction * EPSILON;
 		
 		return new Ray(origin, direction);
 	}

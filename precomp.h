@@ -14,7 +14,7 @@
 
 #define BGCOLOR			vec4(0.5f, 0.5f, 0.5f, 1)
 
-#define EPSILON 1e-6
+#define EPSILON 1e-4
 
 #define CAMERA_ORIGIN vec3(0, 0, -3)
 

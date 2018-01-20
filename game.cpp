@@ -283,7 +283,6 @@ void Game::loadNiceScene()
 	Material* orangeMaterial = new Material(vec4(0.95, 0.61, 0.07, 1), diffuse);
 	Material* redMaterial = new Material(vec4(0.8, 0.21, 0.19, 1), diffuse);
 
-
 	int roomWidth = 50;
 	int roomHeigth = 50;
 
@@ -299,8 +298,8 @@ void Game::loadNiceScene()
 	scene->addPrimitive(new Plane(floorMaterial, vec3(roomWidth, -10, 10), vec3(0, 1, 0), 100));
 	
 	//Wall primitives
-	scene->addPrimitive(new Triangle(wall1Material, vec3(roomWidth, -roomHeigth, 10), vec3(-roomWidth, -roomHeigth, 10), vec3(roomWidth, roomHeigth, 10)));
-	scene->addPrimitive(new Triangle(wall1Material, vec3(-roomWidth, -roomHeigth, 10), vec3(-roomWidth, roomHeigth, 10), vec3(roomWidth, roomHeigth, 10)));
+	scene->addPrimitive(new Triangle(mirrorMaterial, vec3(roomWidth, -roomHeigth, 10), vec3(-roomWidth, -roomHeigth, 10), vec3(roomWidth, roomHeigth, 10)));
+	scene->addPrimitive(new Triangle(mirrorMaterial, vec3(-roomWidth, -roomHeigth, 10), vec3(-roomWidth, roomHeigth, 10), vec3(roomWidth, roomHeigth, 10)));
 
 	scene->addPrimitive(new Triangle(wall1Material, vec3(roomWidth, -roomHeigth, -100), vec3(roomWidth, -roomHeigth, 10), vec3(roomWidth, roomHeigth, 10)));
 	scene->addPrimitive(new Triangle(wall1Material, vec3(roomWidth, roomHeigth, -100), vec3(roomWidth, -roomHeigth, -100), vec3(roomWidth, roomHeigth, 10)));
